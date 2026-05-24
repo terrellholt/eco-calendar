@@ -97,12 +97,8 @@
 <div class="topbar">
   <span class="topbar-logo">📅 Eco Calendar</span>
   <div class="tv-bar">
-    <div class="tradingview-widget-container" style="width:100%;height:44px">
-      <div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-      {"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq"},{"description":"Dow 30","proName":"FOREXCOM:DJI"},{"description":"Russell 2000","proName":"FOREXCOM:RUT"},{"description":"VIX","proName":"CBOE:VIX"}],"showSymbolLogo":true,"isTransparent":true,"displayMode":"compact","colorTheme":"dark","locale":"en"}
-      </script>
-    </div>
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+    <tv-ticker-tape style="width:100%;height:44px" symbols="FOREXCOM:SPXUSD,OANDA:USB10YUSD,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
   </div>
 </div>
 
@@ -150,7 +146,6 @@ const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Satur
 
 let allEvents = [], entityMap = {}, weekStart = getWeekStart(new Date()), usingMock = false;
 
-// ── MOCK DATA ────────────────────────────────────────────────────────────────
 function buildMock() {
   const base = getWeekStart(new Date());
   const items = [
@@ -176,7 +171,6 @@ function buildMock() {
   });
 }
 
-// ── SUPABASE ──────────────────────────────────────────────────────────────────
 async function sbGet(table) {
   const r = await fetch(`${SB}/rest/v1/${encodeURIComponent(table)}?select=*&limit=1000`, {
     headers:{apikey:KEY,Authorization:`Bearer ${KEY}`}
@@ -201,7 +195,6 @@ async function loadData() {
   renderWeek();
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 function getWeekStart(d) {
   const dt = new Date(d); dt.setHours(0,0,0,0);
   dt.setDate(dt.getDate() - dt.getDay());
@@ -225,7 +218,6 @@ function impLabel(impact, category) {
   return v.charAt(0).toUpperCase()+v.slice(1).toLowerCase()+" Impact";
 }
 
-// ── SIDEBAR ───────────────────────────────────────────────────────────────────
 function buildSidebar() {
   const nav = document.getElementById("monthNav");
   nav.innerHTML = [2026,2027].map(y => `
@@ -239,7 +231,6 @@ function buildSidebar() {
 
 function jumpTo(y,m) { weekStart = getWeekStart(new Date(y,m,1)); buildSidebar(); renderWeek(); }
 
-// ── WEEK RENDER ───────────────────────────────────────────────────────────────
 function renderWeek() {
   const today = new Date(); today.setHours(0,0,0,0);
   const days = Array.from({length:7},(_,i)=>{ const d=new Date(weekStart); d.setDate(d.getDate()+i); return d; });
@@ -291,7 +282,6 @@ function prevWeek(){ weekStart.setDate(weekStart.getDate()-7); renderWeek(); }
 function nextWeek(){ weekStart.setDate(weekStart.getDate()+7); renderWeek(); }
 function goToday(){ weekStart=getWeekStart(new Date()); renderWeek(); }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────────
 function openModal(safe) {
   const ev = JSON.parse(decodeURIComponent(safe));
   const cls = impCls(ev.impact||ev.Impact, ev.category||ev.Category);
