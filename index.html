@@ -9,12 +9,12 @@
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 
   /* ── TOP BAR: full-width ticker, no logo block ── */
-  .topbar{height:46px;background:#111;display:flex;align-items:stretch;flex-shrink:0;overflow:hidden}
-  .tv-bar{flex:1;overflow:hidden;min-width:0;display:flex;align-items:center}
-  tv-ticker-tape{display:block;width:100%;height:46px}
+  .topbar{background:#111;flex-shrink:0;overflow:hidden;line-height:0}
+  .tv-bar{width:100%;overflow:hidden;display:block}
+  tv-ticker-tape{display:block;width:100%}
 
   /* ── BODY LAYOUT ── */
-  .app{display:flex;flex:1;overflow:hidden}
+  .app{display:flex;flex:1;overflow:hidden;position:relative}
 
   /* ── ICON RAIL ── */
   .icon-rail{width:52px;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:4px;flex-shrink:0;border-right:1px solid #2a2a2a}
@@ -24,15 +24,25 @@
   .rail-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
   /* ── SIDEBAR ── */
-  .sidebar{width:240px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-  .sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
-  .sidebar-title{font-size:14px;font-weight:600}
-  .sidebar-sub{font-size:11px;color:#999;margin-top:2px}
-  .sidebar-nav{display:flex;flex-direction:column;padding:6px 0}
+  .sidebar{width:276px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .2s}
+  .sidebar.collapsed{width:0;overflow:hidden;border-right:none}
+  .sidebar-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:8px 10px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
+  .sidebar-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#555;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s}
+  .sidebar-btn:hover{background:#f5f5f0}
+  .sidebar-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+  .sidebar-collapse-btn{width:28px;height:28px;border-radius:50%;border:1px solid #e0e0db;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#555;transition:all .12s;flex-shrink:0}
+  .sidebar-collapse-btn:hover{background:#f5f5f0}
+  .sidebar-collapse-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  .sidebar-collapse-btn.collapsed svg{transform:rotate(180deg)}
+  /* floating re-open arrow when sidebar is hidden */
+  .sidebar-reopen{position:absolute;left:52px;top:58px;z-index:50;width:28px;height:28px;border-radius:0 6px 6px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;color:#555;box-shadow:2px 0 6px rgba(0,0,0,.06)}
+  .sidebar-reopen.visible{display:flex}
+  .sidebar-reopen svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sidebar-nav{display:flex;flex-direction:column;padding:4px 0;overflow-y:auto;flex:1}
 
   /* month accordion */
-  .nav-year{font-size:10px;font-weight:700;color:#bbb;padding:10px 14px 4px;letter-spacing:.07em;text-transform:uppercase}
-  .month-label{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;cursor:pointer;font-size:13px;color:#444;transition:background .12s;user-select:none}
+  .nav-year{font-size:10px;font-weight:700;color:#bbb;padding:8px 14px 3px;letter-spacing:.07em;text-transform:uppercase}
+  .month-label{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;cursor:pointer;font-size:13px;color:#444;transition:background .12s;user-select:none}
   .month-label:hover{background:#f5f5f0}
   .month-label.active-month{font-weight:600;color:#1a1a1a}
   .month-label .chevron{font-size:11px;color:#ccc;transition:transform .2s}
@@ -42,24 +52,25 @@
   .month-grid-wrap{display:none;border-bottom:1px solid #f0f0ec}
   .month-grid-wrap.visible{display:block}
   .mgrid-head{display:grid;grid-template-columns:repeat(7,1fr);background:#f8f8f6;border-bottom:1px solid #eee}
-  .mgrid-head span{font-size:9px;font-weight:600;color:#aaa;text-align:center;padding:4px 0;text-transform:uppercase}
+  .mgrid-head span{font-size:8px;font-weight:600;color:#aaa;text-align:center;padding:3px 0;text-transform:uppercase;letter-spacing:.03em}
   .mgrid-body{display:grid;grid-template-columns:repeat(7,1fr)}
-  .mgrid-cell{border-right:1px solid #ececea;border-bottom:1px solid #ececea;min-height:64px;padding:4px 3px 2px;display:flex;flex-direction:column;cursor:pointer;transition:background .1s;position:relative}
+  .mgrid-cell{border-right:1px solid #ececea;border-bottom:1px solid #ececea;min-height:62px;padding:3px 3px 2px;display:flex;flex-direction:column;cursor:pointer;transition:background .1s;overflow:hidden}
   .mgrid-cell:nth-child(7n){border-right:none}
   .mgrid-cell:hover{background:#fafaf8}
   .mgrid-cell.other-month{background:#fafaf8;pointer-events:none}
   .mgrid-cell.other-month .mgrid-date{color:#ddd}
   .mgrid-cell.in-current-week{background:#eff6ff}
   .mgrid-cell.today-cell{background:#eff6ff}
-  .mgrid-date{font-size:10px;font-weight:600;color:#888;margin-bottom:2px;line-height:1}
+  .mgrid-date{font-size:9px;font-weight:600;color:#888;margin-bottom:2px;line-height:1}
   .mgrid-cell.today-cell .mgrid-date{color:#2563eb;font-weight:700}
-  .mgrid-events{display:flex;flex-direction:column;gap:1px;flex:1}
-  .mgrid-evt{font-size:8.5px;font-weight:600;line-height:1.25;padding:1px 2px;border-radius:2px;word-break:break-word;white-space:normal}
-  .mgrid-evt + .mgrid-evt{border-top:1px solid rgba(0,0,0,.06);padding-top:2px;margin-top:1px}
-  .mgrid-evt.high{color:#e24b4a}
-  .mgrid-evt.medium{color:#d97706}
-  .mgrid-evt.low{color:#b45309}
-  .mgrid-evt.none{color:#666}
+  .mgrid-events{display:flex;flex-direction:column;gap:0;flex:1;overflow:hidden}
+  .mgrid-evt{font-size:7.5px;font-weight:600;line-height:1.3;padding:1px 2px;word-break:break-word;white-space:normal;overflow-wrap:break-word}
+  .mgrid-evt + .mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
+  /* distinct impact colors */
+  .mgrid-evt.high{color:#dc2626}
+  .mgrid-evt.medium{color:#ea7000}
+  .mgrid-evt.low{color:#ca8a04}
+  .mgrid-evt.none{color:#6b7280}
 
   /* ── MAIN AREA ── */
   .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -85,17 +96,17 @@
   /* ── EVENT CARDS (week view) ── */
   .ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center}
   .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
-  .ecard.high{background:#FFF0EE;border-color:#FCCBC7}
-  .ecard.medium{background:#FFF8EE;border-color:#FFE0A3}
-  .ecard.low{background:#FFFBEE;border-color:#FFE58A}
+  .ecard.high{background:#FEF2F2;border-color:#FECACA}
+  .ecard.medium{background:#FFF7ED;border-color:#FED7AA}
+  .ecard.low{background:#FEFCE8;border-color:#FEF08A}
   .ecard.none{background:#fff;border-color:#e5e5e0}
   .card-time{font-size:10px;color:#999;font-weight:500;margin-bottom:5px;align-self:flex-start}
   .card-logo{width:52px;height:52px;object-fit:contain;margin:4px auto 6px;display:block}
   .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
   .card-impact{font-size:10px;font-weight:500;margin-top:3px}
-  .card-impact.high{color:#e24b4a}
-  .card-impact.medium{color:#d97706}
-  .card-impact.low{color:#b45309}
+  .card-impact.high{color:#dc2626}
+  .card-impact.medium{color:#ea7000}
+  .card-impact.low{color:#ca8a04}
   .card-impact.none{color:#999}
   .no-evt{font-size:11px;color:#ddd;padding:6px 4px;font-style:italic;text-align:center}
 
@@ -168,13 +179,22 @@
   </div>
 
   <!-- SIDEBAR with full monthly grid -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title">Time Navigation</div>
-      <div class="sidebar-sub">2026 – 2027</div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-toolbar">
+      <button class="sidebar-btn" id="expandAllBtn" onclick="toggleAllMonths()">
+        <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        Expand All
+      </button>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Collapse panel" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
     </div>
     <div class="sidebar-nav" id="monthNav"></div>
   </div>
+  <!-- re-open button when sidebar is hidden -->
+  <button class="sidebar-reopen" id="sidebarReopen" title="Open panel" onclick="toggleSidebar()">
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
 
   <!-- MAIN WEEKLY CALENDAR -->
   <div class="main">
@@ -343,12 +363,14 @@
 <script>
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const DAYS_SHORT = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+const DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 let weekStart  = getWeekStart(new Date());
 let events     = buildDefaultEvents();
 let editingId  = null;
 let openMonths = new Set();
+let allExpanded = true;  // default is expand all
+let sidebarOpen = true;
 
 // ── DEFAULT EVENTS ───────────────────────────────────────────────────────────
 function buildDefaultEvents() {
@@ -395,7 +417,13 @@ function impLabel(v) {
 function buildSidebar() {
   const today  = new Date(); today.setHours(0,0,0,0);
   const curKey = `${today.getFullYear()}-${today.getMonth()}`;
-  openMonths.add(curKey);
+
+  // On first build, expand all months (default state)
+  if (allExpanded && openMonths.size === 0) {
+    [2026,2027].forEach(y => {
+      for(let mi=0;mi<12;mi++) openMonths.add(`${y}-${mi}`);
+    });
+  }
 
   const wStart = weekStart;
   const wEnd   = new Date(wStart); wEnd.setDate(wEnd.getDate() + 6);
@@ -417,6 +445,14 @@ function buildSidebar() {
     });
   });
   document.getElementById("monthNav").innerHTML = html;
+
+  // Sync button label
+  const btn = document.getElementById("expandAllBtn");
+  if (btn) {
+    btn.innerHTML = allExpanded
+      ? `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Collapse All`
+      : `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Expand All`;
+  }
 }
 
 function buildMonthGrid(y, mi, today, wStart, wEnd) {
@@ -467,6 +503,9 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
 
 function toggleMonth(key, y, mi) {
   openMonths.has(key) ? openMonths.delete(key) : openMonths.add(key);
+  // sync allExpanded state
+  const total = 24; // 12 months × 2 years
+  allExpanded = openMonths.size >= total;
   weekStart = getWeekStart(new Date(y, mi, 1));
   buildSidebar();
   renderWeek();
@@ -476,6 +515,38 @@ function jumpToDate(dateStr) {
   weekStart = getWeekStart(new Date(dateStr+"T12:00:00"));
   buildSidebar();
   renderWeek();
+}
+
+function toggleAllMonths() {
+  allExpanded = !allExpanded;
+  if (allExpanded) {
+    // open all months in both years
+    [2026,2027].forEach(y => {
+      for(let mi=0;mi<12;mi++) openMonths.add(`${y}-${mi}`);
+    });
+  } else {
+    openMonths.clear();
+    // keep current month open
+    const today = new Date();
+    openMonths.add(`${today.getFullYear()}-${today.getMonth()}`);
+  }
+  buildSidebar();
+}
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  const sb = document.getElementById("sidebar");
+  const reopen = document.getElementById("sidebarReopen");
+  const colBtn = document.getElementById("sidebarCollapseBtn");
+  if (sidebarOpen) {
+    sb.classList.remove("collapsed");
+    reopen.classList.remove("visible");
+    colBtn.classList.remove("collapsed");
+  } else {
+    sb.classList.add("collapsed");
+    reopen.classList.add("visible");
+    colBtn.classList.add("collapsed");
+  }
 }
 
 // ── WEEK RENDER ──────────────────────────────────────────────────────────────
