@@ -7,19 +7,56 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-  .topbar{height:48px;background:#111;display:flex;align-items:center;padding:0 16px;gap:16px;flex-shrink:0}
-  .topbar-logo{color:#fff;font-weight:700;font-size:15px;letter-spacing:-.02em;white-space:nowrap}
-  .tv-bar{flex:1;overflow:hidden;height:48px;display:flex;align-items:center}
+
+  /* ── TOP BAR ── */
+  .topbar{height:44px;background:#111;display:flex;align-items:stretch;flex-shrink:0;overflow:hidden}
+  .topbar-logo{color:#fff;font-weight:700;font-size:14px;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:center;padding:0 14px;border-right:1px solid rgba(255,255,255,.08);flex-shrink:0}
+  .tv-bar{flex:1;overflow:hidden;min-width:0}
+  tv-ticker-tape{display:block;width:100%;height:44px}
+
+  /* ── BODY LAYOUT ── */
   .app{display:flex;flex:1;overflow:hidden}
+
+  /* ── ICON RAIL ── */
+  .icon-rail{width:52px;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:4px;flex-shrink:0;border-right:1px solid #2a2a2a}
+  .rail-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.4);transition:all .15s;position:relative}
+  .rail-icon:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)}
+  .rail-icon.active{background:#2563eb;color:#fff}
+  .rail-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .rail-spacer{flex:1}
+
+  /* ── SIDEBAR ── */
   .sidebar{width:220px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-  .sidebar-header{padding:14px 16px 8px;border-bottom:1px solid #f0f0ec}
+  .sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
   .sidebar-title{font-size:14px;font-weight:600}
   .sidebar-sub{font-size:11px;color:#999;margin-top:2px}
-  .sidebar-nav{display:flex;flex-direction:column;gap:1px;padding:6px}
-  .nav-year{font-size:11px;font-weight:600;color:#aaa;padding:8px 8px 2px;letter-spacing:.06em;text-transform:uppercase}
-  .nav-month{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#555;transition:background .12s}
-  .nav-month:hover{background:#f5f5f0}
-  .nav-month.active{background:#1a1a1a;color:#fff}
+  .sidebar-nav{display:flex;flex-direction:column;padding:6px 0}
+
+  /* month accordion */
+  .nav-year{font-size:10px;font-weight:700;color:#bbb;padding:10px 14px 4px;letter-spacing:.07em;text-transform:uppercase}
+  .month-block{}
+  .month-label{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;cursor:pointer;font-size:13px;color:#444;transition:background .12s;user-select:none}
+  .month-label:hover{background:#f5f5f0}
+  .month-label.active-month{font-weight:600;color:#1a1a1a}
+  .month-label .chevron{font-size:10px;color:#ccc;transition:transform .2s}
+  .month-label.open .chevron{transform:rotate(90deg)}
+
+  /* mini calendar grid */
+  .mini-cal{display:none;padding:6px 10px 10px}
+  .mini-cal.visible{display:block}
+  .mini-cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:3px}
+  .mini-cal-head span{font-size:9px;font-weight:600;color:#bbb;text-align:center;padding:2px 0}
+  .mini-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+  .mini-day{font-size:10px;text-align:center;padding:3px 1px;border-radius:4px;cursor:pointer;color:#555;transition:background .1s;line-height:1.4}
+  .mini-day:hover{background:#f0f0ec}
+  .mini-day.other-month{color:#ddd;pointer-events:none}
+  .mini-day.today{background:#2563eb;color:#fff;font-weight:600;border-radius:50%}
+  .mini-day.in-week{background:#eff6ff;color:#1d4ed8}
+  .mini-day.week-start{border-radius:4px 0 0 4px}
+  .mini-day.week-end{border-radius:0 4px 4px 0}
+  .mini-day.today.in-week{background:#2563eb;color:#fff}
+
+  /* ── MAIN AREA ── */
   .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
   .week-nav{padding:12px 20px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
   .week-title{font-size:16px;font-weight:600}
@@ -37,8 +74,10 @@
   .day-header.today .day-num{background:#2563eb;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500}
   .day-date-label{font-size:10px;color:#ccc;margin-top:1px}
   .day-events{padding:5px;display:flex;flex-direction:column;gap:4px;flex:1}
-  .add-evt{font-size:11px;color:#ccc;cursor:pointer;padding:3px 5px;border-radius:4px;transition:all .12s}
+  .add-evt{font-size:11px;color:#ccc;cursor:pointer;padding:3px 5px;border-radius:4px;transition:all .12s;text-align:center;margin-top:4px}
   .add-evt:hover{color:#888;background:#f5f5f0}
+
+  /* ── EVENT CARDS ── */
   .ecard{border-radius:7px;padding:7px 8px;cursor:pointer;transition:all .15s;border:1px solid transparent}
   .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08)}
   .ecard.high{background:#FFF0EE;border-color:#FCCBC7}
@@ -46,6 +85,7 @@
   .ecard.low{background:#F0FFF4;border-color:#B8EEC8}
   .ecard.corporate{background:#F0F4FF;border-color:#C7D4FC}
   .ecard.holiday{background:#FFF0EE;border-color:#FCCBC7}
+  .ecard.none{background:#fff;border-color:#e5e5e0}
   .card-time{font-size:10px;color:#999;font-weight:500;margin-bottom:2px}
   .card-logo{width:20px;height:20px;border-radius:3px;object-fit:contain;margin-bottom:3px;background:#fff;padding:1px}
   .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3}
@@ -54,57 +94,100 @@
   .card-impact.medium{color:#d97706}
   .card-impact.low{color:#16a34a}
   .card-impact.corporate{color:#2563eb}
+  .card-impact.none{color:#999}
   .no-evt{font-size:11px;color:#ddd;padding:6px 4px;font-style:italic}
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+
+  /* ── EDIT MODAL ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
   .modal-overlay.open{opacity:1;pointer-events:all}
-  .modal{background:#fff;border-radius:14px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.2);transform:translateY(10px);transition:transform .2s;position:relative}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
   .modal-overlay.open .modal{transform:translateY(0)}
-  .modal-hero{width:100%;height:150px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:14px 14px 0 0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .modal-hero-text{color:rgba(255,255,255,.12);font-size:56px;font-weight:800;letter-spacing:-.02em}
-  .hero-cat{position:absolute;top:12px;left:14px;background:rgba(255,255,255,.15);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;backdrop-filter:blur(4px);font-weight:500}
-  .modal-close{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;line-height:1}
-  .modal-body{padding:18px 22px 24px}
-  .modal-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
-  .modal-logo{width:48px;height:48px;border-radius:9px;object-fit:contain;background:#f5f5f0;padding:4px;border:1px solid #e5e5e0;flex-shrink:0}
-  .modal-logo-ph{width:48px;height:48px;border-radius:9px;background:#f0f0ec;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#888;border:1px solid #e5e5e0;flex-shrink:0}
-  .modal-title{font-size:17px;font-weight:700;color:#1a1a1a;line-height:1.2}
-  .modal-entity{font-size:12px;color:#777;margin-top:3px}
-  .modal-ticker{display:inline-block;font-size:11px;font-weight:600;color:#2563eb;background:#eff6ff;padding:2px 7px;border-radius:4px;margin-top:4px}
-  .impact-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;white-space:nowrap}
-  .impact-pill.high,.impact-pill.holiday{background:#FFF0EE;color:#e24b4a}
-  .impact-pill.medium{background:#FFF8EE;color:#d97706}
-  .impact-pill.low{background:#F0FFF4;color:#16a34a}
-  .impact-pill.corporate{background:#F0F4FF;color:#2563eb}
-  .idot{width:6px;height:6px;border-radius:50%;background:currentColor}
-  .mlabel{font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
-  .mval{font-size:13px;color:#333;line-height:1.5}
-  .mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-  .msec{margin-bottom:14px}
-  .divider{height:1px;background:#f0f0ec;margin:14px 0}
-  .chart-wrap{border-radius:8px;overflow:hidden;border:1px solid #e5e5e0;height:200px;margin-top:6px}
-  .assets{display:flex;gap:5px;flex-wrap:wrap}
-  .atag{font-size:11px;font-weight:600;background:#f0f4ff;color:#2563eb;padding:2px 8px;border-radius:4px;border:1px solid #c7d4fc}
-  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid #f0f0ec}
-  .btn-done{background:#1a1a1a;color:#fff;border:none;font-size:13px;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:500}
+
+  /* hero section */
+  .edit-hero{width:100%;height:130px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:14px 14px 0 0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+  .edit-hero-label{color:rgba(255,255,255,.5);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .edit-hero-label svg{width:24px;height:24px;stroke:rgba(255,255,255,.5);fill:none;stroke-width:1.5}
+  .edit-hero-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+  .hero-change-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;backdrop-filter:blur(4px)}
+  .modal-close{position:absolute;top:10px;left:12px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:18px;width:26px;height:26px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;line-height:1}
+
+  /* modal body */
+  .modal-body{padding:16px 18px 20px}
+  .modal-section-title{font-size:11px;font-weight:700;color:#1a1a1a;letter-spacing:.04em;margin:14px 0 8px}
+  .form-row{display:flex;gap:10px;margin-bottom:10px}
+  .form-group{display:flex;flex-direction:column;gap:4px;flex:1}
+  .form-group label{font-size:11px;font-weight:600;color:#888}
+  .form-group input,.form-group select,.form-group textarea{font-size:13px;padding:7px 10px;border:1px solid #e0e0db;border-radius:7px;background:#fff;color:#1a1a1a;width:100%;outline:none;font-family:inherit;transition:border .12s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#2563eb}
+  .form-group textarea{resize:vertical;min-height:70px;line-height:1.5}
+  .form-group select{cursor:pointer}
+
+  /* logo upload box */
+  .logo-upload{width:52px;height:52px;border-radius:10px;border:1.5px dashed #d0d0cc;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;background:#f8f8f6;position:relative}
+  .logo-upload img{width:100%;height:100%;object-fit:contain}
+  .logo-upload svg{width:20px;height:20px;stroke:#bbb;fill:none;stroke-width:1.5}
+  .logo-upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+  /* checkbox row */
+  .check-row{display:flex;align-items:center;gap:6px;font-size:12px;color:#555;margin-bottom:10px}
+  .check-row input[type=checkbox]{width:14px;height:14px;accent-color:#2563eb;cursor:pointer}
+
+  /* rich text toolbar stub */
+  .rte-toolbar{display:flex;gap:2px;padding:5px 6px;border:1px solid #e0e0db;border-bottom:none;border-radius:7px 7px 0 0;background:#f8f8f6}
+  .rte-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius:4px;font-size:12px;color:#555;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .rte-btn:hover{background:#ececec}
+  .rte-btn.sep{width:1px;background:#ddd;margin:2px 3px;cursor:default}
+  .rte-area{font-size:13px;padding:8px 10px;border:1px solid #e0e0db;border-radius:0 0 7px 7px;min-height:90px;outline:none;color:#1a1a1a;line-height:1.5}
+  .rte-area:focus{border-color:#2563eb}
+  .rte-area[contenteditable]:empty:before{content:attr(data-placeholder);color:#bbb}
+
+  /* modal footer */
+  .modal-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 16px;border-top:1px solid #f0f0ec;margin-top:4px}
+  .btn-delete{background:#e24b4a;color:#fff;border:none;font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:500}
+  .btn-cancel{background:#fff;color:#555;border:1px solid #e0e0db;font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer}
+  .btn-save{background:#1a1a1a;color:#fff;border:none;font-size:13px;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:500}
+
+  /* ── SPINNER ── */
   .spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
-  .demo-bar{background:#fffbeb;border-bottom:1px solid #fde68a;padding:6px 20px;font-size:11px;color:#92400e;flex-shrink:0;display:none}
 </style>
 </head>
 <body>
 
+<!-- TOP BAR -->
 <div class="topbar">
-  <span class="topbar-logo">📅 Eco Calendar</span>
+  <div class="topbar-logo">📅 Eco Calendar</div>
   <div class="tv-bar">
     <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
-    <tv-ticker-tape style="width:100%;height:44px" symbols="FOREXCOM:SPXUSD,OANDA:USB10YUSD,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
+    <tv-ticker-tape symbols="FOREXCOM:SPXUSD,OANDA:USB10YUSD,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
   </div>
 </div>
 
-<div class="demo-bar" id="demoBanner">⚠ Showing sample data. In Supabase: Settings → Data API → expose all tables, then disable RLS on each table.</div>
-
 <div class="app">
+
+  <!-- ICON RAIL -->
+  <div class="icon-rail">
+    <!-- Calendar -->
+    <div class="rail-icon active" title="Calendar">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <!-- News -->
+    <div class="rail-icon" title="News">
+      <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+    </div>
+    <!-- Markets -->
+    <div class="rail-icon" title="Markets">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="rail-spacer"></div>
+    <!-- Contact -->
+    <div class="rail-icon" title="Contact">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">Time Navigation</div>
@@ -112,11 +195,13 @@
     </div>
     <div class="sidebar-nav" id="monthNav"></div>
   </div>
+
+  <!-- MAIN CALENDAR -->
   <div class="main">
     <div class="week-nav">
       <div>
         <div class="week-title">What to Watch for the Week</div>
-        <div class="week-sub" id="weekSub">Key events and catalysts. Click any event to view details.</div>
+        <div class="week-sub" id="weekSub">Key events and catalysts. Click any event to edit.</div>
       </div>
       <div class="week-controls">
         <button class="btn" onclick="prevWeek()">← Prev</button>
@@ -125,229 +210,516 @@
       </div>
     </div>
     <div class="week-grid" id="weekGrid">
-      <div class="loading-col"><div class="spinner"></div><span>Loading your calendar…</span></div>
+      <div class="loading-col"><div class="spinner"></div><span>Loading…</span></div>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="overlay" onclick="closeModal(event)">
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="overlay" onclick="overlayClick(event)">
   <div class="modal" id="modal">
-    <div class="modal-hero" id="mHero"></div>
-    <button class="modal-close" onclick="closeDirect()">×</button>
-    <div class="modal-body" id="mBody"></div>
+    <!-- Hero -->
+    <div class="edit-hero" id="editHero" onclick="triggerHeroUpload()">
+      <div class="edit-hero-label" id="heroPlaceholder">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Change Hero Image
+      </div>
+      <img id="heroImg" class="edit-hero-img" style="display:none" src="" alt="">
+      <button class="hero-change-btn" id="heroChangeBtn" style="display:none" onclick="triggerHeroUpload();event.stopPropagation()">Change Hero Image</button>
+    </div>
+    <input type="file" id="heroFileInput" accept="image/*" style="display:none" onchange="handleHeroUpload(event)">
+    <button class="modal-close" onclick="closeModal()">×</button>
+
+    <div class="modal-body">
+      <!-- Logo + Title row -->
+      <div class="form-row" style="align-items:flex-start;gap:12px">
+        <div>
+          <div class="logo-upload" id="logoBox" onclick="document.getElementById('logoFileInput').click()">
+            <img id="logoImg" src="" alt="" style="display:none">
+            <svg id="logoPlaceholderIcon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <input type="file" id="logoFileInput" accept="image/*" style="display:none;position:absolute" onchange="handleLogoUpload(event)">
+          </div>
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>Title</label>
+          <input type="text" id="fTitle" placeholder="Event title">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name (Company or event name)</label>
+          <input type="text" id="fName" placeholder="Company or event name">
+        </div>
+        <div class="form-group">
+          <label>Ticker Symbol <span style="font-weight:400;color:#bbb">(Optional — auto-loads chart)</span></label>
+          <input type="text" id="fTicker" placeholder="e.g., AAPL">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Time</label>
+          <input type="text" id="fTime" placeholder="e.g., 8:30 AM">
+        </div>
+        <div class="form-group" style="justify-content:flex-end;padding-top:18px">
+          <label class="check-row" style="cursor:pointer"><input type="checkbox" id="fAllDay"> All Day</label>
+        </div>
+        <div class="form-group">
+          <label>Also Known As <span style="font-weight:400;color:#bbb">(Optional)</span></label>
+          <input type="text" id="fAka" placeholder="Alternative names">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Source URL</label>
+          <input type="text" id="fSource" placeholder="Add URL here">
+        </div>
+      </div>
+
+      <div class="modal-section-title">Event Settings</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Impact</label>
+          <select id="fImpact">
+            <option value="none">None (White)</option>
+            <option value="high">High Impact</option>
+            <option value="medium">Medium Impact</option>
+            <option value="low">Low Impact</option>
+            <option value="corporate">Corporate</option>
+            <option value="holiday">Market Holiday</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" id="fStartDate">
+        </div>
+        <div class="form-group">
+          <label>End Date <span style="font-weight:400;color:#bbb">(optional)</span></label>
+          <input type="date" id="fEndDate">
+        </div>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="fShowMini" checked>
+        <label for="fShowMini">Show in monthly calendar view</label>
+      </div>
+
+      <div class="modal-section-title">Additional Event Metadata</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Frequency</label>
+          <select id="fFrequency">
+            <option value="">Select frequency</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="annually">Annually</option>
+            <option value="one-time">One-time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Measures <span style="font-weight:400;color:#bbb">(Optional)</span></label>
+          <textarea id="fMeasures" placeholder="What this event measures..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Why it Matters</label>
+          <textarea id="fWhyMatters" placeholder="Explain the significance and market impact..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:4px">
+        <label>Details</label>
+        <div class="rte-toolbar">
+          <button class="rte-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+          <button class="rte-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+          <button class="rte-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+          <div class="rte-btn sep"></div>
+          <button class="rte-btn" onclick="fmt('justifyLeft')" title="Left">≡</button>
+          <button class="rte-btn" onclick="fmt('justifyCenter')" title="Center">≡</button>
+          <button class="rte-btn" onclick="fmt('justifyRight')" title="Right">≡</button>
+          <div class="rte-btn sep"></div>
+          <button class="rte-btn" onclick="fmt('insertUnorderedList')" title="List">☰</button>
+        </div>
+        <div class="rte-area" id="fDetails" contenteditable="true" data-placeholder="Add detailed information about this event..."></div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-delete" onclick="deleteEvent()">Delete Event</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveEvent()">Save Changes</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-const SB = "https://pkzjgjtzljjjohiybnud.supabase.co";
-const KEY = "sb_publishable_1d2xEdTwRRtxFoflyw2p5g_c1hq5WVe";
+// ── STATE ────────────────────────────────────────────────────────────────────
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const DAYS   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-let allEvents = [], entityMap = {}, weekStart = getWeekStart(new Date()), usingMock = false;
+let weekStart = getWeekStart(new Date());
+let events    = buildDefaultEvents(); // TBD placeholders
+let editingId = null;
+let openMonths = new Set(); // tracks which months have expanded mini-cal
 
-function buildMock() {
-  const base = getWeekStart(new Date());
-  const items = [
-    {id:1,event:"Fed Chair Powell Speaks",category:"Fed / FOMC",impact:"High",time:"8:30 AM",notes:"Congressional testimony on monetary policy outlook.",ticker:"SPY",day:0},
-    {id:2,event:"US Building Permits",category:"Economic Release",impact:"High",time:"10:00 AM",notes:"Census Bureau monthly housing construction data.",ticker:null,day:1},
-    {id:3,event:"CPI (YoY)",category:"Economic Release",impact:"High",time:"8:30 AM",notes:"Bureau of Labor Statistics. Key inflation gauge watched closely by the Fed.",ticker:null,day:2},
-    {id:4,event:"FOMC Meeting Minutes",category:"Fed / FOMC",impact:"High",time:"8:30 AM",notes:"Released 3 weeks after the FOMC meeting. Markets parse for policy clues.",ticker:null,day:3},
-    {id:5,event:"Initial Jobless Claims",category:"Economic Release",impact:"High",time:"8:30 AM",notes:"Dept. of Labor weekly unemployment filings.",ticker:null,day:4},
-    {id:6,event:"PCE Price Index",category:"Economic Release",impact:"High",time:"8:30 AM",notes:"The Fed's preferred inflation measure.",ticker:null,day:5},
-    {id:7,event:"Apple WWDC",category:"Corporate",impact:"Medium",time:"10:00 AM",notes:"Apple's annual developer conference. Major product and software announcements expected.",ticker:"AAPL",logo:"https://img.logo.dev/apple.com?token=pk_J5OFKwFoQIiLqMnXkm6lMA&size=64",day:1},
-    {id:8,event:"Retail Sales (MoM)",category:"Economic Release",impact:"Medium",time:"9:00 AM",notes:"Census Bureau consumer spending indicator.",ticker:null,day:1},
-    {id:9,event:"Home Depot Earnings",category:"Corporate",impact:"Medium",time:"8:30 AM",notes:"Q4 FY2026 earnings. Focus on housing market health and consumer spending.",ticker:"HD",day:2},
-    {id:10,event:"NVIDIA Earnings",category:"Corporate",impact:"High",time:"4:00 PM",notes:"Q4 FY2027 earnings. Key signal for AI infrastructure demand.",ticker:"NVDA",day:3},
-    {id:11,event:"Meta Platforms Earnings",category:"Corporate",impact:"Medium",time:"7:00 PM",notes:"Q4 2026 earnings. Ad revenue growth and AI investment in focus.",ticker:"META",day:3},
-    {id:12,event:"Existing Home Sales",category:"Economic Release",impact:"Medium",time:"10:00 AM",notes:"NAR monthly resale data.",ticker:null,day:4},
-    {id:13,event:"Durable Goods Orders",category:"Economic Release",impact:"Low",time:"10:00 AM",notes:"Census Bureau manufacturing health indicator.",ticker:null,day:5},
-    {id:14,event:"Berkshire Hathaway Shareholder Mtg.",category:"Corporate",impact:"Low",time:"TBD",notes:"Annual shareholder meeting. Warren Buffett Q&A.",ticker:"BRK.B",day:5},
-  ];
-  return items.map(d => {
-    const dt = new Date(base);
-    dt.setDate(dt.getDate() + d.day);
-    return {...d, date: dt.toISOString().split("T")[0]};
-  });
-}
-
-async function sbGet(table) {
-  const r = await fetch(`${SB}/rest/v1/${encodeURIComponent(table)}?select=*&limit=1000`, {
-    headers:{apikey:KEY,Authorization:`Bearer ${KEY}`}
-  });
-  if(!r.ok) throw new Error(r.status);
-  return r.json();
-}
-
-async function loadData() {
-  try {
-    const [evts, ents] = await Promise.all([sbGet("Master Calendar"), sbGet("entity_library")]);
-    if(!Array.isArray(evts) || evts.length === 0) throw new Error("empty");
-    allEvents = evts;
-    (ents||[]).forEach(e => { if(e.id) entityMap[e.id] = e; });
-    usingMock = false;
-  } catch(e) {
-    allEvents = buildMock();
-    usingMock = true;
-    document.getElementById("demoBanner").style.display = "block";
+// ── DEFAULT TBD EVENTS ──────────────────────────────────────────────────────
+function buildDefaultEvents() {
+  // Create a full set of TBD placeholder slots across the visible years
+  const evts = [];
+  let id = 1;
+  // Generate ~3 TBD placeholders per week for the next 104 weeks (2 years)
+  const base = getWeekStart(new Date(2026, 0, 1));
+  for (let w = 0; w < 104; w++) {
+    const wStart = new Date(base);
+    wStart.setDate(wStart.getDate() + w * 7);
+    // Place placeholders on Mon, Wed, Fri of each week
+    [1, 2, 3, 4].forEach(dayOffset => {
+      const d = new Date(wStart);
+      d.setDate(d.getDate() + dayOffset);
+      evts.push({
+        id: id++,
+        title: "TBD",
+        name: "",
+        ticker: "",
+        time: "8:30 AM",
+        aka: "",
+        source: "",
+        impact: "none",
+        date: ds(d),
+        endDate: "",
+        showMini: true,
+        frequency: "",
+        measures: "",
+        whyMatters: "",
+        details: "",
+        logo: "",
+        hero: ""
+      });
+    });
   }
-  buildSidebar();
-  renderWeek();
+  return evts;
 }
 
+// ── HELPERS ──────────────────────────────────────────────────────────────────
 function getWeekStart(d) {
   const dt = new Date(d); dt.setHours(0,0,0,0);
   dt.setDate(dt.getDate() - dt.getDay());
   return dt;
 }
 function ds(d) { return d.toISOString().split("T")[0]; }
-function impCls(impact, category) {
-  const c = (category||"").toLowerCase();
-  if(c.includes("holiday")) return "holiday";
-  if(c.includes("corp")||c.includes("earn")) return "corporate";
-  const v = (impact||"").toLowerCase();
+
+function impCls(impact) {
+  const v = (impact||"none").toLowerCase();
   if(v==="high") return "high";
   if(v==="medium"||v==="med") return "medium";
-  return "low";
+  if(v==="low") return "low";
+  if(v==="corporate") return "corporate";
+  if(v==="holiday") return "holiday";
+  return "none";
 }
-function impLabel(impact, category) {
-  const c = (category||"").toLowerCase();
-  if(c.includes("holiday")) return "Market Holiday";
-  if(c.includes("corp")||c.includes("earn")) return "Corporate";
-  const v = (impact||"low");
-  return v.charAt(0).toUpperCase()+v.slice(1).toLowerCase()+" Impact";
+function impLabel(impact) {
+  const v = (impact||"none").toLowerCase();
+  if(v==="high") return "High Impact";
+  if(v==="medium"||v==="med") return "Medium Impact";
+  if(v==="low") return "Low Impact";
+  if(v==="corporate") return "Corporate";
+  if(v==="holiday") return "Market Holiday";
+  return "";
 }
 
+// ── SIDEBAR ──────────────────────────────────────────────────────────────────
 function buildSidebar() {
   const nav = document.getElementById("monthNav");
-  nav.innerHTML = [2026,2027].map(y => `
-    <div class="nav-year">${y}</div>
-    ${MONTHS.map((m,mi) => {
-      const isActive = weekStart.getFullYear()===y && weekStart.getMonth()===mi;
-      return `<div class="nav-month${isActive?" active":""}" onclick="jumpTo(${y},${mi})">${m} <span style="opacity:.3">›</span></div>`;
-    }).join("")}
-  `).join("");
+  const today = new Date();
+  const curYear = weekStart.getFullYear();
+  const curMonth = weekStart.getMonth();
+
+  // Auto-open current month
+  const curKey = `${today.getFullYear()}-${today.getMonth()}`;
+  openMonths.add(curKey);
+
+  let html = "";
+  [2026, 2027].forEach(y => {
+    html += `<div class="nav-year">${y}</div>`;
+    MONTHS.forEach((m, mi) => {
+      const key = `${y}-${mi}`;
+      const isActive = (curYear === y && curMonth === mi);
+      const isOpen = openMonths.has(key);
+      html += `<div class="month-block" id="mb-${key}">
+        <div class="month-label${isActive?" active-month":""}${isOpen?" open":""}" onclick="toggleMonth('${key}',${y},${mi})">
+          <span>${m}</span>
+          <span class="chevron">›</span>
+        </div>
+        <div class="mini-cal${isOpen?" visible":""}" id="mc-${key}">
+          ${buildMiniCal(y, mi)}
+        </div>
+      </div>`;
+    });
+  });
+  nav.innerHTML = html;
 }
 
-function jumpTo(y,m) { weekStart = getWeekStart(new Date(y,m,1)); buildSidebar(); renderWeek(); }
+function toggleMonth(key, y, mi) {
+  if (openMonths.has(key)) {
+    openMonths.delete(key);
+  } else {
+    openMonths.add(key);
+  }
+  buildSidebar();
+  // Jump week view to that month
+  weekStart = getWeekStart(new Date(y, mi, 1));
+  renderWeek();
+}
 
+function buildMiniCal(y, mi) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const wStart = weekStart; // currently viewed week
+  const wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate() + 6);
+
+  const firstDay = new Date(y, mi, 1);
+  const lastDay = new Date(y, mi+1, 0);
+  const startDow = firstDay.getDay(); // 0=Sun
+
+  let html = `<div class="mini-cal-head">`;
+  ["S","M","T","W","T","F","S"].forEach(d => html += `<span>${d}</span>`);
+  html += `</div><div class="mini-cal-grid">`;
+
+  // leading blanks
+  for (let i = 0; i < startDow; i++) {
+    html += `<div class="mini-day other-month"></div>`;
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const date = new Date(y, mi, d);
+    const dateStr = ds(date);
+    const isToday = date.getTime() === today.getTime();
+    const inWeek = date >= wStart && date <= wEnd;
+    const isWStart = date.getTime() === wStart.getTime();
+    const isWEnd = date.getTime() === wEnd.getTime();
+    let cls = "mini-day";
+    if (inWeek) cls += " in-week";
+    if (isWStart) cls += " week-start";
+    if (isWEnd) cls += " week-end";
+    if (isToday) cls += " today";
+    html += `<div class="${cls}" onclick="jumpToDate('${dateStr}')">${d}</div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function jumpToDate(dateStr) {
+  const d = new Date(dateStr + "T12:00:00");
+  weekStart = getWeekStart(d);
+  buildSidebar();
+  renderWeek();
+}
+
+// ── WEEK RENDER ──────────────────────────────────────────────────────────────
 function renderWeek() {
   const today = new Date(); today.setHours(0,0,0,0);
-  const days = Array.from({length:7},(_,i)=>{ const d=new Date(weekStart); d.setDate(d.getDate()+i); return d; });
+  const days = Array.from({length:7}, (_, i) => {
+    const d = new Date(weekStart); d.setDate(d.getDate() + i); return d;
+  });
+
   const byDate = {};
   days.forEach(d => byDate[ds(d)] = []);
-  allEvents.forEach(ev => {
-    const evd = (ev.date||ev.Date||"").split("T")[0];
-    if(byDate[evd] !== undefined) byDate[evd].push(ev);
+  events.forEach(ev => {
+    if (byDate[ev.date] !== undefined) byDate[ev.date].push(ev);
   });
-  const fmt = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
-  document.getElementById("weekSub").textContent = `${fmt(days[0])} – ${fmt(days[6])}  ·  Click any event to view details.`;
-  document.getElementById("weekGrid").innerHTML = days.map((d,i) => {
-    const isToday = d.getTime()===today.getTime();
-    const evs = byDate[ds(d)]||[];
-    const numStr = isToday
+
+  const fmt = d => d.toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  document.getElementById("weekSub").textContent =
+    `${fmt(days[0])} – ${fmt(days[6])}  ·  Click any event to edit.`;
+
+  document.getElementById("weekGrid").innerHTML = days.map((d, i) => {
+    const isToday = d.getTime() === today.getTime();
+    const evs = byDate[ds(d)] || [];
+    const numEl = isToday
       ? `<div class="day-num" style="background:#2563eb;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500">${d.getDate()}</div>`
       : `<div class="day-num">${d.getDate()}</div>`;
     return `<div class="day-col">
       <div class="day-header${isToday?" today":""}">
         <div class="day-name">${DAYS[i]}</div>
-        ${numStr}
-        <div class="day-date-label">${d.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+        ${numEl}
+        <div class="day-date-label">${fmt(d)}</div>
       </div>
       <div class="day-events">
-        ${evs.length===0?'<div class="no-evt">No events</div>':evs.map(ev=>cardHtml(ev)).join("")}
-        <div class="add-evt">+ Add Event</div>
+        ${evs.map(ev => cardHtml(ev)).join("")}
+        <div class="add-evt" onclick="addEvent('${ds(d)}')">+ Add Event</div>
       </div>
     </div>`;
   }).join("");
-  buildSidebar();
 }
 
 function cardHtml(ev) {
-  const cls = impCls(ev.impact||ev.Impact, ev.category||ev.Category);
-  const label = impLabel(ev.impact||ev.Impact, ev.category||ev.Category);
-  const logo = ev.logo || (ev.entity_id && entityMap[ev.entity_id]?.logo_art_jpg) || null;
-  const title = ev.event||ev.Event||ev.title||"";
-  const time = ev.time||ev.Time||"";
-  const safe = encodeURIComponent(JSON.stringify(ev));
-  return `<div class="ecard ${cls}" onclick="openModal('${safe}')">
-    ${time?`<div class="card-time">${time}</div>`:""}
-    ${logo?`<img class="card-logo" src="${logo}" alt="" onerror="this.style.display='none'">` :""}
-    <div class="card-title">${title}</div>
-    <div class="card-impact ${cls}">${label}</div>
+  const cls = impCls(ev.impact);
+  const label = impLabel(ev.impact);
+  const safe = encodeURIComponent(ev.id);
+  return `<div class="ecard ${cls}" onclick="openEdit('${safe}')">
+    ${ev.time ? `<div class="card-time">${ev.time}</div>` : ""}
+    ${ev.logo ? `<img class="card-logo" src="${ev.logo}" alt="" onerror="this.style.display='none'">` : ""}
+    <div class="card-title">${ev.title || "TBD"}</div>
+    ${label ? `<div class="card-impact ${cls}">${label}</div>` : ""}
   </div>`;
 }
 
-function prevWeek(){ weekStart.setDate(weekStart.getDate()-7); renderWeek(); }
-function nextWeek(){ weekStart.setDate(weekStart.getDate()+7); renderWeek(); }
-function goToday(){ weekStart=getWeekStart(new Date()); renderWeek(); }
+function prevWeek() { weekStart.setDate(weekStart.getDate()-7); buildSidebar(); renderWeek(); }
+function nextWeek() { weekStart.setDate(weekStart.getDate()+7); buildSidebar(); renderWeek(); }
+function goToday()  { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
 
-function openModal(safe) {
-  const ev = JSON.parse(decodeURIComponent(safe));
-  const cls = impCls(ev.impact||ev.Impact, ev.category||ev.Category);
-  const label = impLabel(ev.impact||ev.Impact, ev.category||ev.Category);
-  const logo = ev.logo || (ev.entity_id && entityMap[ev.entity_id]?.logo_art_jpg) || null;
-  const entity = ev.entity_id ? entityMap[ev.entity_id] : null;
-  const ticker = ev.ticker || entity?.ticker_symbol || null;
-  const entityName = ev.entity_name || entity?.entity_name || null;
-  const title = ev.event||ev.Event||ev.title||"Event";
-  const notes = ev.notes||ev.Notes||ev.description||ev.why_it_matters||"";
-  const time = ev.time||ev.Time||"";
-  const date = ev.date||ev.Date||"";
-  const category = ev.category||ev.Category||"";
-  const assets = ticker?[ticker]:[];
+// ── ADD EVENT ────────────────────────────────────────────────────────────────
+function addEvent(dateStr) {
+  const newEv = {
+    id: Date.now(),
+    title:"TBD", name:"", ticker:"", time:"", aka:"", source:"",
+    impact:"none", date: dateStr, endDate:"", showMini:true,
+    frequency:"", measures:"", whyMatters:"", details:"", logo:"", hero:""
+  };
+  events.push(newEv);
+  openEdit(encodeURIComponent(newEv.id));
+}
 
-  document.getElementById("mHero").innerHTML = `
-    <div class="modal-hero-text">${title.substring(0,3).toUpperCase()}</div>
-    <span class="hero-cat">${category||"Event"}</span>`;
+// ── EDIT MODAL ───────────────────────────────────────────────────────────────
+function openEdit(safeId) {
+  const id = parseInt(decodeURIComponent(safeId));
+  const ev = events.find(e => e.id === id);
+  if (!ev) return;
+  editingId = id;
 
-  const dateStr2 = date ? new Date(date+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"}) : "";
+  // Hero
+  const heroImg = document.getElementById("heroImg");
+  const heroPlaceholder = document.getElementById("heroPlaceholder");
+  const heroChangeBtn = document.getElementById("heroChangeBtn");
+  if (ev.hero) {
+    heroImg.src = ev.hero; heroImg.style.display="block";
+    heroPlaceholder.style.display="none"; heroChangeBtn.style.display="block";
+  } else {
+    heroImg.style.display="none"; heroPlaceholder.style.display="flex"; heroChangeBtn.style.display="none";
+  }
 
-  const chartHtml = ticker ? `
-    <div class="msec">
-      <div class="mlabel">Price Chart — ${ticker}</div>
-      <div class="chart-wrap">
-        <div class="tradingview-widget-container" style="height:200px;width:100%">
-          <div class="tradingview-widget-container__widget" style="height:200px"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-          {"symbol":"${ticker}","width":"100%","height":200,"locale":"en","dateRange":"3M","colorTheme":"light","isTransparent":true,"autosize":false}
-          <\/script>
-        </div>
-      </div>
-    </div>` : "";
+  // Logo
+  const logoImg = document.getElementById("logoImg");
+  const logoIcon = document.getElementById("logoPlaceholderIcon");
+  if (ev.logo) {
+    logoImg.src = ev.logo; logoImg.style.display="block"; logoIcon.style.display="none";
+  } else {
+    logoImg.style.display="none"; logoIcon.style.display="block";
+  }
 
-  document.getElementById("mBody").innerHTML = `
-    <div class="modal-top">
-      <div>
-        ${logo
-          ? `<img class="modal-logo" src="${logo}" alt="" onerror="this.outerHTML='<div class=modal-logo-ph>${title.charAt(0).toUpperCase()}</div>'">`
-          : `<div class="modal-logo-ph">${title.charAt(0).toUpperCase()}</div>`}
-      </div>
-      <div style="flex:1">
-        <div class="modal-title">${title}</div>
-        ${entityName?`<div class="modal-entity">${entityName}</div>`:""}
-        ${ticker?`<span class="modal-ticker">${ticker}</span>`:""}
-      </div>
-      <span class="impact-pill ${cls}"><span class="idot"></span>${label}</span>
-    </div>
-    <div class="mrow">
-      ${time?`<div><div class="mlabel">Time</div><div class="mval">${time}</div></div>`:""}
-      ${dateStr2?`<div><div class="mlabel">Date</div><div class="mval">${dateStr2}</div></div>`:""}
-    </div>
-    ${notes?`<div class="msec"><div class="mlabel">Why It Matters</div><div class="mval">${notes}</div></div>`:""}
-    ${assets.length?`<div class="msec"><div class="mlabel">Impacted Assets</div><div class="assets">${assets.map(a=>`<span class="atag">${a}</span>`).join("")}</div></div>`:""}
-    ${chartHtml}
-    <div class="modal-actions">
-      <button class="btn-done" onclick="closeDirect()">Done</button>
-    </div>`;
+  // Fields
+  document.getElementById("fTitle").value       = ev.title || "";
+  document.getElementById("fName").value        = ev.name || "";
+  document.getElementById("fTicker").value      = ev.ticker || "";
+  document.getElementById("fTime").value        = ev.time || "";
+  document.getElementById("fAka").value         = ev.aka || "";
+  document.getElementById("fSource").value      = ev.source || "";
+  document.getElementById("fImpact").value      = ev.impact || "none";
+  document.getElementById("fStartDate").value   = ev.date || "";
+  document.getElementById("fEndDate").value     = ev.endDate || "";
+  document.getElementById("fShowMini").checked  = ev.showMini !== false;
+  document.getElementById("fFrequency").value   = ev.frequency || "";
+  document.getElementById("fMeasures").value    = ev.measures || "";
+  document.getElementById("fWhyMatters").value  = ev.whyMatters || "";
+  document.getElementById("fDetails").innerHTML = ev.details || "";
+  document.getElementById("fAllDay").checked    = ev.allDay || false;
 
   document.getElementById("overlay").classList.add("open");
 }
 
-function closeModal(e){ if(e.target===document.getElementById("overlay")) closeDirect(); }
-function closeDirect(){ document.getElementById("overlay").classList.remove("open"); }
+function closeModal() {
+  document.getElementById("overlay").classList.remove("open");
+  editingId = null;
+}
 
-loadData();
+function overlayClick(e) {
+  if (e.target === document.getElementById("overlay")) closeModal();
+}
+
+function saveEvent() {
+  if (!editingId) return;
+  const ev = events.find(e => e.id === editingId);
+  if (!ev) return;
+  ev.title       = document.getElementById("fTitle").value || "TBD";
+  ev.name        = document.getElementById("fName").value;
+  ev.ticker      = document.getElementById("fTicker").value;
+  ev.time        = document.getElementById("fTime").value;
+  ev.aka         = document.getElementById("fAka").value;
+  ev.source      = document.getElementById("fSource").value;
+  ev.impact      = document.getElementById("fImpact").value;
+  ev.date        = document.getElementById("fStartDate").value;
+  ev.endDate     = document.getElementById("fEndDate").value;
+  ev.showMini    = document.getElementById("fShowMini").checked;
+  ev.frequency   = document.getElementById("fFrequency").value;
+  ev.measures    = document.getElementById("fMeasures").value;
+  ev.whyMatters  = document.getElementById("fWhyMatters").value;
+  ev.details     = document.getElementById("fDetails").innerHTML;
+  ev.allDay      = document.getElementById("fAllDay").checked;
+  closeModal();
+  renderWeek();
+}
+
+function deleteEvent() {
+  if (!editingId) return;
+  events = events.filter(e => e.id !== editingId);
+  closeModal();
+  renderWeek();
+}
+
+// ── IMAGE UPLOADS ────────────────────────────────────────────────────────────
+function triggerHeroUpload() {
+  document.getElementById("heroFileInput").click();
+}
+
+function handleHeroUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    document.getElementById("heroImg").src = src;
+    document.getElementById("heroImg").style.display = "block";
+    document.getElementById("heroPlaceholder").style.display = "none";
+    document.getElementById("heroChangeBtn").style.display = "block";
+    if (editingId) events.find(ev => ev.id === editingId).hero = src;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleLogoUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    document.getElementById("logoImg").src = src;
+    document.getElementById("logoImg").style.display = "block";
+    document.getElementById("logoPlaceholderIcon").style.display = "none";
+    if (editingId) events.find(ev => ev.id === editingId).logo = src;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── RICH TEXT ────────────────────────────────────────────────────────────────
+function fmt(cmd) { document.execCommand(cmd, false, null); }
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+buildSidebar();
+renderWeek();
 </script>
 </body>
 </html>
