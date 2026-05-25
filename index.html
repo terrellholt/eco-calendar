@@ -31,8 +31,9 @@
   /* ── SIDEBAR ── */
   .sidebar{width:366px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .2s}
   .sidebar.collapsed{width:0;border-right:none}
-  /* no standalone toolbar — nav starts immediately */
-  .sidebar-nav{display:flex;flex-direction:column;padding:4px 0;overflow-y:auto;flex:1}
+  /* topbar: expand/collapse pill right-aligned, sits beside the arrow tab */
+  .sidebar-topbar{display:flex;align-items:center;justify-content:flex-end;padding:6px 30px 4px 10px;flex-shrink:0}
+  .sidebar-nav{display:flex;flex-direction:column;padding:0;overflow-y:auto;flex:1}
   /* collapse arrow: absolutely positioned, JS sets top+left to align with week-nav title */
   .sidebar-arrow{position:absolute;z-index:60;width:22px;height:32px;border-radius:0 7px 7px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#777;box-shadow:2px 0 6px rgba(0,0,0,.06);transition:background .12s}
   .sidebar-arrow:hover{background:#f5f5f0;color:#333}
@@ -42,8 +43,8 @@
   .sidebar-btn:hover{background:#f5f5f0}
   .sidebar-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-  /* month accordion */
-  .nav-year{font-size:10px;font-weight:700;color:#bbb;padding:8px 14px 3px;letter-spacing:.07em;text-transform:uppercase}
+  /* year shown inline beside month name */
+  .month-year-tag{font-size:10px;font-weight:500;color:#bbb;margin-left:3px}
   .month-label{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;cursor:pointer;font-size:13px;color:#444;transition:background .12s;user-select:none}
   .month-label:hover{background:#f5f5f0}
   .month-label.active-month{font-weight:600;color:#1a1a1a}
@@ -210,8 +211,14 @@
   <!-- ══ CALENDAR PAGE ══ -->
   <div class="page active" id="page-calendar" style="flex-direction:row">
 
-    <!-- SIDEBAR: no toolbar, nav starts at top -->
+    <!-- SIDEBAR: toolbar with expand/collapse right-aligned beside arrow -->
     <div class="sidebar" id="sidebar">
+      <div class="sidebar-topbar">
+        <button class="sidebar-btn" id="expandAllBtn" onclick="toggleAllMonths()">
+          <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          Expand All
+        </button>
+      </div>
       <div class="sidebar-nav" id="monthNav"></div>
     </div>
 
@@ -225,13 +232,9 @@
       <div class="week-nav">
         <div>
           <div class="week-title">What to Watch for the Week</div>
-          <div class="week-sub" id="weekSub">Key events and catalysts. Click any event to edit.</div>
+          <div class="week-sub" id="weekSub">Key events and catalysts. Click any event to view details.</div>
         </div>
         <div class="week-controls">
-          <button class="sidebar-btn" id="expandAllBtn" onclick="toggleAllMonths()">
-            <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-            Expand All
-          </button>
           <button class="btn" onclick="prevWeek()">← Prev</button>
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next →</button>
@@ -509,14 +512,13 @@ function buildSidebar() {
   const wEnd   = new Date(wStart); wEnd.setDate(wEnd.getDate()+6);
   let html = "";
   [2026,2027].forEach(y => {
-    html += `<div class="nav-year">${y}</div>`;
     MONTHS.forEach((m,mi) => {
       const key    = `${y}-${mi}`;
       const isOpen = openMonths.has(key);
       const isAct  = weekStart.getFullYear()===y && weekStart.getMonth()===mi;
       html += `
         <div class="month-label${isAct?" active-month":""}${isOpen?" open":""}" onclick="toggleMonth('${key}',${y},${mi})">
-          <span>${m}</span><span class="chevron">›</span>
+          <span>${m} <span class="month-year-tag">${y}</span></span><span class="chevron">›</span>
         </div>
         <div class="month-grid-wrap${isOpen?" visible":""}" id="mg-${key}">
           ${buildMonthGrid(y,mi,today,wStart,wEnd)}
