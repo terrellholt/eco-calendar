@@ -30,14 +30,10 @@
   .sidebar-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#555;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s}
   .sidebar-btn:hover{background:#f5f5f0}
   .sidebar-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-  .sidebar-collapse-btn{width:28px;height:28px;border-radius:50%;border:1px solid #e0e0db;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#555;transition:all .12s;flex-shrink:0}
-  .sidebar-collapse-btn:hover{background:#f5f5f0}
-  .sidebar-collapse-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
-  .sidebar-collapse-btn.collapsed svg{transform:rotate(180deg)}
-  /* floating re-open arrow when sidebar is hidden */
-  .sidebar-reopen{position:absolute;left:52px;top:58px;z-index:50;width:28px;height:28px;border-radius:0 6px 6px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;color:#555;box-shadow:2px 0 6px rgba(0,0,0,.06)}
-  .sidebar-reopen.visible{display:flex}
-  .sidebar-reopen svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  /* collapse toggle: sits ON the right border of the sidebar, vertically centered in viewport */
+  .sidebar-collapse-btn{position:fixed;top:50%;transform:translateY(-50%);z-index:60;width:20px;height:44px;border-radius:0 8px 8px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;box-shadow:2px 0 6px rgba(0,0,0,.07);transition:background .12s,color .12s}
+  .sidebar-collapse-btn:hover{background:#f5f5f0;color:#333}
+  .sidebar-collapse-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   .sidebar-nav{display:flex;flex-direction:column;padding:4px 0;overflow-y:auto;flex:1}
 
   /* month accordion */
@@ -88,7 +84,7 @@
   .day-num{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1.1;margin-top:1px}
   .day-header.today .day-name{color:#2563eb}
   .day-header.today .day-num{background:#2563eb;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500}
-  .day-date-label{font-size:10px;color:#ccc;margin-top:1px}
+  .day-date-label{display:none}
   .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
   .add-evt{font-size:11px;color:#ccc;cursor:pointer;padding:3px 5px;border-radius:4px;transition:all .12s;text-align:center;margin-top:4px}
   .add-evt:hover{color:#888;background:#f5f5f0}
@@ -185,15 +181,12 @@
         <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
         Expand All
       </button>
-      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Collapse panel" onclick="toggleSidebar()">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
     </div>
     <div class="sidebar-nav" id="monthNav"></div>
   </div>
-  <!-- re-open button when sidebar is hidden -->
-  <button class="sidebar-reopen" id="sidebarReopen" title="Open panel" onclick="toggleSidebar()">
-    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  <!-- fixed toggle tab: always sits on the right edge of the sidebar / left edge of main -->
+  <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" onclick="toggleSidebar()" title="Toggle panel">
+    <svg id="collapseIcon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
 
   <!-- MAIN WEEKLY CALENDAR -->
@@ -535,18 +528,28 @@ function toggleAllMonths() {
 
 function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
-  const sb = document.getElementById("sidebar");
-  const reopen = document.getElementById("sidebarReopen");
-  const colBtn = document.getElementById("sidebarCollapseBtn");
+  const sb  = document.getElementById("sidebar");
+  const btn = document.getElementById("sidebarCollapseBtn");
+  const ico = document.getElementById("collapseIcon");
   if (sidebarOpen) {
     sb.classList.remove("collapsed");
-    reopen.classList.remove("visible");
-    colBtn.classList.remove("collapsed");
+    ico.setAttribute("points","15 18 9 12 15 6"); // ‹ points left
   } else {
     sb.classList.add("collapsed");
-    reopen.classList.add("visible");
-    colBtn.classList.add("collapsed");
+    ico.setAttribute("points","9 18 15 12 9 6");  // › points right
   }
+  // reposition button after transition
+  setTimeout(updateCollapseBtn, 210);
+  updateCollapseBtn();
+}
+
+function updateCollapseBtn() {
+  const sb  = document.getElementById("sidebar");
+  const btn = document.getElementById("sidebarCollapseBtn");
+  const rail = document.querySelector(".icon-rail");
+  const railW = rail ? rail.offsetWidth : 52;
+  const sbW   = sidebarOpen ? sb.offsetWidth : 0;
+  btn.style.left = (railW + sbW - 1) + "px";
 }
 
 // ── WEEK RENDER ──────────────────────────────────────────────────────────────
@@ -711,6 +714,8 @@ function fmt(cmd){ document.execCommand(cmd,false,null); }
 // ── INIT ──────────────────────────────────────────────────────────────────────
 buildSidebar();
 renderWeek();
+// position the collapse button correctly after layout
+setTimeout(updateCollapseBtn, 50);
 </script>
 </body>
 </html>
