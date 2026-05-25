@@ -31,16 +31,16 @@
   /* ── SIDEBAR ── */
   .sidebar{width:366px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .2s}
   .sidebar.collapsed{width:0;border-right:none}
-  /* toolbar: expand/collapse all button only — no arrow here */
-  .sidebar-toolbar{display:flex;align-items:center;justify-content:flex-start;padding:7px 10px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0;gap:6px}
-  .sidebar-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#555;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s}
-  .sidebar-btn:hover{background:#f5f5f0}
-  .sidebar-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-  /* collapse arrow: sits on the vertical divider, just below the toolbar */
-  .sidebar-arrow{position:absolute;top:39px;z-index:60;width:22px;height:32px;border-radius:0 7px 7px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#777;box-shadow:2px 0 6px rgba(0,0,0,.06);transition:background .12s}
+  /* no standalone toolbar — nav starts immediately */
+  .sidebar-nav{display:flex;flex-direction:column;padding:4px 0;overflow-y:auto;flex:1}
+  /* collapse arrow: absolutely positioned, JS sets top+left to align with week-nav title */
+  .sidebar-arrow{position:absolute;z-index:60;width:22px;height:32px;border-radius:0 7px 7px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#777;box-shadow:2px 0 6px rgba(0,0,0,.06);transition:background .12s}
   .sidebar-arrow:hover{background:#f5f5f0;color:#333}
   .sidebar-arrow svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .sidebar-nav{display:flex;flex-direction:column;padding:4px 0;overflow-y:auto;flex:1}
+  /* expand/collapse all pill — styled like the Prev/Today/Next buttons, sits in week-nav */
+  .sidebar-btn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s}
+  .sidebar-btn:hover{background:#f5f5f0}
+  .sidebar-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
   /* month accordion */
   .nav-year{font-size:10px;font-weight:700;color:#bbb;padding:8px 14px 3px;letter-spacing:.07em;text-transform:uppercase}
@@ -68,7 +68,7 @@
   .mgrid-evt+.mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
   .mgrid-evt.high{color:#dc2626}
   .mgrid-evt.medium{color:#ea7000}
-  .mgrid-evt.low{color:#ca8a04}
+  .mgrid-evt.low{color:#d4a000}
   .mgrid-evt.none{color:#6b7280}
 
   /* ── MAIN / WEEK CALENDAR ── */
@@ -107,7 +107,7 @@
   .card-impact{font-size:10px;font-weight:500;margin-top:3px}
   .card-impact.high{color:#dc2626}
   .card-impact.medium{color:#ea7000}
-  .card-impact.low{color:#ca8a04}
+  .card-impact.low{color:#d4a000}
   .card-impact.none{color:#999}
 
   /* ── MARKETS PAGE ── */
@@ -210,18 +210,12 @@
   <!-- ══ CALENDAR PAGE ══ -->
   <div class="page active" id="page-calendar" style="flex-direction:row">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR: no toolbar, nav starts at top -->
     <div class="sidebar" id="sidebar">
-      <div class="sidebar-toolbar">
-        <button class="sidebar-btn" id="expandAllBtn" onclick="toggleAllMonths()">
-          <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-          Expand All
-        </button>
-      </div>
       <div class="sidebar-nav" id="monthNav"></div>
     </div>
 
-    <!-- collapse/expand arrow: sits on the right edge of the sidebar, pinned to top -->
+    <!-- collapse/expand arrow: JS positions it to align with week-nav title -->
     <button class="sidebar-arrow" id="sidebarArrow" onclick="toggleSidebar()" title="Toggle panel">
       <svg id="arrowIcon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
@@ -234,6 +228,10 @@
           <div class="week-sub" id="weekSub">Key events and catalysts. Click any event to edit.</div>
         </div>
         <div class="week-controls">
+          <button class="sidebar-btn" id="expandAllBtn" onclick="toggleAllMonths()">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            Expand All
+          </button>
           <button class="btn" onclick="prevWeek()">← Prev</button>
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next →</button>
@@ -589,24 +587,30 @@ function toggleSidebar() {
   const ico=document.getElementById("arrowIcon");
   if(sidebarOpen) {
     sb.classList.remove("collapsed");
-    ico.setAttribute("points","15 18 9 12 15 6"); // ‹
+    ico.setAttribute("points","15 18 9 12 15 6"); // ‹ left = close
   } else {
     sb.classList.add("collapsed");
-    ico.setAttribute("points","9 18 15 12 9 6");  // ›
+    ico.setAttribute("points","9 18 15 12 9 6");  // › right = open
   }
-  // reposition after CSS transition finishes
   setTimeout(positionArrow, 220);
   positionArrow();
 }
 
 function positionArrow() {
-  const rail=document.querySelector(".icon-rail");
-  const sb=document.getElementById("sidebar");
-  const arrow=document.getElementById("sidebarArrow");
+  const rail  = document.querySelector(".icon-rail");
+  const sb    = document.getElementById("sidebar");
+  const arrow = document.getElementById("sidebarArrow");
+  const weekNav = document.querySelector(".week-nav");
   if(!arrow) return;
-  const railW=rail?rail.offsetWidth:52;
-  const sbW=sidebarOpen?(sb?sb.offsetWidth:0):0;
-  arrow.style.left=(railW+sbW-1)+"px";
+  const railW = rail ? rail.offsetWidth : 52;
+  const sbW   = sidebarOpen ? (sb ? sb.offsetWidth : 0) : 0;
+  arrow.style.left = (railW + sbW - 1) + "px";
+  // align vertically with the week-nav title row
+  if(weekNav) {
+    const wnRect = weekNav.getBoundingClientRect();
+    const appRect = document.querySelector(".app").getBoundingClientRect();
+    arrow.style.top = (wnRect.top - appRect.top + 10) + "px";
+  }
 }
 
 // ── WEEK RENDER ───────────────────────────────────────────────────────────────
