@@ -114,7 +114,6 @@
   /* ── MARKETS PAGE ── */
   .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
   .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
-  .clock-label{font-size:11px;font-weight:700;text-transform:uppercase;color:#999;letter-spacing:.05em;margin-right:20px;flex-shrink:0}
   .clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
   .clock-city:first-of-type{border-left:none;padding-left:0;margin-left:0}
   .clock-city span.flag{font-size:15px}
@@ -200,7 +199,13 @@
       <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
     </div>
     <div class="rail-icon" id="rail-markets" title="Markets" onclick="switchPage('markets')">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <!-- Bar chart icon (no color, stroke only) -->
+      <svg viewBox="0 0 24 24">
+        <rect x="2" y="12" width="4" height="9" rx="0.5"/>
+        <rect x="9" y="7" width="4" height="14" rx="0.5"/>
+        <rect x="16" y="3" width="4" height="18" rx="0.5"/>
+        <line x1="2" y1="22" x2="22" y2="22"/>
+      </svg>
     </div>
     <div class="rail-icon" id="rail-contact" title="Contact" onclick="switchPage('contact')">
       <!-- envelope icon -->
@@ -249,11 +254,9 @@
   <!-- ══ MARKETS PAGE ══ -->
   <div class="page" id="page-markets">
     <div class="markets-page">
-      <!-- World Clock Banner -->
+      <!-- World Clock Banner — "Times Around the World" label and Vancouver removed -->
       <div class="world-clock" id="worldClock">
-        <span class="clock-label">Times Around the World</span>
         <div class="clock-city"><span class="flag">🇺🇸</span><span class="city">New York</span><strong id="time-ny">--:--</strong></div>
-        <div class="clock-city"><span class="flag">🇨🇦</span><span class="city">Vancouver</span><strong id="time-van">--:--</strong></div>
         <div class="clock-city"><span class="flag">🇬🇧</span><span class="city">London</span><strong id="time-lon">--:--</strong></div>
         <div class="clock-city"><span class="flag">🇩🇪</span><span class="city">Frankfurt</span><strong id="time-fra">--:--</strong></div>
         <div class="clock-city"><span class="flag">🇸🇦</span><span class="city">Riyadh</span><strong id="time-riy">--:--</strong></div>
@@ -264,12 +267,95 @@
       <!-- Body: main area + right panel -->
       <div class="markets-body">
         <div class="markets-main">
-          <!-- Future widgets go here -->
-          <div style="color:#bbb;font-size:13px;margin-top:40px;text-align:center">More market widgets coming soon.</div>
+          <!-- TradingView Market Overview Widget -->
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank"><span class="blue-text">World markets</span></a><span class="trademark"> by TradingView</span></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            {
+              "colorTheme": "light",
+              "dateRange": "12M",
+              "locale": "en",
+              "largeChartUrl": "",
+              "isTransparent": false,
+              "showFloatingTooltip": false,
+              "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
+              "plotLineColorFalling": "rgba(41, 98, 255, 1)",
+              "gridLineColor": "rgba(240, 243, 250, 0)",
+              "scaleFontColor": "#0F0F0F",
+              "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
+              "belowLineFillColorFalling": "rgba(41, 98, 255, 0.12)",
+              "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
+              "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
+              "symbolActiveColor": "rgba(41, 98, 255, 0.12)",
+              "tabs": [
+                {
+                  "title": "Indices",
+                  "symbols": [
+                    {"s": "FOREXCOM:SPXUSD", "d": "S&P 500 Index"},
+                    {"s": "INDEX:NKY", "d": "Japan 225"},
+                    {"s": "INDEX:DEU40", "d": "DAX Index"},
+                    {"s": "FOREXCOM:UKXGBP", "d": "FTSE 100 Index"},
+                    {"s": "ACTIVTRADES:EURO50", "d": "", "logoid": "country/EU", "currency-logoid": "country/EU"},
+                    {"s": "SPREADEX:FTSE", "d": "", "logoid": "indices/ftse-100-index", "currency-logoid": "country/GB"},
+                    {"s": "EURONEXT:PX1", "d": "", "logoid": "indices/cac-40"}
+                  ],
+                  "originalTitle": "Indices"
+                },
+                {
+                  "title": "Futures",
+                  "symbols": [
+                    {"s": "FX_IDC:USDWTI", "d": "", "logoid": "crude-oil", "currency-logoid": "country/US"},
+                    {"s": "FX_IDC:USDBRO", "d": "", "logoid": "crude-oil", "currency-logoid": "country/US"},
+                    {"s": "AMEX:CORN", "d": "", "logoid": "teucrium-agricultural", "currency-logoid": "country/US"},
+                    {"s": "CMCMARKETS:SOYBEAN", "d": "", "logoid": "commodity/soybean", "currency-logoid": "country/US"}
+                  ],
+                  "originalTitle": "Futures"
+                },
+                {
+                  "title": "Bonds",
+                  "symbols": [],
+                  "originalTitle": "Bonds"
+                },
+                {
+                  "title": "Forex",
+                  "symbols": [
+                    {"s": "FX:EURUSD", "d": "EUR to USD"},
+                    {"s": "FX:GBPUSD", "d": "GBP to USD"},
+                    {"s": "FX:USDJPY", "d": "USD to JPY"},
+                    {"s": "FX:USDCHF", "d": "USD to CHF"},
+                    {"s": "FX:AUDUSD", "d": "AUD to USD"},
+                    {"s": "FX:USDCAD", "d": "USD to CAD"}
+                  ],
+                  "originalTitle": "Forex"
+                },
+                {
+                  "title": "Crypto",
+                  "symbols": [
+                    {"s": "COINBASE:BTCUSD", "d": "", "base-currency-logoid": "crypto/XTVCBTC", "currency-logoid": "country/US"},
+                    {"s": "COINBASE:ETHUSD", "d": "", "base-currency-logoid": "crypto/XTVCETH", "currency-logoid": "country/US"}
+                  ]
+                },
+                {
+                  "title": "Precious Metals",
+                  "symbols": [
+                    {"s": "OANDA:XAUUSD", "d": "", "logoid": "metal/gold", "currency-logoid": "country/US"},
+                    {"s": "THINKMARKETS:XAGUSD", "d": "", "logoid": "metal/silver", "currency-logoid": "country/US"}
+                  ]
+                }
+              ],
+              "support_host": "https://www.tradingview.com",
+              "width": "400",
+              "height": "550",
+              "showSymbolLogo": true,
+              "showChart": true
+            }
+            </script>
+          </div>
         </div>
         <div class="markets-sidebar">
           <div class="markets-sidebar-header">
-            <div class="markets-sidebar-title">Market Drivers</div>
+            <div class="markets-sidebar-title">In the News</div>
           </div>
           <div class="markets-sidebar-body">
             <div class="elfsight-app-7c0b8da7-6dc1-4ddb-b3ef-e1246b11f59a" data-elfsight-app-lazy></div>
@@ -757,7 +843,7 @@ function fmt(cmd){document.execCommand(cmd,false,null);}
 function updateClocks() {
   const opt={hour:'2-digit',minute:'2-digit',hour12:true};
   const zones={
-    'time-ny':'America/New_York','time-van':'America/Vancouver',
+    'time-ny':'America/New_York',
     'time-lon':'Europe/London','time-fra':'Europe/Berlin',
     'time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai',
     'time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'
