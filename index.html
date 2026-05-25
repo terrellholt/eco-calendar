@@ -483,9 +483,18 @@ function switchPage(name) {
   document.getElementById('rail-' + name).classList.add('active');
 }
 
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function getWeekStart(d) {
+  const dt = new Date(d); dt.setHours(0,0,0,0);
+  dt.setDate(dt.getDate() - dt.getDay());
+  return dt;
+}
+function ds(d) { return d.toISOString().split("T")[0]; }
+
 // ── 2027 CONFIRMED CALENDAR EVENTS ──────────────────────────────────────────
 // 117 confirmed events · Market Holidays · FOMC · Economic Releases
-// IDs 10000+ = confirmed  |  IDs 1-9999 = TBD placeholders for empty slots
+// NOTE: CONFIRMED_EVENTS and buildDefaultEvents are placed AFTER ds() to avoid
+// temporal dead zone issues with the date helper function.
 const CONFIRMED_EVENTS = [
   {
     "id": 10000,
@@ -2714,8 +2723,13 @@ const CONFIRMED_EVENTS = [
 
 // ── DEFAULT TBD EVENTS ───────────────────────────────────────────
 function buildDefaultEvents() {
+  // Seed all confirmed events first
   const confirmed = CONFIRMED_EVENTS.map(e => ({...e}));
+
+  // Build a Set of dates that already have confirmed events (plain string compare)
   const confirmedDates = new Set(confirmed.map(e => e.date));
+
+  // Generate TBD placeholders for Mon-Thu slots with no confirmed event
   const placeholders = [];
   let id = 1;
   const base = new Date(2026, 0, 4);
@@ -2725,7 +2739,7 @@ function buildDefaultEvents() {
     [0,1,2,3].forEach(off => {
       const d = new Date(wBase);
       d.setDate(d.getDate() + off);
-      const dateStr = ds(d);
+      const dateStr = d.toISOString().split("T")[0]; // inline, no ds() needed
       if (!confirmedDates.has(dateStr)) {
         placeholders.push({ id:id++, title:"TBD", name:"", ticker:"", time:"8:30 AM",
           aka:"", source:"", impact:"none", date:dateStr, endDate:"",
@@ -2736,13 +2750,6 @@ function buildDefaultEvents() {
   return [...confirmed, ...placeholders];
 }
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-function getWeekStart(d) {
-  const dt = new Date(d); dt.setHours(0,0,0,0);
-  dt.setDate(dt.getDate() - dt.getDay());
-  return dt;
-}
-function ds(d) { return d.toISOString().split("T")[0]; }
 function impCls(v) {
   v=(v||"none").toLowerCase();
   if(v==="high") return "high";
