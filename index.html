@@ -376,7 +376,8 @@ function parseDate(dateStr, monthStr) {
 }
 
 function fetchEvents() {
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*&order=id.asc&limit=500';
+  // Joins the Entities table so entity-level logo/hero/content can serve as fallbacks
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=id.asc&limit=500';
   return fetch(url, {
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
   })
@@ -391,6 +392,7 @@ function fetchEvents() {
       if (impact !== 'high' && impact !== 'medium' && impact !== 'low') { impact = 'none'; }
       var showMini = true;
       if (r.show_in_monthly === false) { showMini = false; }
+      var ent = r.entity || {};
       events.push({
         id: r.id,
         title: r.event || '',
@@ -400,15 +402,17 @@ function fetchEvents() {
         time: r.display_time || deriveTime(r.notes || ''),
         impact: impact,
         showMini: showMini,
-        logo: r.logo_url || deriveLogo(r.category, r.event),
-        hero: r.hero_url || '',
-        whyMatters: r.why_it_matters || '',
-        measures: r.measures || '',
+        // Fallback chain: event-level → entity-level → derived from category
+        logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
+        hero: r.hero_url || ent.hero_url || '',
+        whyMatters: r.why_it_matters || ent.why_it_matters || '',
+        measures: r.measures || ent.measures || '',
+        impactedAssets: ent.impacted_assets || '',
+        frequency: r.frequency || ent.frequency || '',
         details: r.details || '',
         source: r.source_url || deriveSource(r.category),
         ticker: r.ticker || '',
         aka: r.aka || '',
-        frequency: r.frequency || '',
         category: r.category || ''
       });
     });
@@ -577,6 +581,7 @@ function openModal(id) {
   if (ev.frequency) { meta += '<span class="modal-tag">' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
   if (ev.ticker) { meta += '<span class="modal-tag">' + ev.ticker + '</span>'; }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag">' + ev.aka + '</span>'; }
+  if (ev.impactedAssets) { meta += '<span class="modal-tag">' + ev.impactedAssets + '</span>'; }
   document.getElementById('modalMeta').innerHTML = meta;
   var hasContent = ev.whyMatters || ev.measures || ev.details;
   document.getElementById('modalDiv1').style.display = hasContent ? 'block' : 'none';
