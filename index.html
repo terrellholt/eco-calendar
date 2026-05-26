@@ -386,8 +386,12 @@ function fetchEvents() {
     events = [];
     rows.forEach(function(r) {
       if (!r.date || !r.month) { return; }
-      var parsed = parseDate(r.date, r.month);
-      if (!parsed.start) { return; }
+var parsed = parseDate(r.date, r.month);
+// Also handle ISO timestamp format from Supabase
+if (!parsed.start && r.date && r.date.length >= 10) {
+  parsed = { start: r.date.substring(0, 10), end: '' };
+}
+if (!parsed.start) { return; }
       var impact = (r.impact || '').toLowerCase();
       if (impact !== 'high' && impact !== 'medium' && impact !== 'low') { impact = 'none'; }
       var showMini = true;
