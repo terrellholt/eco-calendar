@@ -19,13 +19,18 @@ tv-ticker-tape{display:block;width:100%}
 .rail-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .page{display:none;flex:1;overflow:hidden;flex-direction:column}
 .page.active{display:flex}
+
+/* ── SIDEBAR ── */
 .sidebar{width:366px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .2s}
 .sidebar.collapsed{width:0;border-right:none}
 .sidebar-topbar{display:flex;align-items:center;justify-content:flex-end;padding:6px 30px 4px 10px;flex-shrink:0}
 .sidebar-nav{display:flex;flex-direction:column;padding:0;overflow-y:auto;flex:1}
+
+/* Arrow tab that hangs off the sidebar edge */
 .sidebar-arrow{position:absolute;z-index:60;width:22px;height:32px;border-radius:0 7px 7px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#777;box-shadow:2px 0 6px rgba(0,0,0,.06);transition:background .12s}
 .sidebar-arrow:hover{background:#f5f5f0;color:#333}
 .sidebar-arrow svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
 .sidebar-btn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s}
 .sidebar-btn:hover{background:#f5f5f0}
 .sidebar-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
@@ -47,14 +52,24 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-cell.other-month .mgrid-date{color:#ddd}
 .mgrid-cell.in-current-week{background:#eff6ff}
 .mgrid-cell.today-cell{background:#eff6ff}
+
+/* PATCH 3: past day cells darkened — gray overlay, content still legible */
+.mgrid-cell.past-day{background:#e4e4e1 !important}
+.mgrid-cell.past-day:hover{background:#dcdcd9 !important}
+.mgrid-cell.past-day .mgrid-date{color:#999}
+.mgrid-cell.past-day .mgrid-evt{opacity:0.55}
+
 .mgrid-date{font-size:9px;font-weight:600;color:#888;margin-bottom:2px;line-height:1}
 .mgrid-cell.today-cell .mgrid-date{color:#2563eb;font-weight:700}
 .mgrid-events{display:flex;flex-direction:column;gap:0;flex:1;overflow:hidden}
 .mgrid-evt{font-size:7.5px;font-weight:600;line-height:1.3;padding:1px 2px;word-break:break-word;white-space:normal;overflow-wrap:break-word;min-width:0}
 .mgrid-evt+.mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
 .mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
+
+/* ── MAIN AREA ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.week-nav{padding:12px 20px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
+/* PATCH 4: nudged left padding from 20px → 40px so title clears the arrow tab */
+.week-nav{padding:12px 20px 10px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
 .week-title{font-size:16px;font-weight:600}
 .week-sub{font-size:11px;color:#999;margin-top:2px}
 .week-controls{display:flex;gap:6px;align-items:center}
@@ -82,6 +97,8 @@ tv-ticker-tape{display:block;width:100%}
 .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
 .card-impact{font-size:10px;font-weight:500;margin-top:3px}
 .card-impact.high{color:#dc2626}.card-impact.medium{color:#ea7000}.card-impact.low{color:#d4a000}.card-impact.none{color:#999}
+
+/* ── MARKETS PAGE ── */
 .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
 .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
 .clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
@@ -93,6 +110,8 @@ tv-ticker-tape{display:block;width:100%}
 .markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
 .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
 .markets-sidebar-body{flex:1;overflow-y:auto}
+
+/* ── CONTACT PAGE ── */
 .contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
 .contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
 .contact-field{display:flex;flex-direction:column;gap:8px}
@@ -103,6 +122,8 @@ tv-ticker-tape{display:block;width:100%}
 .contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
 .contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
 .contact-submit:hover{background:#eff6ff}
+
+/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
@@ -126,6 +147,8 @@ tv-ticker-tape{display:block;width:100%}
 .modal-divider{border:none;border-top:1px solid #f0f0ec;margin:14px 0}
 .modal-source{font-size:11px;color:#2563eb;text-decoration:none}
 .modal-source:hover{text-decoration:underline}
+
+/* ── LOADING / ERROR ── */
 .spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
@@ -157,6 +180,7 @@ tv-ticker-tape{display:block;width:100%}
     </div>
   </div>
 
+  <!-- CALENDAR PAGE -->
   <div class="page active" id="page-calendar" style="flex-direction:row">
     <div class="sidebar" id="sidebar">
       <div class="sidebar-topbar">
@@ -167,10 +191,12 @@ tv-ticker-tape{display:block;width:100%}
       </div>
       <div class="sidebar-nav" id="monthNav"></div>
     </div>
+    <!-- PATCH 1: Arrow — points LEFT (‹) when open, RIGHT (›) when collapsed. JS swaps polyline points. -->
     <button class="sidebar-arrow" id="sidebarArrow" onclick="toggleSidebar()" title="Toggle panel">
-      <svg id="arrowIcon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <svg id="arrowIcon" viewBox="0 0 24 24"><polyline id="arrowPoly" points="15 18 9 12 15 6"/></svg>
     </button>
     <div class="main">
+      <!-- PATCH 4: padding-left increased to 40px to clear the arrow tab -->
       <div class="week-nav">
         <div>
           <div class="week-title">What to Watch for the Week</div>
@@ -188,6 +214,7 @@ tv-ticker-tape{display:block;width:100%}
     </div>
   </div>
 
+  <!-- MARKETS PAGE -->
   <div class="page" id="page-markets">
     <div class="markets-page">
       <div class="world-clock">
@@ -218,10 +245,12 @@ tv-ticker-tape{display:block;width:100%}
     </div>
   </div>
 
+  <!-- NEWS PAGE -->
   <div class="page" id="page-news" style="align-items:center;justify-content:center">
     <div style="color:#bbb;font-size:14px">News page coming soon.</div>
   </div>
 
+  <!-- CONTACT PAGE -->
   <div class="page" id="page-contact">
     <div class="contact-page">
       <div class="contact-form">
@@ -234,6 +263,7 @@ tv-ticker-tape{display:block;width:100%}
   </div>
 </div>
 
+<!-- EVENT MODAL -->
 <div class="modal-overlay" id="overlay" onclick="overlayClick(event)">
   <div class="modal" id="modal">
     <div class="modal-hero" id="modalHero">
@@ -279,17 +309,36 @@ var DAYS      = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Sa
 var DAYS_SH   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 var MMAP      = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
 
-var weekStart   = getWeekStart(new Date());
-var openMonths  = {};
-var allExpanded = true;
+var weekStart  = getWeekStart(new Date());
+var allExpanded = false;
 var sidebarOpen = true;
 var events      = [];
 
+// ── PATCH 2: openMonths — restore from sessionStorage, else default to current month only ──
+var openMonths = (function() {
+  try {
+    var saved = sessionStorage.getItem('ecoCalOpenMonths');
+    if (saved) { return JSON.parse(saved); }
+  } catch(e) {}
+  // Default: only the current real-world month is open
+  var now = new Date();
+  var key = now.getFullYear() + '-' + now.getMonth();
+  var obj = {};
+  obj[key] = true;
+  return obj;
+})();
+
+function saveOpenMonths() {
+  try { sessionStorage.setItem('ecoCalOpenMonths', JSON.stringify(openMonths)); } catch(e) {}
+}
+
+// ── PAGE SWITCHING ──
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.rail-icon').forEach(function(r) { r.classList.remove('active'); });
   document.getElementById('page-' + name).classList.add('active');
   document.getElementById('rail-' + name).classList.add('active');
+  if (name === 'calendar') { setTimeout(positionArrow, 50); }
 }
 
 function ds(d) { return d.toISOString().split('T')[0]; }
@@ -376,7 +425,6 @@ function parseDate(dateStr, monthStr) {
 }
 
 function fetchEvents() {
-  // Joins the Entities table so entity-level logo/hero/content can serve as fallbacks
   var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=id.asc&limit=500';
   return fetch(url, {
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
@@ -402,7 +450,6 @@ function fetchEvents() {
         time: r.display_time || deriveTime(r.notes || ''),
         impact: impact,
         showMini: showMini,
-        // Fallback chain: event-level → entity-level → derived from category
         logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
         hero: r.hero_url || ent.hero_url || '',
         whyMatters: r.why_it_matters || ent.why_it_matters || '',
@@ -419,11 +466,9 @@ function fetchEvents() {
   });
 }
 
+// ── SIDEBAR BUILD ──
 function buildSidebar() {
   var today = new Date(); today.setHours(0,0,0,0);
-  if (allExpanded && Object.keys(openMonths).length === 0) {
-    [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openMonths[y+'-'+mi] = true; } });
-  }
   var wEnd = new Date(weekStart); wEnd.setDate(wEnd.getDate() + 6);
   var html = '';
   [2026,2027].forEach(function(y) {
@@ -438,6 +483,11 @@ function buildSidebar() {
     });
   });
   document.getElementById('monthNav').innerHTML = html;
+
+  // Update Expand All / Collapse All button label
+  var totalMonths = 24;
+  var openCount = Object.keys(openMonths).length;
+  allExpanded = openCount >= totalMonths;
   var btn = document.getElementById('expandAllBtn');
   if (btn) {
     if (allExpanded) {
@@ -448,21 +498,26 @@ function buildSidebar() {
   }
 }
 
+// ── PATCH 3: buildMonthGrid — adds .past-day class to cells before today ──
 function buildMonthGrid(y, mi, today, wStart, wEnd) {
   var firstDay = new Date(y, mi, 1);
-  var lastDay = new Date(y, mi+1, 0);
+  var lastDay  = new Date(y, mi+1, 0);
   var startDow = firstDay.getDay();
   var html = '<div class="mgrid-head">';
   DAYS_SH.forEach(function(d) { html += '<span>' + d + '</span>'; });
   html += '</div><div class="mgrid-body">';
+  // Filler cells for days before the 1st
   for (var i = 0; i < startDow; i++) { html += '<div class="mgrid-cell other-month"></div>'; }
   for (var d = 1; d <= lastDay.getDate(); d++) {
-    var date = new Date(y, mi, d);
+    var date    = new Date(y, mi, d);
     var dateStr = ds(date);
-    var isTod = date.getTime() === today.getTime();
-    var inWk = date >= wStart && date <= wEnd;
+    var isTod   = date.getTime() === today.getTime();
+    var inWk    = date >= wStart && date <= wEnd;
+    var isPast  = date < today; // strictly before today — today itself is NOT darkened
     var cls = 'mgrid-cell';
-    if (isTod) { cls += ' today-cell'; } else if (inWk) { cls += ' in-current-week'; }
+    if (isTod)       { cls += ' today-cell'; }
+    else if (inWk)   { cls += ' in-current-week'; }
+    else if (isPast) { cls += ' past-day'; }  // PATCH 3
     var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
     var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.title + '</div>'; }).join('');
     html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
@@ -478,51 +533,62 @@ function handleMonthClick(el) {
 function handleDateClick(el) { jumpToDate(el.getAttribute('data-date')); }
 function handleCardClick(el) { openModal(parseInt(el.getAttribute('data-id'))); }
 
+// ── PATCH 2 continued: toggleMonth saves state to sessionStorage ──
 function toggleMonth(key, y, mi) {
   if (openMonths[key]) { delete openMonths[key]; } else { openMonths[key] = true; }
-  allExpanded = Object.keys(openMonths).length >= 24;
+  saveOpenMonths(); // PATCH 2
   weekStart = getWeekStart(new Date(y, mi, 1));
   buildSidebar();
   renderWeek();
 }
+
 function jumpToDate(dateStr) {
   weekStart = getWeekStart(new Date(dateStr + 'T12:00:00'));
   buildSidebar();
   renderWeek();
 }
+
+// ── PATCH 2 continued: toggleAllMonths saves state to sessionStorage ──
 function toggleAllMonths() {
   allExpanded = !allExpanded;
   if (allExpanded) {
     [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openMonths[y+'-'+mi] = true; } });
   } else {
     openMonths = {};
+    // When collapsing, revert to current month only
     var t = new Date();
     openMonths[t.getFullYear() + '-' + t.getMonth()] = true;
   }
+  saveOpenMonths(); // PATCH 2
   buildSidebar();
 }
+
+// ── PATCH 1: toggleSidebar — swaps polyline points to match direction ──
 function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
-  var sb = document.getElementById('sidebar');
-  var ico = document.getElementById('arrowIcon');
+  var sb   = document.getElementById('sidebar');
+  var poly = document.getElementById('arrowPoly');
   if (sidebarOpen) {
     sb.classList.remove('collapsed');
-    ico.setAttribute('points','15 18 9 12 15 6');
+    // Arrow points LEFT (‹) = panel is open, click to collapse
+    if (poly) { poly.setAttribute('points', '15 18 9 12 15 6'); }
   } else {
     sb.classList.add('collapsed');
-    ico.setAttribute('points','9 18 15 12 9 6');
+    // Arrow points RIGHT (›) = panel is collapsed, click to expand
+    if (poly) { poly.setAttribute('points', '9 18 15 12 9 6'); }
   }
   setTimeout(positionArrow, 220);
   positionArrow();
 }
+
 function positionArrow() {
-  var rail = document.querySelector('.icon-rail');
-  var sb = document.getElementById('sidebar');
+  var rail  = document.querySelector('.icon-rail');
+  var sb    = document.getElementById('sidebar');
   var arrow = document.getElementById('sidebarArrow');
-  var wn = document.querySelector('.week-nav');
+  var wn    = document.querySelector('.week-nav');
   if (!arrow) { return; }
   var railW = rail ? rail.offsetWidth : 52;
-  var sbW = (sidebarOpen && sb) ? sb.offsetWidth : 0;
+  var sbW   = (sidebarOpen && sb) ? sb.offsetWidth : 0;
   arrow.style.left = (railW + sbW - 1) + 'px';
   if (wn) {
     var wr = wn.getBoundingClientRect();
@@ -554,14 +620,11 @@ function renderWeek() {
 }
 
 function cardHtml(ev) {
-  var cls = impCls(ev.impact);
+  var cls   = impCls(ev.impact);
   var label = impLabel(ev.impact);
-  var logoHtml = '';
-  if (ev.logo) { logoHtml = '<img class="card-logo" src="' + ev.logo + '" alt="" onerror="this.style.display=\'none\'">'; }
-  var timeHtml = '';
-  if (ev.time) { timeHtml = '<div class="card-time">' + ev.time + '</div>'; }
-  var labelHtml = '';
-  if (label) { labelHtml = '<div class="card-impact ' + cls + '">' + label + '</div>'; }
+  var logoHtml  = ev.logo  ? '<img class="card-logo" src="' + ev.logo + '" alt="" onerror="this.style.display=\'none\'">' : '';
+  var timeHtml  = ev.time  ? '<div class="card-time">' + ev.time + '</div>' : '';
+  var labelHtml = label    ? '<div class="card-impact ' + cls + '">' + label + '</div>' : '';
   return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + timeHtml + logoHtml + '<div class="card-title">' + ev.title + '</div>' + labelHtml + '</div>';
 }
 
@@ -574,12 +637,12 @@ function openModal(id) {
   var logoEl = document.getElementById('modalLogo');
   if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
   document.getElementById('modalTitle').textContent = ev.title;
-  document.getElementById('modalName').textContent = ev.name || ev.category || '';
+  document.getElementById('modalName').textContent  = ev.name || ev.category || '';
   var meta = '';
   if (ev.impact && ev.impact !== 'none') { meta += '<span class="modal-tag ' + ev.impact + '">' + impLabel(ev.impact) + '</span>'; }
-  if (ev.time) { meta += '<span class="modal-tag">' + ev.time + '</span>'; }
+  if (ev.time)  { meta += '<span class="modal-tag">' + ev.time + '</span>'; }
   if (ev.frequency) { meta += '<span class="modal-tag">' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
-  if (ev.ticker) { meta += '<span class="modal-tag">' + ev.ticker + '</span>'; }
+  if (ev.ticker)    { meta += '<span class="modal-tag">' + ev.ticker + '</span>'; }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag">' + ev.aka + '</span>'; }
   if (ev.impactedAssets) { meta += '<span class="modal-tag">' + ev.impactedAssets + '</span>'; }
   document.getElementById('modalMeta').innerHTML = meta;
@@ -588,23 +651,23 @@ function openModal(id) {
   var ws = document.getElementById('modalWhySection');
   if (ev.whyMatters) { ws.style.display = 'block'; document.getElementById('modalWhy').textContent = ev.whyMatters; } else { ws.style.display = 'none'; }
   var ms = document.getElementById('modalMeasuresSection');
-  if (ev.measures) { ms.style.display = 'block'; document.getElementById('modalMeasures').textContent = ev.measures; } else { ms.style.display = 'none'; }
+  if (ev.measures)   { ms.style.display = 'block'; document.getElementById('modalMeasures').textContent = ev.measures; } else { ms.style.display = 'none'; }
   var det = document.getElementById('modalDetailsSection');
-  if (ev.details) { det.style.display = 'block'; document.getElementById('modalDetails').innerHTML = ev.details; } else { det.style.display = 'none'; }
+  if (ev.details)    { det.style.display = 'block'; document.getElementById('modalDetails').innerHTML = ev.details; } else { det.style.display = 'none'; }
   var srcEl = document.getElementById('modalSource');
-  var div2 = document.getElementById('modalDiv2');
+  var div2  = document.getElementById('modalDiv2');
   if (ev.source) { srcEl.href = ev.source; srcEl.style.display = 'inline'; div2.style.display = 'block'; } else { srcEl.style.display = 'none'; div2.style.display = 'none'; }
   document.getElementById('overlay').classList.add('open');
 }
-function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function closeModal()  { document.getElementById('overlay').classList.remove('open'); }
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
 
 function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar(); renderWeek(); }
 function nextWeek() { weekStart.setDate(weekStart.getDate() + 7); buildSidebar(); renderWeek(); }
-function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
+function goToday()  { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
 
 function updateClocks() {
-  var opt = {hour:'2-digit', minute:'2-digit', hour12:true};
+  var opt   = {hour:'2-digit', minute:'2-digit', hour12:true};
   var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
   Object.keys(zones).forEach(function(id) {
     var el = document.getElementById(id);
