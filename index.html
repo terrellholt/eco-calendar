@@ -359,11 +359,19 @@ function deriveTime(notes) {
   return '';
 }
 
+// ─── KEY FIX: handles both sheet-style dates ("Mar 19") AND ISO timestamps ("2027-03-19T07:00:00Z") ───
 function parseDate(dateStr, monthStr) {
   if (!dateStr) { return { start: '', end: '' }; }
   dateStr = String(dateStr).trim();
-  if (dateStr.length < 2) { return { start: '', end: '' }; }
+  if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
   if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
+
+  // Handle ISO timestamp format: "2027-03-19T07:00:00.000Z" or "2027-03-19"
+  if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
+    return { start: dateStr.substring(0, 10), end: '' };
+  }
+
+  // Handle sheet-style format: "Mar 19" or "19" or "19-21"
   var m = MMAP[monthStr] || '01';
   var parts = dateStr.split(' ');
   var num = parts[parts.length - 1];
@@ -376,7 +384,6 @@ function parseDate(dateStr, monthStr) {
 }
 
 function fetchEvents() {
-  // Joins the Entities table so entity-level logo/hero/content can serve as fallbacks
   var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=id.asc&limit=500';
   return fetch(url, {
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
@@ -385,13 +392,9 @@ function fetchEvents() {
   .then(function(rows) {
     events = [];
     rows.forEach(function(r) {
-      if (!r.date || !r.month) { return; }
-var parsed = parseDate(r.date, r.month);
-// Also handle ISO timestamp format from Supabase
-if (!parsed.start && r.date && r.date.length >= 10) {
-  parsed = { start: r.date.substring(0, 10), end: '' };
-}
-if (!parsed.start) { return; }
+      if (!r.date && !r.month) { return; }
+      var parsed = parseDate(r.date, r.month);
+      if (!parsed.start) { return; }
       var impact = (r.impact || '').toLowerCase();
       if (impact !== 'high' && impact !== 'medium' && impact !== 'low') { impact = 'none'; }
       var showMini = true;
@@ -406,7 +409,6 @@ if (!parsed.start) { return; }
         time: r.display_time || deriveTime(r.notes || ''),
         impact: impact,
         showMini: showMini,
-        // Fallback chain: event-level → entity-level → derived from category
         logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
         hero: r.hero_url || ent.hero_url || '',
         whyMatters: r.why_it_matters || ent.why_it_matters || '',
