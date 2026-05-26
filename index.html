@@ -71,8 +71,6 @@
   .day-header.today .day-num{color:#2563eb;font-weight:600}
   .day-header.today .day-month{color:#2563eb;font-weight:600}
   .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
-  .add-evt{font-size:11px;color:#ccc;cursor:pointer;padding:3px 5px;border-radius:4px;transition:all .12s;text-align:center;margin-top:4px}
-  .add-evt:hover{color:#888;background:#f5f5f0}
   .ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center}
   .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
   .ecard.high{background:#FEF2F2;border-color:#FECACA}
@@ -131,7 +129,7 @@
   .spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
-  .load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#dc2626;font-size:13px}
+  .load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;color:#dc2626;font-size:13px}
 </style>
 </head>
 <body>
@@ -234,7 +232,6 @@
   </div>
 </div>
 
-<!-- READ-ONLY EVENT DETAIL MODAL -->
 <div class="modal-overlay" id="overlay" onclick="overlayClick(event)">
   <div class="modal" id="modal">
     <div class="modal-hero" id="modalHero">
@@ -264,7 +261,7 @@
         <div class="modal-section-text" id="modalDetails"></div>
       </div>
       <hr class="modal-divider" id="modalDiv2" style="display:none">
-      <a class="modal-source" id="modalSource" href="" target="_blank" style="display:none">View Source &rarr;</a>
+      <a class="modal-source" id="modalSource" href="#" target="_blank" rel="noopener" style="display:none">View Source &rarr;</a>
     </div>
   </div>
 </div>
@@ -274,69 +271,137 @@ var SUPABASE_URL = 'https://pkzjggjtzljjjohiybnud.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempnanR6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNjkwMTgsImV4cCI6MjA5Mzk0NTAxOH0.sZA4DPrmldh2XlfpCoNffsnmZKr6IjWusEv_ezAOqaI';
 var LOGODEV_KEY  = 'pk_dv5qQv9ARyGf3wnFfd-oeA';
 
-var MONTHS     = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-var MONTHS_SH  = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-var DAYS       = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
-var weekStart  = getWeekStart(new Date());
+var MONTHS    = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MONTHS_SH = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+var DAYS      = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var DAYS_SH   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var weekStart = getWeekStart(new Date());
 var openMonths = {};
 var allExpanded = true;
 var sidebarOpen = true;
-var events = [];  // filled from Supabase
+var events = [];
 
-// ── PAGE SWITCHING ────────────────────────────────────────────────────────────
-function switchPage(name){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.rail-icon').forEach(function(r){r.classList.remove('active');});
-  document.getElementById('page-'+name).classList.add('active');
-  document.getElementById('rail-'+name).classList.add('active');
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.rail-icon').forEach(function(r) { r.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('rail-' + name).classList.add('active');
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function ds(d){return d.toISOString().split("T")[0];}
-function getWeekStart(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()-dt.getDay());return dt;}
-function impCls(v){v=(v||"none").toLowerCase();return v==="high"?"high":v==="medium"?"medium":v==="low"?"low":"none";}
-function impLabel(v){v=(v||"none").toLowerCase();return v==="high"?"High Impact":v==="medium"?"Medium Impact":v==="low"?"Low Impact":"";}
-function logoUrl(domain){return domain?("https://img.logo.dev/"+domain+"?token="+LOGODEV_KEY+"&size=64"):"";}
+function ds(d) { return d.toISOString().split("T")[0]; }
+function getWeekStart(d) { var dt = new Date(d); dt.setHours(0,0,0,0); dt.setDate(dt.getDate() - dt.getDay()); return dt; }
 
-// ── SUPABASE FETCH ────────────────────────────────────────────────────────────
-function fetchEvents(){
+function impCls(v) {
+  v = (v || "none").toLowerCase();
+  if (v === "high") return "high";
+  if (v === "medium") return "medium";
+  if (v === "low") return "low";
+  return "none";
+}
+function impLabel(v) {
+  v = (v || "none").toLowerCase();
+  if (v === "high") return "High Impact";
+  if (v === "medium") return "Medium Impact";
+  if (v === "low") return "Low Impact";
+  return "";
+}
+function logoUrl(domain) {
+  if (!domain) return "";
+  return "https://img.logo.dev/" + domain + "?token=" + LOGODEV_KEY + "&size=64";
+}
+
+function deriveName(cat, evt) {
+  if (!cat) return "";
+  if (cat === "Market Holiday" || cat === "Early Close") return "NYSE / NASDAQ";
+  if (cat === "Fed / FOMC") return "Federal Reserve";
+  if (cat === "Economic Release") {
+    var e = evt || "";
+    if (e.indexOf("CPI") > -1 || e.indexOf("PPI") > -1 || e.indexOf("Jobs") > -1 || e.indexOf("NFP") > -1) return "Bureau of Labor Statistics";
+    if (e.indexOf("GDP") > -1 || e.indexOf("PCE") > -1) return "Bureau of Economic Analysis";
+    if (e.indexOf("ISM") > -1) return "Institute for Supply Management";
+    if (e.indexOf("Housing") > -1) return "U.S. Census Bureau / HUD";
+  }
+  return "";
+}
+function deriveLogo(cat, evt) {
+  if (!cat) return "";
+  if (cat === "Market Holiday" || cat === "Early Close") return logoUrl("nyse.com");
+  if (cat === "Fed / FOMC") return logoUrl("federalreserve.gov");
+  if (cat === "Economic Release") {
+    var e = evt || "";
+    if (e.indexOf("CPI") > -1 || e.indexOf("PPI") > -1 || e.indexOf("Jobs") > -1 || e.indexOf("NFP") > -1) return logoUrl("bls.gov");
+    if (e.indexOf("GDP") > -1 || e.indexOf("PCE") > -1) return logoUrl("bea.gov");
+    if (e.indexOf("ISM") > -1) return logoUrl("ismworld.org");
+    if (e.indexOf("Housing") > -1) return logoUrl("census.gov");
+  }
+  return "";
+}
+function deriveSource(cat) {
+  if (!cat) return "";
+  if (cat === "Market Holiday" || cat === "Early Close") return "https://www.nyse.com";
+  if (cat === "Fed / FOMC") return "https://www.federalreserve.gov";
+  if (cat === "Economic Release") return "https://www.bls.gov/schedule";
+  return "";
+}
+function deriveTime(notes) {
+  if (!notes) return "";
+  if (notes.indexOf("8:30 AM") > -1) return "8:30 AM ET";
+  if (notes.indexOf("10:00 AM") > -1) return "10:00 AM ET";
+  if (notes.indexOf("2:00 PM") > -1) return "2:00 PM ET";
+  if (notes.indexOf("1:00 PM") > -1) return "1:00 PM ET";
+  return "";
+}
+
+function parseDate(dateStr, monthStr) {
+  if (!dateStr) return { start: "", end: "" };
+  dateStr = String(dateStr).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return { start: dateStr, end: "" };
+  var MMAP = {January:"01",February:"02",March:"03",April:"04",May:"05",June:"06",
+              July:"07",August:"08",September:"09",October:"10",November:"11",December:"12"};
+  var m = MMAP[monthStr] || "01";
+  var parts = dateStr.split(" ");
+  var num = parts[parts.length - 1];
+  if (num.indexOf("-") > -1) {
+    var ns = num.split("-");
+    return { start: "2027-" + m + "-" + ns[0].padStart(2,"0"), end: "2027-" + m + "-" + ns[1].padStart(2,"0") };
+  }
+  return { start: "2027-" + m + "-" + num.padStart(2,"0"), end: "" };
+}
+
+function fetchEvents() {
   var url = SUPABASE_URL + '/rest/v1/Master%20Calendar?select=*&order=id.asc&limit=500';
   return fetch(url, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY
-    }
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
   })
-  .then(function(r){return r.json();})
-  .then(function(rows){
-    // Filter out section header rows (where date is null/section label)
-    var valid = rows.filter(function(r){
-      return r.date && r.date.match(/^[A-Z][a-z]+ \d/) || r.date && r.date.match(/^\d/);
-    });
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    events = [];
+    rows.forEach(function(r) {
+      // Skip section header rows (no date or section divider rows)
+      if (!r.date || !r.month) return;
+      var dstr = String(r.date).trim();
+      // Skip rows like "-- JANUARY 2027 --"
+      if (dstr.indexOf("--") > -1 || dstr.indexOf("JANUARY") > -1 || dstr.length < 2) return;
 
-    events = valid.map(function(r){
-      // Parse date from "Jan 1" or "Jan 26-27" format to YYYY-MM-DD
-      var parsed = parseSheetDate(r.date, r.month);
-      var impact = (r.impact||"").toLowerCase();
-      if(impact==="high") impact="high";
-      else if(impact==="medium") impact="medium";
-      else if(impact==="low") impact="low";
-      else impact="none";
+      var parsed = parseDate(r.date, r.month);
+      if (!parsed.start) return;
 
-      // Logo: prefer manual logo_url, else derive from category/name
+      var impact = (r.impact || "").toLowerCase();
+      if (impact !== "high" && impact !== "medium" && impact !== "low") impact = "none";
+
       var logo = r.logo_url || deriveLogo(r.category, r.event);
+      var showMini = r.show_in_monthly;
+      if (showMini === null || showMini === undefined) showMini = true;
 
-      return {
+      events.push({
         id: r.id,
         title: r.event || "",
         name: deriveName(r.category, r.event),
         date: parsed.start,
-        endDate: parsed.end,
-        time: r.display_time || deriveTime(r.notes),
+        endDate: parsed.end || "",
+        time: r.display_time || deriveTime(r.notes || ""),
         impact: impact,
-        showMini: r.show_in_monthly !== false,
+        showMini: showMini,
         logo: logo,
         hero: r.hero_url || "",
         whyMatters: r.why_it_matters || "",
@@ -347,245 +412,180 @@ function fetchEvents(){
         aka: r.aka || "",
         frequency: r.frequency || "",
         category: r.category || ""
-      };
-    }).filter(function(e){return e.date;});
-
-    return events;
+      });
+    });
   });
-}
-
-function parseSheetDate(dateStr, monthStr){
-  if(!dateStr) return {start:"", end:""};
-  dateStr = String(dateStr).trim();
-  // Already YYYY-MM-DD
-  if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return {start:dateStr, end:""};
-
-  var MONTH_MAP = {January:"01",February:"02",March:"03",April:"04",May:"05",June:"06",July:"07",August:"08",September:"09",October:"10",November:"11",December:"12"};
-  var m = MONTH_MAP[monthStr] || "01";
-  var year = "2027";
-
-  // "Jan 26-27" or "Jan 1"
-  var parts = dateStr.split(" ");
-  var numPart = parts[parts.length-1];
-  if(numPart.indexOf("-") > -1){
-    var nums = numPart.split("-");
-    return {start:year+"-"+m+"-"+nums[0].padStart(2,"0"), end:year+"-"+m+"-"+nums[1].padStart(2,"0")};
-  }
-  return {start:year+"-"+m+"-"+numPart.padStart(2,"0"), end:""};
-}
-
-function deriveTime(notes){
-  if(!notes) return "";
-  if(notes.indexOf("8:30 AM") > -1) return "8:30 AM ET";
-  if(notes.indexOf("10:00 AM") > -1) return "10:00 AM ET";
-  if(notes.indexOf("2:00 PM") > -1) return "2:00 PM ET";
-  if(notes.indexOf("1:00 PM") > -1) return "1:00 PM ET";
-  return "";
-}
-
-function deriveName(category, event){
-  if(!category) return "";
-  if(category==="Market Holiday"||category==="Early Close") return "NYSE / NASDAQ";
-  if(category==="Fed / FOMC") return "Federal Reserve";
-  if(category==="Economic Release"){
-    if((event||"").indexOf("CPI")>-1||(event||"").indexOf("PPI")>-1||(event||"").indexOf("Jobs")>-1||(event||"").indexOf("NFP")>-1) return "Bureau of Labor Statistics";
-    if((event||"").indexOf("GDP")>-1||(event||"").indexOf("PCE")>-1) return "Bureau of Economic Analysis";
-    if((event||"").indexOf("ISM")>-1) return "Institute for Supply Management";
-    if((event||"").indexOf("Housing")>-1) return "U.S. Census Bureau / HUD";
-  }
-  return "";
-}
-
-function deriveLogo(category, event){
-  if(!category) return "";
-  if(category==="Market Holiday"||category==="Early Close") return logoUrl("nyse.com");
-  if(category==="Fed / FOMC") return logoUrl("federalreserve.gov");
-  if(category==="Economic Release"){
-    if((event||"").indexOf("CPI")>-1||(event||"").indexOf("PPI")>-1||(event||"").indexOf("Jobs")>-1||(event||"").indexOf("NFP")>-1) return logoUrl("bls.gov");
-    if((event||"").indexOf("GDP")>-1||(event||"").indexOf("PCE")>-1) return logoUrl("bea.gov");
-    if((event||"").indexOf("ISM")>-1) return logoUrl("ismworld.org");
-    if((event||"").indexOf("Housing")>-1) return logoUrl("census.gov");
-  }
-  return "";
-}
-
-function deriveSource(category){
-  if(!category) return "";
-  if(category==="Market Holiday"||category==="Early Close") return "https://www.nyse.com";
-  if(category==="Fed / FOMC") return "https://www.federalreserve.gov";
-  if(category==="Economic Release") return "https://www.bls.gov/schedule";
-  return "";
 }
 
 // ── SIDEBAR ───────────────────────────────────────────────────────────────────
-function buildSidebar(){
-  var today=new Date();today.setHours(0,0,0,0);
-  if(allExpanded&&Object.keys(openMonths).length===0){
-    [2026,2027].forEach(function(y){for(var mi=0;mi<12;mi++)openMonths[y+"-"+mi]=true;});
+function buildSidebar() {
+  var today = new Date(); today.setHours(0,0,0,0);
+  if (allExpanded && Object.keys(openMonths).length === 0) {
+    [2026,2027].forEach(function(y) { for (var mi=0; mi<12; mi++) openMonths[y+"-"+mi] = true; });
   }
-  var wEnd=new Date(weekStart);wEnd.setDate(wEnd.getDate()+6);
-  var html="";
-  [2026,2027].forEach(function(y){
-    MONTHS.forEach(function(m,mi){
-      var key=y+"-"+mi;
-      var isOpen=!!openMonths[key];
-      var isAct=weekStart.getFullYear()===y&&weekStart.getMonth()===mi;
-      html+='<div class="month-label'+(isAct?" active-month":"")+(isOpen?" open":"")+'" data-key="'+key+'" data-y="'+y+'" data-mi="'+mi+'" onclick="handleMonthClick(this)"><span>'+m+' <span class="month-year-tag">'+y+'</span></span><span class="chevron">&#8250;</span></div>';
-      html+='<div class="month-grid-wrap'+(isOpen?" visible":"")+'" id="mg-'+key+'">'+buildMonthGrid(y,mi,today,weekStart,wEnd)+'</div>';
+  var wEnd = new Date(weekStart); wEnd.setDate(wEnd.getDate() + 6);
+  var html = "";
+  [2026,2027].forEach(function(y) {
+    MONTHS.forEach(function(m, mi) {
+      var key = y + "-" + mi;
+      var isOpen = !!openMonths[key];
+      var isAct = weekStart.getFullYear() === y && weekStart.getMonth() === mi;
+      html += '<div class="month-label' + (isAct?" active-month":"") + (isOpen?" open":"") + '" data-key="'+key+'" data-y="'+y+'" data-mi="'+mi+'" onclick="handleMonthClick(this)">';
+      html += '<span>' + m + ' <span class="month-year-tag">' + y + '</span></span><span class="chevron">&#8250;</span></div>';
+      html += '<div class="month-grid-wrap' + (isOpen?" visible":"") + '" id="mg-'+key+'">' + buildMonthGrid(y,mi,today,weekStart,wEnd) + '</div>';
     });
   });
-  document.getElementById("monthNav").innerHTML=html;
-  var btn=document.getElementById("expandAllBtn");
-  if(btn)btn.innerHTML=allExpanded?'<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Collapse All':'<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Expand All';
+  document.getElementById("monthNav").innerHTML = html;
+  var btn = document.getElementById("expandAllBtn");
+  if (btn) btn.innerHTML = allExpanded
+    ? '<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Collapse All'
+    : '<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Expand All';
 }
 
-function buildMonthGrid(y,mi,today,wStart,wEnd){
-  var firstDay=new Date(y,mi,1),lastDay=new Date(y,mi+1,0),startDow=firstDay.getDay();
-  var html='<div class="mgrid-head">';
-  DAYS_SHORT.forEach(function(d){html+='<span>'+d+'</span>';});
-  html+='</div><div class="mgrid-body">';
-  for(var i=0;i<startDow;i++)html+='<div class="mgrid-cell other-month"></div>';
-  for(var d=1;d<=lastDay.getDate();d++){
-    var date=new Date(y,mi,d),dateStr=ds(date);
-    var isTod=date.getTime()===today.getTime(),inWk=date>=wStart&&date<=wEnd;
-    var cls="mgrid-cell";
-    if(isTod)cls+=" today-cell";else if(inWk)cls+=" in-current-week";
-    var dayEvts=events.filter(function(e){return e.date===dateStr&&e.showMini;}).slice(0,3);
-    var evtHtml=dayEvts.map(function(ev){return '<div class="mgrid-evt '+impCls(ev.impact)+'">'+ev.title+'</div>';}).join("");
-    html+='<div class="'+cls+'" data-date="'+dateStr+'" onclick="handleDateClick(this)"><div class="mgrid-date">'+d+'</div><div class="mgrid-events">'+evtHtml+'</div></div>';
+function buildMonthGrid(y, mi, today, wStart, wEnd) {
+  var firstDay = new Date(y,mi,1), lastDay = new Date(y,mi+1,0), startDow = firstDay.getDay();
+  var html = '<div class="mgrid-head">';
+  DAYS_SH.forEach(function(d) { html += '<span>' + d + '</span>'; });
+  html += '</div><div class="mgrid-body">';
+  for (var i = 0; i < startDow; i++) html += '<div class="mgrid-cell other-month"></div>';
+  for (var d = 1; d <= lastDay.getDate(); d++) {
+    var date = new Date(y,mi,d), dateStr = ds(date);
+    var isTod = date.getTime() === today.getTime(), inWk = date >= wStart && date <= wEnd;
+    var cls = "mgrid-cell" + (isTod?" today-cell":inWk?" in-current-week":"");
+    var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0,3);
+    var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.title + '</div>'; }).join("");
+    html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
   }
-  var total=startDow+lastDay.getDate(),rem=total%7;
-  if(rem>0)for(var i=0;i<7-rem;i++)html+='<div class="mgrid-cell other-month"></div>';
-  html+='</div>';
-  return html;
+  var rem = (startDow + lastDay.getDate()) % 7;
+  if (rem > 0) for (var i = 0; i < 7-rem; i++) html += '<div class="mgrid-cell other-month"></div>';
+  return html + '</div>';
 }
 
-function handleMonthClick(el){toggleMonth(el.getAttribute("data-key"),parseInt(el.getAttribute("data-y")),parseInt(el.getAttribute("data-mi")));}
-function handleDateClick(el){jumpToDate(el.getAttribute("data-date"));}
-function toggleMonth(key,y,mi){
-  if(openMonths[key])delete openMonths[key];else openMonths[key]=true;
-  allExpanded=Object.keys(openMonths).length>=24;
-  weekStart=getWeekStart(new Date(y,mi,1));
-  buildSidebar();renderWeek();
+function handleMonthClick(el) { toggleMonth(el.getAttribute("data-key"), parseInt(el.getAttribute("data-y")), parseInt(el.getAttribute("data-mi"))); }
+function handleDateClick(el) { jumpToDate(el.getAttribute("data-date")); }
+function handleCardClick(el) { openModal(parseInt(el.getAttribute("data-id"))); }
+
+function toggleMonth(key, y, mi) {
+  if (openMonths[key]) delete openMonths[key]; else openMonths[key] = true;
+  allExpanded = Object.keys(openMonths).length >= 24;
+  weekStart = getWeekStart(new Date(y, mi, 1));
+  buildSidebar(); renderWeek();
 }
-function jumpToDate(dateStr){weekStart=getWeekStart(new Date(dateStr+"T12:00:00"));buildSidebar();renderWeek();}
-function toggleAllMonths(){
-  allExpanded=!allExpanded;
-  if(allExpanded){[2026,2027].forEach(function(y){for(var mi=0;mi<12;mi++)openMonths[y+"-"+mi]=true;});}
-  else{openMonths={};var t=new Date();openMonths[t.getFullYear()+"-"+t.getMonth()]=true;}
+function jumpToDate(dateStr) { weekStart = getWeekStart(new Date(dateStr + "T12:00:00")); buildSidebar(); renderWeek(); }
+function toggleAllMonths() {
+  allExpanded = !allExpanded;
+  if (allExpanded) { [2026,2027].forEach(function(y) { for (var mi=0; mi<12; mi++) openMonths[y+"-"+mi]=true; }); }
+  else { openMonths = {}; var t = new Date(); openMonths[t.getFullYear()+"-"+t.getMonth()] = true; }
   buildSidebar();
 }
-function toggleSidebar(){
-  sidebarOpen=!sidebarOpen;
-  var sb=document.getElementById("sidebar"),ico=document.getElementById("arrowIcon");
-  if(sidebarOpen){sb.classList.remove("collapsed");ico.setAttribute("points","15 18 9 12 15 6");}
-  else{sb.classList.add("collapsed");ico.setAttribute("points","9 18 15 12 9 6");}
-  setTimeout(positionArrow,220);positionArrow();
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  var sb = document.getElementById("sidebar"), ico = document.getElementById("arrowIcon");
+  if (sidebarOpen) { sb.classList.remove("collapsed"); ico.setAttribute("points","15 18 9 12 15 6"); }
+  else { sb.classList.add("collapsed"); ico.setAttribute("points","9 18 15 12 9 6"); }
+  setTimeout(positionArrow, 220); positionArrow();
 }
-function positionArrow(){
-  var rail=document.querySelector(".icon-rail"),sb=document.getElementById("sidebar"),arrow=document.getElementById("sidebarArrow"),weekNav=document.querySelector(".week-nav");
-  if(!arrow)return;
-  var railW=rail?rail.offsetWidth:52,sbW=sidebarOpen?(sb?sb.offsetWidth:0):0;
-  arrow.style.left=(railW+sbW-1)+"px";
-  if(weekNav){var wnRect=weekNav.getBoundingClientRect(),appRect=document.querySelector(".app").getBoundingClientRect();arrow.style.top=(wnRect.top-appRect.top+10)+"px";}
+function positionArrow() {
+  var rail = document.querySelector(".icon-rail"), sb = document.getElementById("sidebar");
+  var arrow = document.getElementById("sidebarArrow"), weekNav = document.querySelector(".week-nav");
+  if (!arrow) return;
+  var railW = rail ? rail.offsetWidth : 52, sbW = sidebarOpen ? (sb ? sb.offsetWidth : 0) : 0;
+  arrow.style.left = (railW + sbW - 1) + "px";
+  if (weekNav) { var wnRect = weekNav.getBoundingClientRect(), appRect = document.querySelector(".app").getBoundingClientRect(); arrow.style.top = (wnRect.top - appRect.top + 10) + "px"; }
 }
 
-// ── WEEK RENDER ───────────────────────────────────────────────────────────────
-function renderWeek(){
-  var today=new Date();today.setHours(0,0,0,0);
-  var days=[];for(var i=0;i<7;i++){var d=new Date(weekStart);d.setDate(d.getDate()+i);days.push(d);}
-  var byDate={};days.forEach(function(d){byDate[ds(d)]=[];});
-  events.forEach(function(ev){if(byDate[ev.date]!==undefined)byDate[ev.date].push(ev);});
-  var fmt=function(d){return d.toLocaleDateString("en-US",{month:"short",day:"numeric"});};
-  document.getElementById("weekSub").textContent=fmt(days[0])+" – "+fmt(days[6])+"  ·  Click any event to view details.";
-  document.getElementById("weekGrid").innerHTML=days.map(function(d,i){
-    var isToday=d.getTime()===today.getTime(),evs=byDate[ds(d)]||[],monthStr=MONTHS_SH[d.getMonth()];
-    var cardsHtml=evs.map(function(ev){return cardHtml(ev);}).join("");
-    return '<div class="day-col"><div class="day-header'+(isToday?" today":"")+'"><div class="day-name">'+DAYS[i]+'</div><div class="day-num">'+d.getDate()+'</div><div class="day-month">'+monthStr+'</div></div><div class="day-events">'+cardsHtml+'</div></div>';
+// ── WEEK VIEW ─────────────────────────────────────────────────────────────────
+function renderWeek() {
+  var today = new Date(); today.setHours(0,0,0,0);
+  var days = []; for (var i=0; i<7; i++) { var d = new Date(weekStart); d.setDate(d.getDate()+i); days.push(d); }
+  var byDate = {}; days.forEach(function(d) { byDate[ds(d)] = []; });
+  events.forEach(function(ev) { if (byDate[ev.date] !== undefined) byDate[ev.date].push(ev); });
+  var fmt = function(d) { return d.toLocaleDateString("en-US",{month:"short",day:"numeric"}); };
+  document.getElementById("weekSub").textContent = fmt(days[0]) + " – " + fmt(days[6]) + "  ·  Click any event to view details.";
+  document.getElementById("weekGrid").innerHTML = days.map(function(d,i) {
+    var isToday = d.getTime() === today.getTime(), evs = byDate[ds(d)] || [], mon = MONTHS_SH[d.getMonth()];
+    var cards = evs.map(function(ev) { return cardHtml(ev); }).join("");
+    return '<div class="day-col"><div class="day-header' + (isToday?" today":"") + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + mon + '</div></div><div class="day-events">' + cards + '</div></div>';
   }).join("");
 }
 
-function cardHtml(ev){
-  var cls=impCls(ev.impact),label=impLabel(ev.impact);
-  var logoHtml=ev.logo?('<img class="card-logo" src="'+ev.logo+'" alt="" onerror="this.style.display='none'">') :'';
-  return '<div class="ecard '+cls+'" data-id="'+ev.id+'" onclick="handleCardClick(this)">'+(ev.time?'<div class="card-time">'+ev.time+'</div>':'')+logoHtml+'<div class="card-title">'+ev.title+'</div>'+(label?'<div class="card-impact '+cls+'">'+label+'</div>':'')+'</div>';
+function cardHtml(ev) {
+  var cls = impCls(ev.impact), label = impLabel(ev.impact);
+  var logoHtml = ev.logo ? ('<img class="card-logo" src="' + ev.logo + '" alt="" onerror="this.style.display='none'">') : '';
+  var timeHtml = ev.time ? ('<div class="card-time">' + ev.time + '</div>') : '';
+  var labelHtml = label ? ('<div class="card-impact ' + cls + '">' + label + '</div>') : '';
+  return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + timeHtml + logoHtml + '<div class="card-title">' + ev.title + '</div>' + labelHtml + '</div>';
 }
-function handleCardClick(el){openModal(parseInt(el.getAttribute("data-id")));}
 
-// ── READ-ONLY MODAL ───────────────────────────────────────────────────────────
-function openModal(id){
-  var ev=null;for(var i=0;i<events.length;i++){if(events[i].id===id){ev=events[i];break;}}
-  if(!ev)return;
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(id) {
+  var ev = null;
+  for (var i=0; i<events.length; i++) { if (events[i].id === id) { ev = events[i]; break; } }
+  if (!ev) return;
 
-  // Hero
-  var heroImg=document.getElementById("modalHeroImg");
-  if(ev.hero){heroImg.src=ev.hero;heroImg.style.display="block";}
-  else{heroImg.style.display="none";}
+  var heroImg = document.getElementById("modalHeroImg");
+  if (ev.hero) { heroImg.src = ev.hero; heroImg.style.display = "block"; }
+  else { heroImg.style.display = "none"; }
 
-  // Logo
-  var logoEl=document.getElementById("modalLogo");
-  if(ev.logo){logoEl.src=ev.logo;logoEl.style.display="block";}
-  else{logoEl.style.display="none";}
+  var logoEl = document.getElementById("modalLogo");
+  if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = "block"; }
+  else { logoEl.style.display = "none"; }
 
-  document.getElementById("modalTitle").textContent=ev.title;
-  document.getElementById("modalName").textContent=ev.name||ev.category||"";
+  document.getElementById("modalTitle").textContent = ev.title;
+  document.getElementById("modalName").textContent = ev.name || ev.category || "";
 
-  // Meta tags
-  var meta="";
-  if(ev.impact&&ev.impact!=="none")meta+='<span class="modal-tag '+ev.impact+'">'+impLabel(ev.impact)+'</span>';
-  if(ev.time)meta+='<span class="modal-tag">'+ev.time+'</span>';
-  if(ev.frequency)meta+='<span class="modal-tag">'+ev.frequency.charAt(0).toUpperCase()+ev.frequency.slice(1)+'</span>';
-  if(ev.ticker)meta+='<span class="modal-tag">'+ev.ticker+'</span>';
-  if(ev.aka&&ev.aka!==ev.category)meta+='<span class="modal-tag">'+ev.aka+'</span>';
-  document.getElementById("modalMeta").innerHTML=meta;
+  var meta = "";
+  if (ev.impact && ev.impact !== "none") meta += '<span class="modal-tag ' + ev.impact + '">' + impLabel(ev.impact) + '</span>';
+  if (ev.time) meta += '<span class="modal-tag">' + ev.time + '</span>';
+  if (ev.frequency) meta += '<span class="modal-tag">' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>';
+  if (ev.ticker) meta += '<span class="modal-tag">' + ev.ticker + '</span>';
+  if (ev.aka && ev.aka !== ev.category) meta += '<span class="modal-tag">' + ev.aka + '</span>';
+  document.getElementById("modalMeta").innerHTML = meta;
 
-  // Content sections — only show if populated
-  var hasContent=ev.whyMatters||ev.measures||ev.details;
-  document.getElementById("modalDiv1").style.display=hasContent?"block":"none";
+  var hasContent = ev.whyMatters || ev.measures || ev.details;
+  document.getElementById("modalDiv1").style.display = hasContent ? "block" : "none";
 
-  var whySec=document.getElementById("modalWhySection");
-  if(ev.whyMatters){whySec.style.display="block";document.getElementById("modalWhy").textContent=ev.whyMatters;}
-  else{whySec.style.display="none";}
+  var whySec = document.getElementById("modalWhySection");
+  if (ev.whyMatters) { whySec.style.display = "block"; document.getElementById("modalWhy").textContent = ev.whyMatters; }
+  else { whySec.style.display = "none"; }
 
-  var measSec=document.getElementById("modalMeasuresSection");
-  if(ev.measures){measSec.style.display="block";document.getElementById("modalMeasures").textContent=ev.measures;}
-  else{measSec.style.display="none";}
+  var measSec = document.getElementById("modalMeasuresSection");
+  if (ev.measures) { measSec.style.display = "block"; document.getElementById("modalMeasures").textContent = ev.measures; }
+  else { measSec.style.display = "none"; }
 
-  var detSec=document.getElementById("modalDetailsSection");
-  if(ev.details){detSec.style.display="block";document.getElementById("modalDetails").innerHTML=ev.details;}
-  else{detSec.style.display="none";}
+  var detSec = document.getElementById("modalDetailsSection");
+  if (ev.details) { detSec.style.display = "block"; document.getElementById("modalDetails").innerHTML = ev.details; }
+  else { detSec.style.display = "none"; }
 
-  // Source link
-  var srcEl=document.getElementById("modalSource");
-  var div2=document.getElementById("modalDiv2");
-  if(ev.source){srcEl.href=ev.source;srcEl.style.display="inline";div2.style.display="block";}
-  else{srcEl.style.display="none";div2.style.display="none";}
+  var srcEl = document.getElementById("modalSource"), div2 = document.getElementById("modalDiv2");
+  if (ev.source) { srcEl.href = ev.source; srcEl.style.display = "inline"; div2.style.display = "block"; }
+  else { srcEl.style.display = "none"; div2.style.display = "none"; }
 
   document.getElementById("overlay").classList.add("open");
 }
-function closeModal(){document.getElementById("overlay").classList.remove("open");}
-function overlayClick(e){if(e.target===document.getElementById("overlay"))closeModal();}
+function closeModal() { document.getElementById("overlay").classList.remove("open"); }
+function overlayClick(e) { if (e.target === document.getElementById("overlay")) closeModal(); }
 
-function prevWeek(){weekStart.setDate(weekStart.getDate()-7);buildSidebar();renderWeek();}
-function nextWeek(){weekStart.setDate(weekStart.getDate()+7);buildSidebar();renderWeek();}
-function goToday(){weekStart=getWeekStart(new Date());buildSidebar();renderWeek();}
+function prevWeek() { weekStart.setDate(weekStart.getDate()-7); buildSidebar(); renderWeek(); }
+function nextWeek() { weekStart.setDate(weekStart.getDate()+7); buildSidebar(); renderWeek(); }
+function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
 
-// ── WORLD CLOCK ───────────────────────────────────────────────────────────────
-function updateClocks(){
-  var opt={hour:'2-digit',minute:'2-digit',hour12:true};
-  var zones={'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
-  Object.keys(zones).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=new Date().toLocaleTimeString('en-US',Object.assign({},opt,{timeZone:zones[id]}));});
+// ── CLOCKS ────────────────────────────────────────────────────────────────────
+function updateClocks() {
+  var opt = {hour:'2-digit',minute:'2-digit',hour12:true};
+  var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
+  Object.keys(zones).forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({}, opt, {timeZone:zones[id]})); });
 }
-setInterval(updateClocks,1000);updateClocks();
+setInterval(updateClocks, 1000); updateClocks();
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-fetchEvents().then(function(){
+fetchEvents().then(function() {
   buildSidebar();
   renderWeek();
-  setTimeout(positionArrow,50);
-}).catch(function(err){
-  console.error("Failed to load events:", err);
-  document.getElementById("weekGrid").innerHTML='<div class="load-error">Could not load events. Please refresh.</div>';
+  setTimeout(positionArrow, 50);
+}).catch(function(err) {
+  console.error("Supabase fetch failed:", err);
+  document.getElementById("weekGrid").innerHTML = '<div class="load-error">Could not load events. Please refresh the page.</div>';
 });
 </script>
 </body>
