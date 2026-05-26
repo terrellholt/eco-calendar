@@ -377,7 +377,7 @@ function parseDate(dateStr, monthStr) {
 
 function fetchEvents() {
   // Joins the Entities table so entity-level logo/hero/content can serve as fallbacks
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=id.asc&limit=500';
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=id.asc&limit=500';
   return fetch(url, {
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
   })
