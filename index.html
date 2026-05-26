@@ -417,7 +417,7 @@ function fetchEvents() {
   });
 }
 
-// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+// -- SIDEBAR -------------------------------------------------------------------
 function buildSidebar() {
   var today = new Date(); today.setHours(0,0,0,0);
   if (allExpanded && Object.keys(openMonths).length === 0) {
@@ -494,14 +494,14 @@ function positionArrow() {
   if (weekNav) { var wnRect = weekNav.getBoundingClientRect(), appRect = document.querySelector(".app").getBoundingClientRect(); arrow.style.top = (wnRect.top - appRect.top + 10) + "px"; }
 }
 
-// ── WEEK VIEW ─────────────────────────────────────────────────────────────────
+// -- WEEK VIEW -----------------------------------------------------------------
 function renderWeek() {
   var today = new Date(); today.setHours(0,0,0,0);
   var days = []; for (var i=0; i<7; i++) { var d = new Date(weekStart); d.setDate(d.getDate()+i); days.push(d); }
   var byDate = {}; days.forEach(function(d) { byDate[ds(d)] = []; });
   events.forEach(function(ev) { if (byDate[ev.date] !== undefined) byDate[ev.date].push(ev); });
   var fmt = function(d) { return d.toLocaleDateString("en-US",{month:"short",day:"numeric"}); };
-  document.getElementById("weekSub").textContent = fmt(days[0]) + " – " + fmt(days[6]) + "  ·  Click any event to view details.";
+  document.getElementById("weekSub").textContent = fmt(days[0]) + " - " + fmt(days[6]) + "  -  Click any event to view details.";
   document.getElementById("weekGrid").innerHTML = days.map(function(d,i) {
     var isToday = d.getTime() === today.getTime(), evs = byDate[ds(d)] || [], mon = MONTHS_SH[d.getMonth()];
     var cards = evs.map(function(ev) { return cardHtml(ev); }).join("");
@@ -517,7 +517,7 @@ function cardHtml(ev) {
   return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + timeHtml + logoHtml + '<div class="card-title">' + ev.title + '</div>' + labelHtml + '</div>';
 }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────────
+// -- MODAL ---------------------------------------------------------------------
 function openModal(id) {
   var ev = null;
   for (var i=0; i<events.length; i++) { if (events[i].id === id) { ev = events[i]; break; } }
@@ -570,7 +570,7 @@ function prevWeek() { weekStart.setDate(weekStart.getDate()-7); buildSidebar(); 
 function nextWeek() { weekStart.setDate(weekStart.getDate()+7); buildSidebar(); renderWeek(); }
 function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
 
-// ── CLOCKS ────────────────────────────────────────────────────────────────────
+// -- CLOCKS --------------------------------------------------------------------
 function updateClocks() {
   var opt = {hour:'2-digit',minute:'2-digit',hour12:true};
   var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
@@ -578,7 +578,7 @@ function updateClocks() {
 }
 setInterval(updateClocks, 1000); updateClocks();
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+// -- INIT ----------------------------------------------------------------------
 fetchEvents().then(function() {
   buildSidebar();
   renderWeek();
