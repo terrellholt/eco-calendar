@@ -68,7 +68,7 @@
   .day-num{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1.15;margin-top:2px}
   .day-month{font-size:10px;color:#bbb;font-weight:500;margin-top:1px;text-transform:uppercase;letter-spacing:.03em}
   .day-header.today .day-name{color:#2563eb;font-weight:700}
-  .day-header.today .day-num{color:#2563eb;font-weight:600;font-size:18px;background:none;width:auto;height:auto;border-radius:0;display:block}
+  .day-header.today .day-num{color:#2563eb;font-weight:600}
   .day-header.today .day-month{color:#2563eb;font-weight:600}
   .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
   .add-evt{font-size:11px;color:#ccc;cursor:pointer;padding:3px 5px;border-radius:4px;transition:all .12s;text-align:center;margin-top:4px}
@@ -107,41 +107,31 @@
   .contact-submit:hover{background:#eff6ff}
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
   .modal-overlay.open{opacity:1;pointer-events:all}
-  .modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
   .modal-overlay.open .modal{transform:translateY(0)}
-  .edit-hero{width:100%;height:130px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:14px 14px 0 0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
-  .edit-hero-label{color:rgba(255,255,255,.5);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px}
-  .edit-hero-label svg{width:24px;height:24px;stroke:rgba(255,255,255,.5);fill:none;stroke-width:1.5}
-  .edit-hero-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-  .hero-change-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer}
-  .modal-close{position:absolute;top:10px;left:12px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:18px;width:26px;height:26px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;line-height:1}
-  .modal-body{padding:16px 18px 20px}
-  .modal-section-title{font-size:11px;font-weight:700;color:#1a1a1a;letter-spacing:.04em;margin:14px 0 8px;text-transform:uppercase}
-  .form-row{display:flex;gap:10px;margin-bottom:10px}
-  .form-group{display:flex;flex-direction:column;gap:4px;flex:1}
-  .form-group label{font-size:11px;font-weight:600;color:#888}
-  .form-group input,.form-group select,.form-group textarea{font-size:13px;padding:7px 10px;border:1px solid #e0e0db;border-radius:7px;background:#fff;color:#1a1a1a;width:100%;outline:none;font-family:inherit;transition:border .12s}
-  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#2563eb}
-  .form-group textarea{resize:vertical;min-height:70px;line-height:1.5}
-  .logo-upload{width:52px;height:52px;border-radius:10px;border:1.5px dashed #d0d0cc;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;background:#f8f8f6;position:relative}
-  .logo-upload img{width:100%;height:100%;object-fit:contain}
-  .logo-upload svg{width:20px;height:20px;stroke:#bbb;fill:none;stroke-width:1.5}
-  .check-row{display:flex;align-items:center;gap:6px;font-size:12px;color:#555;margin-bottom:10px}
-  .check-row input[type=checkbox]{width:14px;height:14px;accent-color:#2563eb;cursor:pointer}
-  .rte-toolbar{display:flex;gap:2px;padding:5px 6px;border:1px solid #e0e0db;border-bottom:none;border-radius:7px 7px 0 0;background:#f8f8f6}
-  .rte-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius:4px;font-size:12px;color:#555;display:flex;align-items:center;justify-content:center;font-weight:700}
-  .rte-btn:hover{background:#ececec}
-  .rte-sep{width:1px;background:#ddd;margin:2px 3px}
-  .rte-area{font-size:13px;padding:8px 10px;border:1px solid #e0e0db;border-radius:0 0 7px 7px;min-height:90px;outline:none;color:#1a1a1a;line-height:1.5}
-  .rte-area:focus{border-color:#2563eb}
-  .rte-area[contenteditable]:empty:before{content:attr(data-placeholder);color:#bbb}
-  .modal-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 16px;border-top:1px solid #f0f0ec}
-  .btn-delete{background:#e24b4a;color:#fff;border:none;font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:500}
-  .btn-cancel{background:#fff;color:#555;border:1px solid #e0e0db;font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer}
-  .btn-save{background:#1a1a1a;color:#fff;border:none;font-size:13px;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:500}
+  .modal-hero{width:100%;height:160px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:14px 14px 0 0;position:relative;overflow:hidden}
+  .modal-hero img{width:100%;height:100%;object-fit:cover}
+  .modal-close{position:absolute;top:10px;right:12px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:18px;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+  .modal-body{padding:20px 22px 24px}
+  .modal-logo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .modal-logo{width:48px;height:48px;object-fit:contain;border-radius:8px;border:1px solid #f0f0ec;background:#fafaf8;padding:4px}
+  .modal-title{font-size:17px;font-weight:700;color:#1a1a1a;line-height:1.25}
+  .modal-name{font-size:12px;color:#888;margin-top:2px}
+  .modal-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .modal-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#f0f0ec;color:#555}
+  .modal-tag.high{background:#FEF2F2;color:#dc2626}
+  .modal-tag.medium{background:#FFF7ED;color:#ea7000}
+  .modal-tag.low{background:#FEFCE8;color:#d4a000}
+  .modal-section{margin-bottom:14px}
+  .modal-section-label{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+  .modal-section-text{font-size:13px;color:#333;line-height:1.6}
+  .modal-divider{border:none;border-top:1px solid #f0f0ec;margin:14px 0}
+  .modal-source{font-size:11px;color:#2563eb;text-decoration:none}
+  .modal-source:hover{text-decoration:underline}
   .spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
+  .load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#dc2626;font-size:13px}
 </style>
 </head>
 <body>
@@ -166,6 +156,7 @@
       <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
     </div>
   </div>
+
   <div class="page active" id="page-calendar" style="flex-direction:row">
     <div class="sidebar" id="sidebar">
       <div class="sidebar-topbar">
@@ -183,7 +174,7 @@
       <div class="week-nav">
         <div>
           <div class="week-title">What to Watch for the Week</div>
-          <div class="week-sub" id="weekSub">Key events and catalysts. Click any event to view details.</div>
+          <div class="week-sub" id="weekSub">Loading events&hellip;</div>
         </div>
         <div class="week-controls">
           <button class="btn" onclick="prevWeek()">&larr; Prev</button>
@@ -192,10 +183,11 @@
         </div>
       </div>
       <div class="week-grid" id="weekGrid">
-        <div class="loading-col"><div class="spinner"></div><span>Loading&hellip;</span></div>
+        <div class="loading-col"><div class="spinner"></div><span>Loading events&hellip;</span></div>
       </div>
     </div>
   </div>
+
   <div class="page" id="page-markets">
     <div class="markets-page">
       <div class="world-clock">
@@ -225,9 +217,11 @@
       </div>
     </div>
   </div>
+
   <div class="page" id="page-news" style="align-items:center;justify-content:center">
     <div style="color:#bbb;font-size:14px">News page &mdash; coming soon.</div>
   </div>
+
   <div class="page" id="page-contact">
     <div class="contact-page">
       <div class="contact-form">
@@ -239,120 +233,191 @@
     </div>
   </div>
 </div>
+
+<!-- READ-ONLY EVENT DETAIL MODAL -->
 <div class="modal-overlay" id="overlay" onclick="overlayClick(event)">
   <div class="modal" id="modal">
-    <div class="edit-hero" id="editHero" onclick="triggerHeroUpload()">
-      <div class="edit-hero-label" id="heroPlaceholder">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Click to add hero image
-      </div>
-      <img id="heroImg" class="edit-hero-img" style="display:none" src="" alt="">
-      <button class="hero-change-btn" id="heroChangeBtn" style="display:none" onclick="triggerHeroUpload();event.stopPropagation()">Change Image</button>
+    <div class="modal-hero" id="modalHero">
+      <img id="modalHeroImg" src="" alt="" style="display:none">
     </div>
-    <input type="file" id="heroFileInput" accept="image/*" style="display:none" onchange="handleHeroUpload(event)">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-body">
-      <div class="form-row" style="align-items:flex-start;gap:12px">
+      <div class="modal-logo-row">
+        <img class="modal-logo" id="modalLogo" src="" alt="" style="display:none">
         <div>
-          <div class="logo-upload" id="logoBox" onclick="document.getElementById('logoFileInput').click()">
-            <img id="logoImg" src="" alt="" style="display:none">
-            <svg id="logoPlaceholderIcon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <input type="file" id="logoFileInput" accept="image/*" style="display:none;position:absolute" onchange="handleLogoUpload(event)">
-          </div>
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-name" id="modalName"></div>
         </div>
-        <div class="form-group" style="flex:1"><label>Title</label><input type="text" id="fTitle" placeholder="Event title"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Name</label><input type="text" id="fName" placeholder="Company or event name"></div>
-        <div class="form-group"><label>Ticker Symbol <span style="font-weight:400;color:#bbb">(Optional)</span></label><input type="text" id="fTicker" placeholder="e.g., AAPL"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <hr class="modal-divider" id="modalDiv1" style="display:none">
+      <div class="modal-section" id="modalWhySection" style="display:none">
+        <div class="modal-section-label">Why it Matters</div>
+        <div class="modal-section-text" id="modalWhy"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Time</label><input type="text" id="fTime" placeholder="e.g., 8:30 AM"></div>
-        <div class="form-group" style="justify-content:flex-end;padding-top:18px"><label class="check-row" style="cursor:pointer;margin-bottom:0"><input type="checkbox" id="fAllDay"> All Day</label></div>
-        <div class="form-group"><label>Also Known As <span style="font-weight:400;color:#bbb">(Optional)</span></label><input type="text" id="fAka" placeholder="Alternative names"></div>
+      <div class="modal-section" id="modalMeasuresSection" style="display:none">
+        <div class="modal-section-label">Measures</div>
+        <div class="modal-section-text" id="modalMeasures"></div>
       </div>
-      <div class="form-row"><div class="form-group"><label>Source URL</label><input type="text" id="fSource" placeholder="Add URL here"></div></div>
-      <div class="modal-section-title">Event Settings</div>
-      <div class="form-row"><div class="form-group"><label>Impact</label>
-        <select id="fImpact"><option value="none">None (White)</option><option value="high">High Impact (Red)</option><option value="medium">Medium Impact (Orange)</option><option value="low">Low Impact (Yellow)</option></select>
-      </div></div>
-      <div class="form-row">
-        <div class="form-group"><label>Start Date</label><input type="date" id="fStartDate"></div>
-        <div class="form-group"><label>End Date <span style="font-weight:400;color:#bbb">(optional)</span></label><input type="date" id="fEndDate"></div>
+      <div class="modal-section" id="modalDetailsSection" style="display:none">
+        <div class="modal-section-label">Details</div>
+        <div class="modal-section-text" id="modalDetails"></div>
       </div>
-      <div class="check-row"><input type="checkbox" id="fShowMini" checked><label for="fShowMini">Show in monthly calendar view</label></div>
-      <div class="modal-section-title">Additional Event Metadata</div>
-      <div class="form-row"><div class="form-group"><label>Frequency</label>
-        <select id="fFrequency"><option value="">Select frequency</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="six-weeks">Approximately every six weeks</option><option value="quarterly">Quarterly</option><option value="annually">Annually</option><option value="one-time">One-time</option></select>
-      </div></div>
-      <div class="form-row"><div class="form-group"><label>Measures <span style="font-weight:400;color:#bbb">(Optional)</span></label><textarea id="fMeasures" placeholder="What this event measures..."></textarea></div></div>
-      <div class="form-row"><div class="form-group"><label>Why it Matters</label><textarea id="fWhyMatters" placeholder="Explain the significance and market impact..."></textarea></div></div>
-      <div class="form-group" style="margin-bottom:4px">
-        <label>Details</label>
-        <div class="rte-toolbar">
-          <button class="rte-btn" onclick="fmt('bold')"><b>B</b></button>
-          <button class="rte-btn" onclick="fmt('italic')"><i>I</i></button>
-          <button class="rte-btn" onclick="fmt('underline')"><u>U</u></button>
-          <div class="rte-sep"></div>
-          <button class="rte-btn" onclick="fmt('insertUnorderedList')">&#9776;</button>
-        </div>
-        <div class="rte-area" id="fDetails" contenteditable="true" data-placeholder="Add detailed information about this event..."></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-delete" onclick="deleteEvent()">Delete Event</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" onclick="saveEvent()">Save Changes</button>
-      </div>
+      <hr class="modal-divider" id="modalDiv2" style="display:none">
+      <a class="modal-source" id="modalSource" href="" target="_blank" style="display:none">View Source &rarr;</a>
     </div>
   </div>
 </div>
-<script>
-var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
-var MONTHS_SH=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-var DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var DAYS_SHORT=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-var weekStart=getWeekStart(new Date());
-var editingId=null;
-var openMonths={};
-var allExpanded=true;
-var sidebarOpen=true;
-var events=[];
 
+<script>
+var SUPABASE_URL = 'https://pkzjggjtzljjjohiybnud.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempnanR6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNjkwMTgsImV4cCI6MjA5Mzk0NTAxOH0.sZA4DPrmldh2XlfpCoNffsnmZKr6IjWusEv_ezAOqaI';
+var LOGODEV_KEY  = 'pk_dv5qQv9ARyGf3wnFfd-oeA';
+
+var MONTHS     = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MONTHS_SH  = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+var DAYS       = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+var weekStart  = getWeekStart(new Date());
+var openMonths = {};
+var allExpanded = true;
+var sidebarOpen = true;
+var events = [];  // filled from Supabase
+
+// ── PAGE SWITCHING ────────────────────────────────────────────────────────────
 function switchPage(name){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.rail-icon').forEach(function(r){r.classList.remove('active');});
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('rail-'+name).classList.add('active');
 }
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 function ds(d){return d.toISOString().split("T")[0];}
 function getWeekStart(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()-dt.getDay());return dt;}
-function impCls(v){v=(v||"none").toLowerCase();return v==="high"?"high":v==="medium"||v==="med"?"medium":v==="low"?"low":"none";}
-function impLabel(v){v=(v||"none").toLowerCase();return v==="high"?"High Impact":v==="medium"||v==="med"?"Medium Impact":v==="low"?"Low Impact":"";}
+function impCls(v){v=(v||"none").toLowerCase();return v==="high"?"high":v==="medium"?"medium":v==="low"?"low":"none";}
+function impLabel(v){v=(v||"none").toLowerCase();return v==="high"?"High Impact":v==="medium"?"Medium Impact":v==="low"?"Low Impact":"";}
+function logoUrl(domain){return domain?("https://img.logo.dev/"+domain+"?token="+LOGODEV_KEY+"&size=64"):"";}
 
-function buildDefaultEvents(){
-  var confirmed=CONFIRMED_EVENTS;
-  var dateIndex={};
-  for(var ci=0;ci<confirmed.length;ci++){dateIndex[confirmed[ci].date]=true;}
-  var placeholders=[];
-  var id=1;
-  var base=new Date(2026,0,4);
-  for(var w=0;w<104;w++){
-    var wBase=new Date(base.getTime());
-    wBase.setDate(wBase.getDate()+w*7);
-    for(var off=0;off<4;off++){
-      var d=new Date(wBase.getTime());
-      d.setDate(d.getDate()+off);
-      var dateStr=d.toISOString().split("T")[0];
-      if(!dateIndex[dateStr]){
-        placeholders.push({id:id++,title:"TBD",name:"",ticker:"",time:"8:30 AM",aka:"",source:"",impact:"none",date:dateStr,endDate:"",showMini:true,frequency:"",measures:"",whyMatters:"",details:"",logo:"",hero:""});
-      }
+// ── SUPABASE FETCH ────────────────────────────────────────────────────────────
+function fetchEvents(){
+  var url = SUPABASE_URL + '/rest/v1/Master%20Calendar?select=*&order=id.asc&limit=500';
+  return fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
     }
-  }
-  return confirmed.concat(placeholders);
+  })
+  .then(function(r){return r.json();})
+  .then(function(rows){
+    // Filter out section header rows (where date is null/section label)
+    var valid = rows.filter(function(r){
+      return r.date && r.date.match(/^[A-Z][a-z]+ \d/) || r.date && r.date.match(/^\d/);
+    });
+
+    events = valid.map(function(r){
+      // Parse date from "Jan 1" or "Jan 26-27" format to YYYY-MM-DD
+      var parsed = parseSheetDate(r.date, r.month);
+      var impact = (r.impact||"").toLowerCase();
+      if(impact==="high") impact="high";
+      else if(impact==="medium") impact="medium";
+      else if(impact==="low") impact="low";
+      else impact="none";
+
+      // Logo: prefer manual logo_url, else derive from category/name
+      var logo = r.logo_url || deriveLogo(r.category, r.event);
+
+      return {
+        id: r.id,
+        title: r.event || "",
+        name: deriveName(r.category, r.event),
+        date: parsed.start,
+        endDate: parsed.end,
+        time: r.display_time || deriveTime(r.notes),
+        impact: impact,
+        showMini: r.show_in_monthly !== false,
+        logo: logo,
+        hero: r.hero_url || "",
+        whyMatters: r.why_it_matters || "",
+        measures: r.measures || "",
+        details: r.details || "",
+        source: r.source_url || deriveSource(r.category),
+        ticker: r.ticker || "",
+        aka: r.aka || "",
+        frequency: r.frequency || "",
+        category: r.category || ""
+      };
+    }).filter(function(e){return e.date;});
+
+    return events;
+  });
 }
 
+function parseSheetDate(dateStr, monthStr){
+  if(!dateStr) return {start:"", end:""};
+  dateStr = String(dateStr).trim();
+  // Already YYYY-MM-DD
+  if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return {start:dateStr, end:""};
+
+  var MONTH_MAP = {January:"01",February:"02",March:"03",April:"04",May:"05",June:"06",July:"07",August:"08",September:"09",October:"10",November:"11",December:"12"};
+  var m = MONTH_MAP[monthStr] || "01";
+  var year = "2027";
+
+  // "Jan 26-27" or "Jan 1"
+  var parts = dateStr.split(" ");
+  var numPart = parts[parts.length-1];
+  if(numPart.indexOf("-") > -1){
+    var nums = numPart.split("-");
+    return {start:year+"-"+m+"-"+nums[0].padStart(2,"0"), end:year+"-"+m+"-"+nums[1].padStart(2,"0")};
+  }
+  return {start:year+"-"+m+"-"+numPart.padStart(2,"0"), end:""};
+}
+
+function deriveTime(notes){
+  if(!notes) return "";
+  if(notes.indexOf("8:30 AM") > -1) return "8:30 AM ET";
+  if(notes.indexOf("10:00 AM") > -1) return "10:00 AM ET";
+  if(notes.indexOf("2:00 PM") > -1) return "2:00 PM ET";
+  if(notes.indexOf("1:00 PM") > -1) return "1:00 PM ET";
+  return "";
+}
+
+function deriveName(category, event){
+  if(!category) return "";
+  if(category==="Market Holiday"||category==="Early Close") return "NYSE / NASDAQ";
+  if(category==="Fed / FOMC") return "Federal Reserve";
+  if(category==="Economic Release"){
+    if((event||"").indexOf("CPI")>-1||(event||"").indexOf("PPI")>-1||(event||"").indexOf("Jobs")>-1||(event||"").indexOf("NFP")>-1) return "Bureau of Labor Statistics";
+    if((event||"").indexOf("GDP")>-1||(event||"").indexOf("PCE")>-1) return "Bureau of Economic Analysis";
+    if((event||"").indexOf("ISM")>-1) return "Institute for Supply Management";
+    if((event||"").indexOf("Housing")>-1) return "U.S. Census Bureau / HUD";
+  }
+  return "";
+}
+
+function deriveLogo(category, event){
+  if(!category) return "";
+  if(category==="Market Holiday"||category==="Early Close") return logoUrl("nyse.com");
+  if(category==="Fed / FOMC") return logoUrl("federalreserve.gov");
+  if(category==="Economic Release"){
+    if((event||"").indexOf("CPI")>-1||(event||"").indexOf("PPI")>-1||(event||"").indexOf("Jobs")>-1||(event||"").indexOf("NFP")>-1) return logoUrl("bls.gov");
+    if((event||"").indexOf("GDP")>-1||(event||"").indexOf("PCE")>-1) return logoUrl("bea.gov");
+    if((event||"").indexOf("ISM")>-1) return logoUrl("ismworld.org");
+    if((event||"").indexOf("Housing")>-1) return logoUrl("census.gov");
+  }
+  return "";
+}
+
+function deriveSource(category){
+  if(!category) return "";
+  if(category==="Market Holiday"||category==="Early Close") return "https://www.nyse.com";
+  if(category==="Fed / FOMC") return "https://www.federalreserve.gov";
+  if(category==="Economic Release") return "https://www.bls.gov/schedule";
+  return "";
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
 function buildSidebar(){
   var today=new Date();today.setHours(0,0,0,0);
   if(allExpanded&&Object.keys(openMonths).length===0){
@@ -373,12 +438,6 @@ function buildSidebar(){
   var btn=document.getElementById("expandAllBtn");
   if(btn)btn.innerHTML=allExpanded?'<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Collapse All':'<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Expand All';
 }
-function handleMonthClick(el){
-  var key=el.getAttribute("data-key");
-  var y=parseInt(el.getAttribute("data-y"));
-  var mi=parseInt(el.getAttribute("data-mi"));
-  toggleMonth(key,y,mi);
-}
 
 function buildMonthGrid(y,mi,today,wStart,wEnd){
   var firstDay=new Date(y,mi,1),lastDay=new Date(y,mi+1,0),startDow=firstDay.getDay();
@@ -392,7 +451,7 @@ function buildMonthGrid(y,mi,today,wStart,wEnd){
     var cls="mgrid-cell";
     if(isTod)cls+=" today-cell";else if(inWk)cls+=" in-current-week";
     var dayEvts=events.filter(function(e){return e.date===dateStr&&e.showMini;}).slice(0,3);
-    var evtHtml=dayEvts.map(function(ev){return '<div class="mgrid-evt '+impCls(ev.impact)+'">'+(ev.title||"TBD")+'</div>';}).join("");
+    var evtHtml=dayEvts.map(function(ev){return '<div class="mgrid-evt '+impCls(ev.impact)+'">'+ev.title+'</div>';}).join("");
     html+='<div class="'+cls+'" data-date="'+dateStr+'" onclick="handleDateClick(this)"><div class="mgrid-date">'+d+'</div><div class="mgrid-events">'+evtHtml+'</div></div>';
   }
   var total=startDow+lastDay.getDate(),rem=total%7;
@@ -400,8 +459,9 @@ function buildMonthGrid(y,mi,today,wStart,wEnd){
   html+='</div>';
   return html;
 }
-function handleDateClick(el){jumpToDate(el.getAttribute("data-date"));}
 
+function handleMonthClick(el){toggleMonth(el.getAttribute("data-key"),parseInt(el.getAttribute("data-y")),parseInt(el.getAttribute("data-mi")));}
+function handleDateClick(el){jumpToDate(el.getAttribute("data-date"));}
 function toggleMonth(key,y,mi){
   if(openMonths[key])delete openMonths[key];else openMonths[key]=true;
   allExpanded=Object.keys(openMonths).length>=24;
@@ -429,125 +489,104 @@ function positionArrow(){
   arrow.style.left=(railW+sbW-1)+"px";
   if(weekNav){var wnRect=weekNav.getBoundingClientRect(),appRect=document.querySelector(".app").getBoundingClientRect();arrow.style.top=(wnRect.top-appRect.top+10)+"px";}
 }
+
+// ── WEEK RENDER ───────────────────────────────────────────────────────────────
 function renderWeek(){
   var today=new Date();today.setHours(0,0,0,0);
   var days=[];for(var i=0;i<7;i++){var d=new Date(weekStart);d.setDate(d.getDate()+i);days.push(d);}
   var byDate={};days.forEach(function(d){byDate[ds(d)]=[];});
   events.forEach(function(ev){if(byDate[ev.date]!==undefined)byDate[ev.date].push(ev);});
   var fmt=function(d){return d.toLocaleDateString("en-US",{month:"short",day:"numeric"});};
-  document.getElementById("weekSub").textContent=fmt(days[0])+" \u2013 "+fmt(days[6])+"  \u00b7  Click any event to edit.";
+  document.getElementById("weekSub").textContent=fmt(days[0])+" – "+fmt(days[6])+"  ·  Click any event to view details.";
   document.getElementById("weekGrid").innerHTML=days.map(function(d,i){
     var isToday=d.getTime()===today.getTime(),evs=byDate[ds(d)]||[],monthStr=MONTHS_SH[d.getMonth()];
     var cardsHtml=evs.map(function(ev){return cardHtml(ev);}).join("");
-    return '<div class="day-col"><div class="day-header'+(isToday?" today":"")+'"><div class="day-name">'+DAYS[i]+'</div><div class="day-num">'+d.getDate()+'</div><div class="day-month">'+monthStr+'</div></div><div class="day-events">'+cardsHtml+'<div class="add-evt" data-date="'+ds(d)+'" onclick="handleAddClick(this)">+ Add Event</div></div></div>';
+    return '<div class="day-col"><div class="day-header'+(isToday?" today":"")+'"><div class="day-name">'+DAYS[i]+'</div><div class="day-num">'+d.getDate()+'</div><div class="day-month">'+monthStr+'</div></div><div class="day-events">'+cardsHtml+'</div></div>';
   }).join("");
 }
-function handleAddClick(el){addEvent(el.getAttribute("data-date"));}
+
 function cardHtml(ev){
   var cls=impCls(ev.impact),label=impLabel(ev.impact);
-  var logoHtml=ev.logo?('<img class="card-logo" src="'+ev.logo+'" alt="" onerror="this.style.display=\'none\'">') :'';
-  return '<div class="ecard '+cls+'" data-id="'+ev.id+'" onclick="handleCardClick(this)">'+(ev.time?'<div class="card-time">'+ev.time+'</div>':'')+logoHtml+'<div class="card-title">'+(ev.title||"TBD")+'</div>'+(label?'<div class="card-impact '+cls+'">'+label+'</div>':'')+'</div>';
+  var logoHtml=ev.logo?('<img class="card-logo" src="'+ev.logo+'" alt="" onerror="this.style.display='none'">') :'';
+  return '<div class="ecard '+cls+'" data-id="'+ev.id+'" onclick="handleCardClick(this)">'+(ev.time?'<div class="card-time">'+ev.time+'</div>':'')+logoHtml+'<div class="card-title">'+ev.title+'</div>'+(label?'<div class="card-impact '+cls+'">'+label+'</div>':'')+'</div>';
 }
-function handleCardClick(el){openEdit(el.getAttribute("data-id"));}
-function openEdit(rawId){
-  var id=parseInt(rawId);
+function handleCardClick(el){openModal(parseInt(el.getAttribute("data-id")));}
+
+// ── READ-ONLY MODAL ───────────────────────────────────────────────────────────
+function openModal(id){
   var ev=null;for(var i=0;i<events.length;i++){if(events[i].id===id){ev=events[i];break;}}
   if(!ev)return;
-  editingId=id;
-  var heroImg=document.getElementById("heroImg"),heroPlh=document.getElementById("heroPlaceholder"),heroBtn=document.getElementById("heroChangeBtn");
-  if(ev.hero){heroImg.src=ev.hero;heroImg.style.display="block";heroPlh.style.display="none";heroBtn.style.display="block";}
-  else{heroImg.style.display="none";heroPlh.style.display="flex";heroBtn.style.display="none";}
-  var logoImg=document.getElementById("logoImg"),logoIco=document.getElementById("logoPlaceholderIcon");
-  if(ev.logo){logoImg.src=ev.logo;logoImg.style.display="block";logoIco.style.display="none";}
-  else{logoImg.style.display="none";logoIco.style.display="block";}
-  document.getElementById("fTitle").value=ev.title||"";
-  document.getElementById("fName").value=ev.name||"";
-  document.getElementById("fTicker").value=ev.ticker||"";
-  document.getElementById("fTime").value=ev.time||"";
-  document.getElementById("fAka").value=ev.aka||"";
-  document.getElementById("fSource").value=ev.source||"";
-  document.getElementById("fImpact").value=ev.impact||"none";
-  document.getElementById("fStartDate").value=ev.date||"";
-  document.getElementById("fEndDate").value=ev.endDate||"";
-  document.getElementById("fShowMini").checked=ev.showMini!==false;
-  document.getElementById("fFrequency").value=ev.frequency||"";
-  document.getElementById("fMeasures").value=ev.measures||"";
-  document.getElementById("fWhyMatters").value=ev.whyMatters||"";
-  document.getElementById("fDetails").innerHTML=ev.details||"";
-  document.getElementById("fAllDay").checked=ev.allDay||false;
+
+  // Hero
+  var heroImg=document.getElementById("modalHeroImg");
+  if(ev.hero){heroImg.src=ev.hero;heroImg.style.display="block";}
+  else{heroImg.style.display="none";}
+
+  // Logo
+  var logoEl=document.getElementById("modalLogo");
+  if(ev.logo){logoEl.src=ev.logo;logoEl.style.display="block";}
+  else{logoEl.style.display="none";}
+
+  document.getElementById("modalTitle").textContent=ev.title;
+  document.getElementById("modalName").textContent=ev.name||ev.category||"";
+
+  // Meta tags
+  var meta="";
+  if(ev.impact&&ev.impact!=="none")meta+='<span class="modal-tag '+ev.impact+'">'+impLabel(ev.impact)+'</span>';
+  if(ev.time)meta+='<span class="modal-tag">'+ev.time+'</span>';
+  if(ev.frequency)meta+='<span class="modal-tag">'+ev.frequency.charAt(0).toUpperCase()+ev.frequency.slice(1)+'</span>';
+  if(ev.ticker)meta+='<span class="modal-tag">'+ev.ticker+'</span>';
+  if(ev.aka&&ev.aka!==ev.category)meta+='<span class="modal-tag">'+ev.aka+'</span>';
+  document.getElementById("modalMeta").innerHTML=meta;
+
+  // Content sections — only show if populated
+  var hasContent=ev.whyMatters||ev.measures||ev.details;
+  document.getElementById("modalDiv1").style.display=hasContent?"block":"none";
+
+  var whySec=document.getElementById("modalWhySection");
+  if(ev.whyMatters){whySec.style.display="block";document.getElementById("modalWhy").textContent=ev.whyMatters;}
+  else{whySec.style.display="none";}
+
+  var measSec=document.getElementById("modalMeasuresSection");
+  if(ev.measures){measSec.style.display="block";document.getElementById("modalMeasures").textContent=ev.measures;}
+  else{measSec.style.display="none";}
+
+  var detSec=document.getElementById("modalDetailsSection");
+  if(ev.details){detSec.style.display="block";document.getElementById("modalDetails").innerHTML=ev.details;}
+  else{detSec.style.display="none";}
+
+  // Source link
+  var srcEl=document.getElementById("modalSource");
+  var div2=document.getElementById("modalDiv2");
+  if(ev.source){srcEl.href=ev.source;srcEl.style.display="inline";div2.style.display="block";}
+  else{srcEl.style.display="none";div2.style.display="none";}
+
   document.getElementById("overlay").classList.add("open");
 }
+function closeModal(){document.getElementById("overlay").classList.remove("open");}
+function overlayClick(e){if(e.target===document.getElementById("overlay"))closeModal();}
 
 function prevWeek(){weekStart.setDate(weekStart.getDate()-7);buildSidebar();renderWeek();}
 function nextWeek(){weekStart.setDate(weekStart.getDate()+7);buildSidebar();renderWeek();}
 function goToday(){weekStart=getWeekStart(new Date());buildSidebar();renderWeek();}
-function addEvent(dateStr){
-  var ev={id:Date.now(),title:"TBD",name:"",ticker:"",time:"",aka:"",source:"",impact:"none",date:dateStr,endDate:"",showMini:true,frequency:"",measures:"",whyMatters:"",details:"",logo:"",hero:""};
-  events.push(ev);openEdit(ev.id);
-}
-function saveEvent(){
-  if(!editingId)return;
-  var ev=null;for(var i=0;i<events.length;i++){if(events[i].id===editingId){ev=events[i];break;}}
-  if(!ev)return;
-  ev.title=document.getElementById("fTitle").value||"TBD";
-  ev.name=document.getElementById("fName").value;
-  ev.ticker=document.getElementById("fTicker").value;
-  ev.time=document.getElementById("fTime").value;
-  ev.aka=document.getElementById("fAka").value;
-  ev.source=document.getElementById("fSource").value;
-  ev.impact=document.getElementById("fImpact").value;
-  ev.date=document.getElementById("fStartDate").value;
-  ev.endDate=document.getElementById("fEndDate").value;
-  ev.showMini=document.getElementById("fShowMini").checked;
-  ev.frequency=document.getElementById("fFrequency").value;
-  ev.measures=document.getElementById("fMeasures").value;
-  ev.whyMatters=document.getElementById("fWhyMatters").value;
-  ev.details=document.getElementById("fDetails").innerHTML;
-  ev.allDay=document.getElementById("fAllDay").checked;
-  closeModal();renderWeek();buildSidebar();
-}
-function deleteEvent(){
-  if(!editingId)return;
-  events=events.filter(function(e){return e.id!==editingId;});
-  closeModal();renderWeek();buildSidebar();
-}
-function closeModal(){document.getElementById("overlay").classList.remove("open");editingId=null;}
-function overlayClick(e){if(e.target===document.getElementById("overlay"))closeModal();}
-function triggerHeroUpload(){document.getElementById("heroFileInput").click();}
-function handleHeroUpload(e){
-  var file=e.target.files[0];if(!file)return;
-  var r=new FileReader();
-  r.onload=function(ev){
-    var src=ev.target.result;
-    document.getElementById("heroImg").src=src;document.getElementById("heroImg").style.display="block";
-    document.getElementById("heroPlaceholder").style.display="none";document.getElementById("heroChangeBtn").style.display="block";
-    for(var i=0;i<events.length;i++){if(events[i].id===editingId){events[i].hero=src;break;}}
-  };r.readAsDataURL(file);
-}
-function handleLogoUpload(e){
-  var file=e.target.files[0];if(!file)return;
-  var r=new FileReader();
-  r.onload=function(ev){
-    var src=ev.target.result;
-    document.getElementById("logoImg").src=src;document.getElementById("logoImg").style.display="block";
-    document.getElementById("logoPlaceholderIcon").style.display="none";
-    for(var i=0;i<events.length;i++){if(events[i].id===editingId){events[i].logo=src;break;}}
-  };r.readAsDataURL(file);
-}
-function fmt(cmd){document.execCommand(cmd,false,null);}
+
+// ── WORLD CLOCK ───────────────────────────────────────────────────────────────
 function updateClocks(){
   var opt={hour:'2-digit',minute:'2-digit',hour12:true};
   var zones={'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
   Object.keys(zones).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=new Date().toLocaleTimeString('en-US',Object.assign({},opt,{timeZone:zones[id]}));});
 }
 setInterval(updateClocks,1000);updateClocks();
-</script>
-<script>
-var CONFIRMED_EVENTS=[{"id": 10000, "title": "New Year's Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-01-01", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10001, "title": "ISM Manufacturing PMI — Dec 2026", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-01-04", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10002, "title": "ISM Services PMI — Dec 2026", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-01-06", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10003, "title": "December 2026 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-01-08", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10004, "title": "December 2026 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-01-13", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10005, "title": "PPI — December 2026", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-01-14", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10006, "title": "Martin Luther King Jr. Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-01-18", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10007, "title": "Housing Starts & Building Permits — Dec 2026", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-01-20", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10008, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-01-26", "endDate": "2027-01-27", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10009, "title": "GDP Advance Estimate — Q4 2026", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-01-28", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10010, "title": "December 2026 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-01-29", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10011, "title": "ISM Manufacturing PMI — Jan 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-02-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10012, "title": "ISM Services PMI — Jan 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-02-04", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10013, "title": "January 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-02-05", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10014, "title": "January 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-02-10", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10015, "title": "PPI — January 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-02-11", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10016, "title": "Presidents' Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-02-15", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10017, "title": "Housing Starts & Building Permits — Jan 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-02-17", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10018, "title": "GDP Second Estimate — Q4 2026", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-02-25", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10019, "title": "January 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-02-26", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10020, "title": "ISM Manufacturing PMI — Feb 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-03-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10021, "title": "ISM Services PMI — Feb 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-03-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10022, "title": "February 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-03-05", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10023, "title": "February 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-03-10", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10024, "title": "PPI — February 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-03-11", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10025, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-03-15", "endDate": "2027-03-16", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10026, "title": "Housing Starts & Building Permits — Feb 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-03-17", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10027, "title": "GDP Third Estimate — Q4 2026 + Corp Profits", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-03-25", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10028, "title": "Good Friday – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-03-26", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10029, "title": "February 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-03-26", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10030, "title": "ISM Manufacturing PMI — Mar 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-04-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10031, "title": "March 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-04-02", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10032, "title": "ISM Services PMI — Mar 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-04-05", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10033, "title": "PPI — March 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-04-11", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10034, "title": "March 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-04-13", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10035, "title": "Housing Starts & Building Permits — Mar 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-04-16", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10036, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-04-28", "endDate": "", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10037, "title": "GDP Advance Estimate — Q1 2027", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-04-29", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10038, "title": "March 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-04-30", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10039, "title": "ISM Manufacturing PMI — Apr 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-05-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10040, "title": "ISM Services PMI — Apr 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-05-05", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10041, "title": "April 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-05-07", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10042, "title": "April 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-05-12", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10043, "title": "PPI — April 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-05-13", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10044, "title": "Housing Starts & Building Permits — Apr 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-05-19", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10045, "title": "GDP Second Estimate — Q1 2027", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-05-27", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10046, "title": "April 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-05-28", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10047, "title": "Memorial Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-05-31", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10048, "title": "ISM Manufacturing PMI — May 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-06-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10049, "title": "ISM Services PMI — May 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-06-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10050, "title": "May 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-06-04", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10051, "title": "May 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-06-09", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10052, "title": "PPI — May 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-06-10", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10053, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-06-15", "endDate": "2027-06-16", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10054, "title": "Housing Starts & Building Permits — May 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-06-16", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10055, "title": "Juneteenth (observed) – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-06-18", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "Juneteenth falls on Sat June 19; observed Fri June 18", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10056, "title": "May 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-06-25", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10057, "title": "GDP Third Estimate — Q1 2027 + Corp Profits", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-06-25", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10058, "title": "ISM Manufacturing PMI — Jun 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-07-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10059, "title": "Independence Day – NYSE/NASDAQ Closed (observed Jul 5)", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-07-04", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "Jul 4 falls on Sunday; markets closed Monday Jul 5", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10060, "title": "Independence Day Observed – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-07-05", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10061, "title": "ISM Services PMI — Jun 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-07-06", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10062, "title": "June 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-07-09", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10063, "title": "June 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-07-14", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10064, "title": "PPI — June 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-07-15", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10065, "title": "Housing Starts & Building Permits — Jun 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-07-16", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10066, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-07-28", "endDate": "2027-07-29", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10067, "title": "June 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-07-30", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10068, "title": "GDP Advance Estimate — Q2 2027", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-07-30", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10069, "title": "ISM Manufacturing PMI — Jul 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-08-02", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10070, "title": "ISM Services PMI — Jul 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-08-04", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10071, "title": "July 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-08-06", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10072, "title": "July 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-08-11", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10073, "title": "PPI — July 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-08-12", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10074, "title": "Housing Starts & Building Permits — Jul 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-08-18", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10075, "title": "GDP Second Estimate — Q2 2027", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-08-26", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10076, "title": "July 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-08-27", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10077, "title": "ISM Manufacturing PMI — Aug 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-09-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10078, "title": "August 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-09-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10079, "title": "ISM Services PMI — Aug 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-09-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10080, "title": "Labor Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-09-06", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10081, "title": "August 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-09-08", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10082, "title": "PPI — August 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-09-10", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10083, "title": "Housing Starts & Building Permits — Aug 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-09-17", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10084, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-09-21", "endDate": "2027-09-22", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10085, "title": "August 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-09-24", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10086, "title": "GDP Third Estimate — Q2 2027 + Corp Profits", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-09-30", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10087, "title": "ISM Manufacturing PMI — Sep 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-10-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10088, "title": "ISM Services PMI — Sep 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-10-05", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10089, "title": "September 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-10-08", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10090, "title": "September 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-10-13", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10091, "title": "PPI — September 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-10-14", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10092, "title": "Housing Starts & Building Permits — Sep 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-10-19", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10093, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-10-26", "endDate": "2027-10-27", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10094, "title": "GDP Advance Estimate — Q3 2027", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-10-28", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10095, "title": "September 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-10-29", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10096, "title": "ISM Manufacturing PMI — Oct 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-11-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10097, "title": "ISM Services PMI — Oct 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-11-04", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10098, "title": "October 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-11-05", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10099, "title": "October 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-11-10", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10100, "title": "PPI — October 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-11-10", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10101, "title": "Veterans Day – Bond Markets Closed (Equities Open)", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "medium", "date": "2027-11-11", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "NYSE/NASDAQ remain open; Treasury markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10102, "title": "Housing Starts & Building Permits — Oct 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-11-17", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10103, "title": "October 2027 PCE / Personal Income & Spending", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-11-24", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Personal Consumption Expenditures (PCE) price index — headline and core; Personal Income and Spending", "whyMatters": "The Fed's preferred inflation gauge with a 2% target. The single most important monthly inflation reading for FOMC rate decisions.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10104, "title": "GDP Second Estimate — Q3 2027", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-11-24", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10105, "title": "Thanksgiving Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-11-25", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10106, "title": "Day After Thanksgiving – Early Close (1:00 PM ET)", "name": "NYSE / NASDAQ", "ticker": "", "time": "1:00 PM ET", "aka": "Early Close", "source": "https://www.nyse.com", "impact": "medium", "date": "2027-11-26", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "NYSE/NASDAQ close at 1:00 PM ET", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10107, "title": "ISM Manufacturing PMI — Nov 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-12-01", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Manufacturing sector activity — new orders, production, employment, inventories", "whyMatters": "A reading above 50 signals expansion; below 50 signals contraction. One of the most-watched leading indicators of U.S. economic health.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10108, "title": "November 2027 Jobs Report (NFP)", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-12-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Non-Farm Payrolls (NFP), unemployment rate, labor force participation, average hourly earnings", "whyMatters": "The single most market-moving monthly data release. Directly impacts equities, bonds, the dollar, and gold.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10109, "title": "ISM Services PMI — Nov 2027", "name": "Institute for Supply Management", "ticker": "", "time": "10:00 AM ET", "aka": "Economic Release", "source": "https://www.ismworld.org", "impact": "high", "date": "2027-12-03", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Services sector activity — business activity, new orders, employment, prices paid", "whyMatters": "Services represent ~80% of U.S. GDP. Closely watched by the Federal Reserve.", "details": "", "logo": "https://img.logo.dev/ismworld.org", "hero": ""}, {"id": 10110, "title": "November 2027 CPI Release", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-12-08", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Consumer Price Index — headline CPI and core CPI (ex food & energy), YoY and MoM", "whyMatters": "The primary consumer inflation gauge watched by the Fed. Surprises trigger major moves in equities, Treasuries, and currencies.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10111, "title": "PPI — November 2027", "name": "Bureau of Labor Statistics", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bls.gov/schedule", "impact": "high", "date": "2027-12-09", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "Producer Price Index — wholesale pricing pressure for finished goods, intermediate goods, and services", "whyMatters": "A leading indicator of future consumer inflation. Rising PPI often flows through to CPI ahead of Fed action.", "details": "", "logo": "https://img.logo.dev/bls.gov", "hero": ""}, {"id": 10112, "title": "FOMC Meeting & Rate Decision", "name": "Federal Reserve", "ticker": "", "time": "2:00 PM ET", "aka": "Fed / FOMC", "source": "https://www.federalreserve.gov", "impact": "high", "date": "2027-12-14", "endDate": "2027-12-15", "showMini": true, "frequency": "six-weeks", "measures": "Federal Funds Rate target range", "whyMatters": "The FOMC sets the benchmark interest rate that influences all borrowing costs in the economy. Rate decisions are among the most market-moving events of the year.", "details": "", "logo": "https://img.logo.dev/federalreserve.gov", "hero": ""}, {"id": 10113, "title": "Housing Starts & Building Permits — Nov 2027", "name": "U.S. Census Bureau / HUD", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.census.gov", "impact": "medium", "date": "2027-12-17", "endDate": "", "showMini": true, "frequency": "monthly", "measures": "New residential construction — housing starts (annualized) and building permits issued", "whyMatters": "A leading indicator of construction activity and homebuilder stocks. Highly sensitive to mortgage rates driven by Fed policy.", "details": "", "logo": "https://img.logo.dev/census.gov", "hero": ""}, {"id": 10114, "title": "GDP Third Estimate — Q3 2027 + Corp Profits", "name": "Bureau of Economic Analysis", "ticker": "", "time": "8:30 AM ET", "aka": "Economic Release", "source": "https://www.bea.gov/news/schedule", "impact": "high", "date": "2027-12-22", "endDate": "", "showMini": true, "frequency": "quarterly", "measures": "Gross Domestic Product — real GDP growth rate (advance, second, and third estimates)", "whyMatters": "The broadest measure of U.S. economic output. Significant misses vs. consensus shift Fed rate expectations.", "details": "", "logo": "https://img.logo.dev/bea.gov", "hero": ""}, {"id": 10115, "title": "Christmas Day – NYSE/NASDAQ Closed", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Market Holiday", "source": "https://www.nyse.com", "impact": "high", "date": "2027-12-25", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "All U.S. equity markets closed", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}, {"id": 10116, "title": "New Year's Eve – Bond Market Early Close (2:00 PM ET)", "name": "NYSE / NASDAQ", "ticker": "", "time": "", "aka": "Early Close", "source": "https://www.nyse.com", "impact": "medium", "date": "2027-12-31", "endDate": "", "showMini": true, "frequency": "annually", "measures": "", "whyMatters": "SIFMA recommends early bond market close", "details": "", "logo": "https://img.logo.dev/nyse.com", "hero": ""}];
-events=buildDefaultEvents();
-buildSidebar();
-renderWeek();
-setTimeout(positionArrow,50);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+fetchEvents().then(function(){
+  buildSidebar();
+  renderWeek();
+  setTimeout(positionArrow,50);
+}).catch(function(err){
+  console.error("Failed to load events:", err);
+  document.getElementById("weekGrid").innerHTML='<div class="load-error">Could not load events. Please refresh.</div>';
+});
 </script>
 </body>
 </html>
