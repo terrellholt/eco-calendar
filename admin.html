@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar Admin</title>
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a32;
+    --border2: #38383f;
+    --accent: #e8c547;
+    --accent2: #c9a e30;
+    --text: #e8e8ec;
+    --text2: #9898a8;
+    --text3: #5a5a6a;
+    --red: #e05555;
+    --green: #4caf80;
+    --blue: #5b8dee;
+    --high: #e05555;
+    --med: #e89844;
+    --low: #4caf80;
+    --radius: 8px;
+    --font: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,13,15,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 52px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar-logo { font-family: var(--font); font-size: 13px; color: var(--accent); letter-spacing: 0.05em; }
+  .topbar-badge { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--text3); font-family: var(--font); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .status-text { font-size: 12px; color: var(--text3); font-family: var(--font); }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    padding: 16px 24px 12px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 380px; }
+  .search-wrap input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); padding: 8px 12px 8px 36px; font-size: 13px; outline: none;
+    font-family: var(--sans); transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--border2); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+  select.filter-sel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); padding: 8px 12px; font-size: 13px; outline: none; cursor: pointer;
+    font-family: var(--sans); appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a5a6a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 30px;
+  }
+  .count-badge { font-family: var(--font); font-size: 12px; color: var(--text3); margin-left: auto; }
+  .btn {
+    padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-family: var(--sans);
+    cursor: pointer; border: none; transition: all 0.15s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: #0d0d0f; font-weight: 600; }
+  .btn-primary:hover { background: #f0d060; }
+  .btn-ghost { background: var(--surface); border: 1px solid var(--border); color: var(--text2); }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+  .btn-danger { background: rgba(224,85,85,0.15); border: 1px solid rgba(224,85,85,0.3); color: var(--red); }
+  .btn-danger:hover { background: rgba(224,85,85,0.25); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── TABLE WRAP ── */
+  .table-wrap { overflow-x: auto; padding: 0 24px 24px; }
+  table { width: 100%; border-collapse: collapse; min-width: 900px; }
+  thead th {
+    text-align: left; font-size: 11px; font-family: var(--font); color: var(--text3);
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 12px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--text2); }
+  thead th.sorted { color: var(--accent); }
+  tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+  tbody tr:hover { background: var(--surface); }
+  tbody td { padding: 10px 12px; vertical-align: middle; }
+  .td-date { font-family: var(--font); font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .td-event { font-weight: 500; color: var(--text); max-width: 280px; }
+  .td-event-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .td-cat { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; color: var(--text2); white-space: nowrap; display: inline-block; }
+  .impact-pill {
+    display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: var(--font);
+  }
+  .impact-high { background: rgba(224,85,85,0.15); color: var(--high); border: 1px solid rgba(224,85,85,0.3); }
+  .impact-medium { background: rgba(232,152,68,0.15); color: var(--med); border: 1px solid rgba(232,152,68,0.3); }
+  .impact-low { background: rgba(76,175,128,0.15); color: var(--low); border: 1px solid rgba(76,175,128,0.3); }
+  .td-enrichment { display: flex; gap: 5px; flex-wrap: wrap; }
+  .enrich-tag {
+    font-size: 10px; font-family: var(--font); padding: 2px 6px; border-radius: 3px;
+    border: 1px solid; white-space: nowrap;
+  }
+  .enrich-yes { background: rgba(91,141,238,0.12); color: var(--blue); border-color: rgba(91,141,238,0.3); }
+  .enrich-no  { background: var(--surface2); color: var(--text3); border-color: var(--border); opacity: 0.6; }
+
+  /* ── EMPTY / LOADING ── */
+  .state-msg { text-align: center; padding: 60px 24px; color: var(--text3); font-family: var(--font); font-size: 13px; }
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MODAL OVERLAY ── */
+  #editOverlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  #editOverlay.open { display: flex; }
+  .edit-panel {
+    background: var(--surface); border: 1px solid var(--border2); border-radius: 12px;
+    width: 680px; max-width: 95vw; max-height: 92vh;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+  .edit-header {
+    padding: 18px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-shrink: 0;
+  }
+  .edit-header-left { flex: 1; min-width: 0; }
+  .edit-event-title { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .edit-event-meta { font-size: 12px; color: var(--text3); font-family: var(--font); margin-top: 4px; }
+  .close-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .close-btn:hover { color: var(--text); border-color: var(--border2); }
+  .edit-body { padding: 20px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .edit-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+  .edit-save-status { font-size: 12px; font-family: var(--font); color: var(--text3); }
+  .edit-save-status.saving { color: var(--accent); }
+  .edit-save-status.saved { color: var(--green); }
+  .edit-save-status.error { color: var(--red); }
+
+  /* ── FORM FIELDS ── */
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-row { display: grid; gap: 12px; }
+  .field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  label { font-size: 11px; font-family: var(--font); color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+  label .field-note { font-size: 10px; color: var(--text3); opacity: 0.7; text-transform: none; letter-spacing: 0; font-weight: 400; }
+  input[type="text"], input[type="url"], textarea, select.field-sel {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); padding: 9px 12px; font-size: 13px; outline: none;
+    font-family: var(--sans); width: 100%; transition: border-color 0.15s;
+    resize: vertical;
+  }
+  input[type="text"]:focus, input[type="url"]:focus, textarea:focus, select.field-sel:focus { border-color: var(--accent); }
+  textarea { min-height: 72px; }
+  .field-hint { font-size: 11px; color: var(--text3); }
+
+  /* ── HERO POSITION PICKER ── */
+  .pos-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .pos-btn {
+    padding: 7px 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text2); font-size: 12px; font-family: var(--font); cursor: pointer;
+    text-align: center; transition: all 0.15s; user-select: none;
+  }
+  .pos-btn:hover { border-color: var(--border2); color: var(--text); }
+  .pos-btn.selected { background: rgba(232,197,71,0.12); border-color: var(--accent); color: var(--accent); }
+
+  /* ── IMPACTED ASSETS CHIPS ── */
+  .asset-wrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .asset-chip {
+    background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px;
+    padding: 3px 8px; font-size: 12px; font-family: var(--font); color: var(--text);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .asset-chip-remove { color: var(--text3); cursor: pointer; font-size: 14px; line-height: 1; }
+  .asset-chip-remove:hover { color: var(--red); }
+  .asset-add-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 12px; font-family: var(--font); color: var(--text); outline: none; width: 80px; }
+  .asset-add-input:focus { border-color: var(--accent); }
+
+  /* ── HERO PREVIEW ── */
+  .hero-preview-wrap { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); height: 120px; background: var(--surface2); }
+  .hero-preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .hero-preview-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 12px; font-family: var(--font); }
+
+  /* ── SOURCE SELECTOR ── */
+  .source-tabs { display: flex; gap: 1px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 2px; overflow: hidden; }
+  .source-tab { flex: 1; padding: 6px 8px; text-align: center; font-size: 12px; color: var(--text3); cursor: pointer; border-radius: 4px; transition: all 0.15s; font-family: var(--font); }
+  .source-tab.active { background: var(--surface); color: var(--text); }
+  .source-tab:hover:not(.active) { color: var(--text2); }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+  .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .section-divider-label { font-size: 10px; font-family: var(--font); color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 500;
+    background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px;
+    padding: 12px 18px; font-size: 13px; color: var(--text);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(80px); opacity: 0; transition: all 0.25s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success .toast-icon { color: var(--green); }
+  #toast.error .toast-icon { color: var(--red); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .field-row.cols-2, .field-row.cols-3 { grid-template-columns: 1fr; }
+    .edit-panel { max-height: 98vh; }
+    .pos-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">ECO CALENDAR</span>
+    <span class="topbar-badge">ADMIN</span>
+  </div>
+  <div class="topbar-right">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-text" id="statusText">connecting…</span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+      <path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Search events…" oninput="filterTable()">
+  </div>
+  <select class="filter-sel" id="impactFilter" onchange="filterTable()">
+    <option value="">All Impact</option>
+    <option value="high">High</option>
+    <option value="medium">Medium</option>
+    <option value="low">Low</option>
+  </select>
+  <select class="filter-sel" id="catFilter" onchange="filterTable()">
+    <option value="">All Categories</option>
+  </select>
+  <select class="filter-sel" id="enrichFilter" onchange="filterTable()">
+    <option value="">All Enrichment</option>
+    <option value="missing">Missing enrichment</option>
+    <option value="has-hero">Has hero image</option>
+    <option value="has-why">Has why it matters</option>
+  </select>
+  <span class="count-badge" id="countBadge"></span>
+</div>
+
+<div class="table-wrap">
+  <div id="tableState" class="state-msg"><span class="spinner"></span></div>
+  <table id="eventsTable" style="display:none">
+    <thead>
+      <tr>
+        <th onclick="sortBy('date')">DATE</th>
+        <th onclick="sortBy('event')">EVENT</th>
+        <th>CATEGORY</th>
+        <th onclick="sortBy('impact')">IMPACT</th>
+        <th>ENRICHMENT STATUS</th>
+        <th style="width:60px"></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<!-- ── EDIT MODAL ── -->
+<div id="editOverlay" onclick="overlayClick(event)">
+  <div class="edit-panel">
+    <div class="edit-header">
+      <div class="edit-header-left">
+        <div class="edit-event-title" id="editTitle"></div>
+        <div class="edit-event-meta" id="editMeta"></div>
+      </div>
+      <div class="close-btn" onclick="closeEdit()">✕</div>
+    </div>
+    <div class="edit-body" id="editBody">
+      <!-- injected by JS -->
+    </div>
+    <div class="edit-footer">
+      <div class="edit-save-status" id="editStatus"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="closeEdit()">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveChanges()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3.5 3.5L11 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
+
+<script>
+var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempqZ3R6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwODM3NDcsImV4cCI6MjA2MjY1OTc0N30.4HBFPSQRzjDaSVZyMjqxBuPuDxMBtLSHCXb_i2VZFtc';
+
+var allEvents = [];
+var filteredEvents = [];
+var currentEvent = null;
+var sortCol = 'date';
+var sortDir = 1;
+
+// ── SUPABASE HELPERS ──
+function supaHeaders() {
+  return { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+}
+
+function supaFetch(path, opts) {
+  return fetch(SUPA_URL + path, Object.assign({ headers: supaHeaders() }, opts || {})).then(function(r) {
+    if (!r.ok) return r.text().then(function(t) { throw new Error(t); });
+    return r.text().then(function(t) { try { return JSON.parse(t); } catch(e) { return null; } });
+  });
+}
+
+// ── LOAD ──
+function loadEvents() {
+  document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
+  document.getElementById('eventsTable').style.display = 'none';
+
+  var url = '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency,hero_position)&order=date.asc&limit=2000';
+  supaFetch(url)
+    .then(function(data) {
+      allEvents = Array.isArray(data) ? data : [];
+      document.getElementById('statusDot').style.background = '#4caf80';
+      document.getElementById('statusDot').style.boxShadow = '0 0 6px #4caf80';
+      document.getElementById('statusText').textContent = allEvents.length + ' events loaded';
+      populateCategories();
+      filterTable();
+      document.getElementById('tableState').style.display = 'none';
+      document.getElementById('eventsTable').style.display = 'table';
+    })
+    .catch(function(err) {
+      console.error(err);
+      document.getElementById('statusDot').style.background = '#e05555';
+      document.getElementById('statusText').textContent = 'connection error';
+      document.getElementById('tableState').innerHTML = '<div style="color:#e05555">Failed to load. Check your Supabase connection.</div>';
+    });
+}
+
+function populateCategories() {
+  var cats = {};
+  allEvents.forEach(function(e) { if (e.category) cats[e.category] = 1; });
+  var sel = document.getElementById('catFilter');
+  Object.keys(cats).sort().forEach(function(c) {
+    var opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+
+// ── FILTER & SORT ──
+function filterTable() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var imp = document.getElementById('impactFilter').value;
+  var cat = document.getElementById('catFilter').value;
+  var enr = document.getElementById('enrichFilter').value;
+
+  filteredEvents = allEvents.filter(function(e) {
+    if (q && (e.event || '').toLowerCase().indexOf(q) === -1 && (e.category || '').toLowerCase().indexOf(q) === -1) return false;
+    if (imp && (e.impact || '').toLowerCase() !== imp) return false;
+    if (cat && e.category !== cat) return false;
+    var ent = e.entity || {};
+    var heroUrl = e.hero_url || ent.hero_url || '';
+    var why = e.why_it_matters || ent.why_it_matters || '';
+    if (enr === 'missing' && heroUrl && why) return false;
+    if (enr === 'has-hero' && !heroUrl) return false;
+    if (enr === 'has-why' && !why) return false;
+    return true;
+  });
+
+  // sort
+  filteredEvents.sort(function(a, b) {
+    var av = (a[sortCol] || '').toString().toLowerCase();
+    var bv = (b[sortCol] || '').toString().toLowerCase();
+    return sortDir * (av < bv ? -1 : av > bv ? 1 : 0);
+  });
+
+  document.getElementById('countBadge').textContent = filteredEvents.length + ' / ' + allEvents.length + ' events';
+  renderTable();
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir = -sortDir;
+  else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('thead th').forEach(function(th) { th.classList.remove('sorted'); });
+  filterTable();
+}
+
+// ── RENDER TABLE ──
+function renderTable() {
+  var tb = document.getElementById('tableBody');
+  if (!filteredEvents.length) {
+    tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3);font-family:var(--font)">No events match your filters</td></tr>';
+    return;
+  }
+
+  var html = '';
+  filteredEvents.forEach(function(ev, i) {
+    var ent = ev.entity || {};
+    var heroUrl = ev.hero_url || ent.hero_url || '';
+    var logoUrl = ev.logo_url || ent.logo_url || '';
+    var why = ev.why_it_matters || ent.why_it_matters || '';
+    var imp = (ev.impact || 'none').toLowerCase();
+    var impClass = imp === 'high' ? 'impact-high' : imp === 'medium' ? 'impact-medium' : imp === 'low' ? 'impact-low' : '';
+
+    var enrichHtml = [
+      ['hero', !!heroUrl],
+      ['logo', !!logoUrl],
+      ['why', !!why],
+      ['assets', !!(ev.impacted_assets || ent.impacted_assets)],
+    ].map(function(pair) {
+      return '<span class="enrich-tag ' + (pair[1] ? 'enrich-yes' : 'enrich-no') + '">' + pair[0] + '</span>';
+    }).join('');
+
+    var dateStr = ev.date ? String(ev.date).substring(0, 10) : '';
+
+    html += '<tr onclick="openEdit(' + i + ')">'
+      + '<td class="td-date">' + dateStr + '</td>'
+      + '<td class="td-event"><div>' + escHtml(ev.event || '—') + '</div>'
+      + (ev.display_time ? '<div class="td-event-sub">⏰ ' + escHtml(ev.display_time) + '</div>' : '')
+      + '</td>'
+      + '<td><span class="td-cat">' + escHtml(ev.category || '—') + '</span></td>'
+      + '<td>' + (impClass ? '<span class="impact-pill ' + impClass + '">' + imp.toUpperCase() + '</span>' : '<span style="color:var(--text3)">—</span>') + '</td>'
+      + '<td><div class="td-enrichment">' + enrichHtml + '</div></td>'
+      + '<td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEdit(' + i + ')">Edit</button></td>'
+      + '</tr>';
+  });
+  tb.innerHTML = html;
+}
+
+// ── EDIT MODAL ──
+function openEdit(idx) {
+  currentEvent = filteredEvents[idx];
+  var ev = currentEvent;
+  var ent = ev.entity || {};
+
+  document.getElementById('editTitle').textContent = ev.event || 'Untitled Event';
+  document.getElementById('editMeta').textContent = (ev.date ? String(ev.date).substring(0,10) : '') + (ev.category ? '  ·  ' + ev.category : '') + (ev.impact ? '  ·  ' + (ev.impact).toUpperCase() : '');
+
+  var heroUrl = ev.hero_url || ent.hero_url || '';
+  var logoUrl = ev.logo_url || ent.logo_url || '';
+  var heroPos = ev.hero_position || ent.hero_position || 'center';
+  var why = ev.why_it_matters || ent.why_it_matters || '';
+  var measures = ev.measures || ent.measures || '';
+  var details = ev.details || '';
+  var assets = ev.impacted_assets || ent.impacted_assets || '';
+  var sourceUrl = ev.source_url || '';
+  var displayTime = ev.display_time || '';
+  var ticker = ev.ticker || '';
+  var aka = ev.aka || '';
+  var frequency = ev.frequency || ent.frequency || '';
+
+  // Determine source: event-level overrides entity-level, flag accordingly
+  var heroSource = ev.hero_url ? 'event' : (ent.hero_url ? 'entity' : 'event');
+  var whySource = ev.why_it_matters ? 'event' : (ent.why_it_matters ? 'entity' : 'event');
+
+  var posOptions = ['top left','top center','top right','center','bottom left','bottom center','bottom right'];
+  var posLabels  = ['↖ TL','↑ TC','↗ TR','⊙ Center','↙ BL','↓ BC','↘ BR'];
+  var posHtml = posOptions.map(function(p, i) {
+    return '<div class="pos-btn' + (heroPos === p ? ' selected' : '') + '" data-pos="' + p + '" onclick="selectPos(this)">' + posLabels[i] + '</div>';
+  }).join('');
+
+  // Build asset chips
+  var assetArr = assets ? assets.split(',').map(function(a){return a.trim();}).filter(Boolean) : [];
+  var assetChips = assetArr.map(function(a) {
+    return '<span class="asset-chip"><span>' + escHtml(a) + '</span><span class="asset-chip-remove" onclick="removeAsset(this)">×</span></span>';
+  }).join('');
+
+  document.getElementById('editBody').innerHTML = `
+    <div class="field-group">
+      <label>Hero Image URL <span class="field-note">${heroSource === 'entity' ? '(from entity — override below to set for this event only)' : '(event-level)'}</span></label>
+      <input type="url" id="f_hero_url" value="${escAttr(heroUrl)}" placeholder="https://…" oninput="updateHeroPreview()">
+      <div class="hero-preview-wrap" id="heroPreviewWrap">
+        <img id="heroPreviewImg" class="hero-preview-img" src="${escAttr(heroUrl)}" alt="" onerror="this.style.display='none'" onload="this.style.display='block'">
+        <div class="hero-preview-placeholder" id="heroPreviewPH">${heroUrl ? '' : 'No hero image set'}</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Hero Image Position <span class="field-note">controls object-position for the image</span></label>
+      <div class="pos-grid" id="posGrid">${posHtml}</div>
+      <input type="hidden" id="f_hero_position" value="${escAttr(heroPos)}">
+    </div>
+
+    <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Identity</div><div class="section-divider-line"></div></div>
+
+    <div class="field-row cols-2">
+      <div class="field-group">
+        <label>Logo URL</label>
+        <input type="url" id="f_logo_url" value="${escAttr(logoUrl)}" placeholder="https://…">
+      </div>
+      <div class="field-group">
+        <label>Display Time</label>
+        <input type="text" id="f_display_time" value="${escAttr(displayTime)}" placeholder="e.g. 8:30 AM ET">
+      </div>
+    </div>
+
+    <div class="field-row cols-2">
+      <div class="field-group">
+        <label>Ticker Symbol <span class="field-note">optional</span></label>
+        <input type="text" id="f_ticker" value="${escAttr(ticker)}" placeholder="e.g. SPY">
+      </div>
+      <div class="field-group">
+        <label>Also Known As <span class="field-note">optional</span></label>
+        <input type="text" id="f_aka" value="${escAttr(aka)}" placeholder="e.g. Quad Witching">
+      </div>
+    </div>
+
+    <div class="field-row cols-2">
+      <div class="field-group">
+        <label>Frequency</label>
+        <select class="field-sel" id="f_frequency">
+          <option value="">— not set —</option>
+          ${['Daily','Weekly','Monthly','Quarterly','Semi-Annual','Annual','One-Time'].map(function(f){
+            return '<option value="'+f.toLowerCase()+'"'+(frequency.toLowerCase()===f.toLowerCase()?' selected':'')+'>'+f+'</option>';
+          }).join('')}
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Source URL</label>
+        <input type="url" id="f_source_url" value="${escAttr(sourceUrl)}" placeholder="https://…">
+      </div>
+    </div>
+
+    <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Content</div><div class="section-divider-line"></div></div>
+
+    <div class="field-group">
+      <label>Why It Matters <span class="field-note">${whySource === 'entity' ? '(from entity — override below to set for this event only)' : '(event-level)'}</span></label>
+      <textarea id="f_why_it_matters" rows="3" placeholder="Why this event moves markets…">${escHtml(why)}</textarea>
+    </div>
+
+    <div class="field-group">
+      <label>What It Measures</label>
+      <textarea id="f_measures" rows="2" placeholder="What the event or release tracks…">${escHtml(measures)}</textarea>
+    </div>
+
+    <div class="field-group">
+      <label>Details</label>
+      <textarea id="f_details" rows="3" placeholder="Additional context, methodology, notes…">${escHtml(details)}</textarea>
+    </div>
+
+    <div class="field-group">
+      <label>Impacted Assets <span class="field-note">press Enter or comma to add</span></label>
+      <div class="asset-wrap" id="assetWrap">
+        ${assetChips}
+        <input class="asset-add-input" id="assetInput" placeholder="+ Add" onkeydown="assetKeydown(event)" onblur="assetBlur()">
+      </div>
+    </div>
+  `;
+
+  // If hero_url is set, show the image
+  if (heroUrl) {
+    var img = document.getElementById('heroPreviewImg');
+    img.style.display = 'block';
+    document.getElementById('heroPreviewPH').style.display = 'none';
+  }
+
+  document.getElementById('editStatus').textContent = '';
+  document.getElementById('saveBtn').disabled = false;
+  document.getElementById('editOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEdit() {
+  document.getElementById('editOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentEvent = null;
+}
+
+function overlayClick(e) {
+  if (e.target === document.getElementById('editOverlay')) closeEdit();
+}
+
+function selectPos(el) {
+  document.querySelectorAll('.pos-btn').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('f_hero_position').value = el.dataset.pos;
+}
+
+function updateHeroPreview() {
+  var url = document.getElementById('f_hero_url').value.trim();
+  var img = document.getElementById('heroPreviewImg');
+  var ph = document.getElementById('heroPreviewPH');
+  if (url) {
+    img.src = url;
+    img.style.display = 'block';
+    ph.style.display = 'none';
+    img.onerror = function() { img.style.display = 'none'; ph.textContent = 'Image failed to load'; ph.style.display = 'flex'; };
+    img.onload = function() { img.style.display = 'block'; ph.style.display = 'none'; };
+  } else {
+    img.style.display = 'none';
+    ph.textContent = 'No hero image set';
+    ph.style.display = 'flex';
+  }
+}
+
+// ── ASSET CHIPS ──
+function getAssets() {
+  var chips = document.querySelectorAll('#assetWrap .asset-chip span:first-child');
+  return Array.from(chips).map(function(c){ return c.textContent.trim(); }).filter(Boolean);
+}
+function removeAsset(el) {
+  el.parentElement.remove();
+}
+function addAssetChip(val) {
+  val = val.trim().toUpperCase().replace(/,/g,'');
+  if (!val) return;
+  var existing = getAssets();
+  if (existing.indexOf(val) > -1) return;
+  var chip = document.createElement('span');
+  chip.className = 'asset-chip';
+  chip.innerHTML = '<span>' + escHtml(val) + '</span><span class="asset-chip-remove" onclick="removeAsset(this)">×</span>';
+  var input = document.getElementById('assetInput');
+  input.parentElement.insertBefore(chip, input);
+  input.value = '';
+}
+function assetKeydown(e) {
+  if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addAssetChip(e.target.value); }
+}
+function assetBlur() { if (document.getElementById('assetInput').value.trim()) addAssetChip(document.getElementById('assetInput').value); }
+
+// ── SAVE ──
+function saveChanges() {
+  if (!currentEvent) return;
+  var btn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  btn.disabled = true;
+  statusEl.className = 'edit-save-status saving';
+  statusEl.textContent = 'Saving…';
+
+  var payload = {
+    hero_url:       document.getElementById('f_hero_url').value.trim() || null,
+    hero_position:  document.getElementById('f_hero_position').value || 'center',
+    logo_url:       document.getElementById('f_logo_url').value.trim() || null,
+    display_time:   document.getElementById('f_display_time').value.trim() || null,
+    ticker:         document.getElementById('f_ticker').value.trim() || null,
+    aka:            document.getElementById('f_aka').value.trim() || null,
+    frequency:      document.getElementById('f_frequency').value || null,
+    source_url:     document.getElementById('f_source_url').value.trim() || null,
+    why_it_matters: document.getElementById('f_why_it_matters').value.trim() || null,
+    measures:       document.getElementById('f_measures').value.trim() || null,
+    details:        document.getElementById('f_details').value.trim() || null,
+    impacted_assets: getAssets().join(', ') || null,
+  };
+
+  supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    // Update local data
+    Object.assign(currentEvent, payload);
+    statusEl.className = 'edit-save-status saved';
+    statusEl.textContent = '✓ Saved';
+    showToast('Changes saved successfully', 'success');
+    renderTable();
+    btn.disabled = false;
+    setTimeout(function() { closeEdit(); }, 900);
+  })
+  .catch(function(err) {
+    console.error(err);
+    statusEl.className = 'edit-save-status error';
+    statusEl.textContent = '✗ Save failed';
+    showToast('Save failed — check console', 'error');
+    btn.disabled = false;
+  });
+}
+
+// ── TOAST ──
+var toastTimer;
+function showToast(msg, type) {
+  clearTimeout(toastTimer);
+  var t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').textContent = type === 'success' ? '✓' : '✗';
+  t.className = 'show ' + (type || '');
+  toastTimer = setTimeout(function(){ t.className = ''; }, 3000);
+}
+
+// ── UTILS ──
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s||'').replace(/"/g,'&quot;'); }
+
+// ── INIT ──
+loadEvents();
+</script>
+</body>
+</html>
