@@ -3,191 +3,244 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eco Calendar 2027</title>
-<script src="https://elfsightcdn.com/platform.js" async></script>
+<title>Eco Calendar</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.topbar{background:#111;flex-shrink:0;overflow:hidden;line-height:0}
-.tv-bar{width:100%;overflow:hidden;display:block}
-tv-ticker-tape{display:block;width:100%}
-.app{display:flex;flex:1;overflow:hidden;position:relative}
-.icon-rail{width:52px;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:4px;flex-shrink:0;border-right:1px solid #2a2a2a;z-index:10}
-.rail-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.4);transition:all .15s}
-.rail-icon:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)}
-.rail-icon.active{background:#2563eb;color:#fff}
-.rail-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.page{display:none;flex:1;overflow:hidden;flex-direction:column}
-.page.active{display:flex}
-.sidebar{width:366px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .2s}
-.sidebar.collapsed{width:0;border-right:none}
-.sidebar-topbar{display:flex;align-items:center;justify-content:flex-end;padding:6px 30px 4px 10px;flex-shrink:0}
-.sidebar-nav{display:flex;flex-direction:column;padding:0;overflow-y:auto;flex:1}
-.sidebar-arrow{position:absolute;z-index:60;width:22px;height:32px;border-radius:0 7px 7px 0;border:1px solid #e0e0db;border-left:none;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#777;box-shadow:2px 0 6px rgba(0,0,0,.06);transition:background .12s}
-.sidebar-arrow:hover{background:#f5f5f0;color:#333}
-.sidebar-arrow svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.sidebar-btn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:background .12s}
-.sidebar-btn:hover{background:#f5f5f0}
-.sidebar-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-.month-year-tag{font-size:10px;font-weight:500;color:#bbb;margin-left:3px}
-.month-label{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;cursor:pointer;font-size:13px;color:#444;transition:background .12s;user-select:none}
-.month-label:hover{background:#f5f5f0}
-.month-label.active-month{font-weight:600;color:#1a1a1a}
-.month-label .chevron{font-size:11px;color:#ccc;transition:transform .2s}
-.month-label.open .chevron{transform:rotate(90deg)}
-.month-grid-wrap{display:none;border-bottom:1px solid #f0f0ec}
-.month-grid-wrap.visible{display:block}
-.mgrid-head{display:grid;grid-template-columns:repeat(7,1fr);background:#f8f8f6;border-bottom:1px solid #eee}
-.mgrid-head span{font-size:8px;font-weight:600;color:#aaa;text-align:center;padding:3px 0;text-transform:uppercase;letter-spacing:.02em}
-.mgrid-body{display:grid;grid-template-columns:repeat(7,1fr)}
-.mgrid-cell{border-right:1px solid #ececea;border-bottom:1px solid #ececea;min-height:60px;padding:3px 3px 2px;display:flex;flex-direction:column;cursor:pointer;transition:background .1s;overflow:hidden}
-.mgrid-cell:nth-child(7n){border-right:none}
-.mgrid-cell:hover{background:#fafaf8}
-.mgrid-cell.other-month{background:#fafaf8;pointer-events:none}
-.mgrid-cell.other-month .mgrid-date{color:#ddd}
-.mgrid-cell.in-current-week{background:#eff6ff}
-.mgrid-cell.today-cell{background:#eff6ff}
-.mgrid-date{font-size:9px;font-weight:600;color:#888;margin-bottom:2px;line-height:1}
-.mgrid-cell.today-cell .mgrid-date{color:#2563eb;font-weight:700}
-.mgrid-events{display:flex;flex-direction:column;gap:0;flex:1;overflow:hidden}
-.mgrid-evt{font-size:7.5px;font-weight:600;line-height:1.3;padding:1px 2px;word-break:break-word;white-space:normal;overflow-wrap:break-word;min-width:0}
-.mgrid-evt+.mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
-.mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.week-nav{padding:12px 20px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
-.week-title{font-size:16px;font-weight:600}
-.week-sub{font-size:11px;color:#999;margin-top:2px}
-.week-controls{display:flex;gap:6px;align-items:center}
-.btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
-.btn:hover{background:#f5f5f0}
-.week-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);overflow-y:auto}
-.day-col{border-right:1px solid #e5e5e0;display:flex;flex-direction:column}
-.day-col:last-child{border-right:none}
-.day-header{padding:8px 10px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0;background:#fff;position:sticky;top:0;z-index:2}
-.day-name{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.04em;line-height:1}
-.day-num{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1.15;margin-top:2px}
-.day-month{font-size:10px;color:#bbb;font-weight:500;margin-top:1px;text-transform:uppercase;letter-spacing:.03em}
-.day-header.today .day-name{color:#2563eb;font-weight:700}
-.day-header.today .day-num{color:#2563eb;font-weight:600}
-.day-header.today .day-month{color:#2563eb;font-weight:600}
-.day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
-.ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center}
-.ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
-.ecard.high{background:#FEF2F2;border-color:#FECACA}
-.ecard.medium{background:#FFF7ED;border-color:#FED7AA}
-.ecard.low{background:#FEFCE8;border-color:#FEF08A}
-.ecard.none{background:#fff;border-color:#e5e5e0}
-.card-time{font-size:10px;color:#999;font-weight:500;margin-bottom:5px;align-self:flex-start}
-.card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
-.card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
-.card-impact{font-size:10px;font-weight:500;margin-top:3px}
-.card-impact.high{color:#dc2626}.card-impact.medium{color:#ea7000}.card-impact.low{color:#d4a000}.card-impact.none{color:#999}
-.markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
-.world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
-.clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
-.clock-city:first-of-type{border-left:none;padding-left:0;margin-left:0}
-.clock-city span.flag{font-size:19.5px}.clock-city span.city{font-size:12px;color:#666}.clock-city strong{font-size:12px;font-weight:600;color:#1a1a1a}
-.markets-body{flex:1;display:flex;overflow:hidden}
-.markets-main{flex:1;padding:20px;overflow-y:auto}
-.markets-sidebar{width:680px;background:#fff;border-left:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
-.markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
-.markets-sidebar-body{flex:1;overflow-y:auto}
-.contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
-.contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
-.contact-field{display:flex;flex-direction:column;gap:8px}
-.contact-field label{font-size:14px;font-weight:500;color:#1a1a1a}
-.contact-field input,.contact-field textarea{font-size:15px;padding:12px 16px;border:1.5px solid #2563eb;border-radius:10px;outline:none;font-family:inherit;color:#1a1a1a;background:#fff;transition:border .15s;width:100%}
-.contact-field input:focus,.contact-field textarea:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-.contact-field input::placeholder,.contact-field textarea::placeholder{color:#9ca3af}
-.contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
-.contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
-.contact-submit:hover{background:#eff6ff}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal-hero{width:100%;height:200px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:14px 14px 0 0;position:relative;overflow:hidden}
-.modal-hero img{width:100%;height:100%;object-fit:cover}
-.modal-close{position:absolute;top:10px;right:12px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:18px;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
-.modal-body{padding:20px 22px 24px}
-.modal-logo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-.modal-logo{width:48px;height:48px;object-fit:contain;border-radius:8px;border:1px solid #f0f0ec;background:#fafaf8;padding:4px}
-.modal-title{font-size:17px;font-weight:700;color:#1a1a1a;line-height:1.25}
-.modal-name{font-size:12px;color:#888;margin-top:2px}
-.modal-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.modal-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#f0f0ec;color:#555}
-.modal-tag.high{background:#FEF2F2;color:#dc2626}
-.modal-tag.medium{background:#FFF7ED;color:#ea7000}
-.modal-tag.low{background:#FEFCE8;color:#d4a000}
-.modal-section{margin-bottom:14px}
-.modal-section-label{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.modal-section-text{font-size:13px;color:#333;line-height:1.6}
-.modal-divider{border:none;border-top:1px solid #f0f0ec;margin:14px 0}
-.modal-source{font-size:11px;color:#2563eb;text-decoration:none}
-.modal-source:hover{text-decoration:underline}
-.spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
-.load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;color:#dc2626;font-size:13px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;display:flex;height:100vh;overflow:hidden}
+
+  /* ── LEFT NAV ── */
+  .nav-rail{width:52px;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0;z-index:10}
+  .nav-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;color:#888;transition:background .15s,color .15s}
+  .nav-btn:hover{background:#2a2a2a;color:#fff}
+  .nav-btn.active{background:#2563eb;color:#fff}
+  .nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ── PAGES ── */
+  .pages{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .page{display:none;flex:1;overflow:hidden;flex-direction:column}
+  .page.active{display:flex}
+
+  /* ── TICKER TAPE ── */
+  .ticker-wrap{flex-shrink:0}
+
+  /* ── CALENDAR PAGE ── */
+  .cal-shell{flex:1;display:flex;overflow:hidden}
+  .sidebar{width:240px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;position:relative}
+  .sidebar-inner{flex:1;overflow-y:auto;padding-bottom:20px}
+  .sidebar-header{padding:14px 14px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
+  .sidebar-title{font-size:13px;font-weight:700;color:#1a1a1a;letter-spacing:.01em}
+  .sidebar-sub{font-size:11px;color:#999;margin-top:2px}
+  .expand-controls{display:flex;justify-content:flex-end;padding:6px 30px 2px 14px}
+  .expand-btn{font-size:11px;color:#2563eb;background:none;border:none;cursor:pointer;padding:0}
+  .expand-btn:hover{text-decoration:underline}
+  .expand-sep{font-size:11px;color:#ccc;margin:0 4px}
+
+  /* month accordion */
+  .month-year-tag{font-size:10px;font-weight:500;color:#bbb;margin-left:3px}
+  .month-label{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;font-size:12px;font-weight:600;color:#444;cursor:pointer;user-select:none;transition:background .1s}
+  .month-label:hover{background:#f5f5f0}
+  .month-label.active-month{color:#2563eb}
+  .chevron{font-size:11px;color:#bbb;transition:transform .2s;display:inline-block}
+  .month-label.open .chevron{transform:rotate(90deg)}
+  .month-grid-wrap{display:none;padding:4px 10px 6px}
+  .month-grid-wrap.visible{display:block}
+  .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .day-head{font-size:9px;font-weight:600;color:#bbb;text-align:center;padding:2px 0}
+  .day-cell{min-height:36px;border-radius:5px;padding:3px 4px;font-size:9px;cursor:pointer;transition:background .1s;position:relative}
+  .day-cell:hover{background:#eff6ff}
+  .day-cell.today{background:#2563eb;color:#fff}
+  .day-cell.today .day-num{color:#fff}
+  .day-cell.in-week{background:#eff6ff}
+  .day-cell.past-day{background:#e4e4e1}
+  .day-cell.past-day .day-num{color:#999}
+  .day-cell.past-day .day-event{opacity:.55}
+  .day-cell.empty{cursor:default}
+  .day-num{font-size:9px;font-weight:700;color:#333;line-height:1}
+  .day-cell.today .day-num{color:#fff}
+  .day-event{font-size:8px;color:#555;line-height:1.2;margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+  /* arrow tab */
+  .sidebar-arrow{position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:14px;height:40px;background:#fff;border:1px solid #e5e5e0;border-left:none;border-radius:0 6px 6px 0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}
+  .sidebar-arrow svg{width:10px;height:10px;stroke:#999;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .sidebar.collapsed{width:0;overflow:hidden}
+  .sidebar.collapsed .sidebar-arrow{right:-14px}
+
+  /* week grid */
+  .week-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
+  .week-nav{display:flex;align-items:center;gap:10px;padding:12px 20px 10px 40px;flex-shrink:0}
+  .week-title{font-size:15px;font-weight:700;color:#1a1a1a}
+  .week-sub{font-size:11px;color:#999;margin-top:1px}
+  .nav-arrow{width:28px;height:28px;border-radius:7px;border:1px solid #e0e0db;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#555;font-size:14px;transition:background .1s}
+  .nav-arrow:hover{background:#f0f0eb}
+  .today-btn{font-size:12px;font-weight:600;color:#2563eb;background:#fff;border:1px solid #dbeafe;border-radius:7px;padding:5px 12px;cursor:pointer;transition:background .1s}
+  .today-btn:hover{background:#eff6ff}
+  .week-grid-wrap{flex:1;overflow-y:auto;padding:0 16px 16px}
+  .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;min-width:0}
+  .day-col{display:flex;flex-direction:column;gap:6px}
+  .day-col-head{text-align:center;padding:8px 4px 6px;font-size:11px;font-weight:600;color:#999;border-bottom:2px solid transparent;position:sticky;top:0;background:#f5f5f0;z-index:1}
+  .day-col-head.today-col{color:#2563eb;border-bottom-color:#2563eb}
+  .ecard{border:1.5px solid #e5e5e0;border-radius:10px;padding:8px 6px 7px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:box-shadow .15s,transform .1s;background:#fff;text-align:center}
+  .ecard:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+  .ecard.high{background:#FEF2F2;border-color:#FECACA}
+  .ecard.medium{background:#FFF7ED;border-color:#FED7AA}
+  .ecard.low{background:#FEFCE8;border-color:#FEF08A}
+  .ecard.none{background:#fff;border-color:#e5e5e0}
+  .card-time{font-size:10px;color:#999;font-weight:500;margin-bottom:5px;align-self:flex-start}
+  .card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
+  .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
+  .card-impact{font-size:10px;font-weight:500;margin-top:3px}
+  .card-impact.high{color:#dc2626}
+  .card-impact.medium{color:#ea7000}
+  .card-impact.low{color:#d4a000}
+  .card-impact.none{color:#999}
+  .load-error{color:#dc2626;font-size:13px;padding:20px;text-align:center}
+
+  /* ── MARKETS PAGE ── */
+  .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
+  .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
+  .clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
+  .clock-city:first-of-type{border-left:none;padding-left:0;margin-left:0}
+  .clock-city span.flag{font-size:19.5px}
+  .clock-city span.city{font-size:12px;color:#666}
+  .clock-city strong{font-size:12px;font-weight:600;color:#1a1a1a}
+  .markets-body{flex:1;display:flex;overflow:hidden}
+  .markets-main{flex:1;padding:20px;overflow-y:auto}
+  .markets-sidebar{width:680px;background:#fff;border-left:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+  .markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
+  .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
+  .markets-sidebar-body{flex:1;overflow-y:auto}
+
+  /* ── CONTACT PAGE ── */
+  .contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
+  .contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
+  .contact-field{display:flex;flex-direction:column;gap:8px}
+  .contact-field label{font-size:14px;font-weight:500;color:#1a1a1a}
+  .contact-field input,.contact-field textarea{font-size:15px;padding:12px 16px;border:1.5px solid #2563eb;border-radius:10px;outline:none;font-family:inherit;color:#1a1a1a;background:#fff;transition:border .15s;width:100%}
+  .contact-field input:focus,.contact-field textarea:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .contact-field input::placeholder,.contact-field textarea::placeholder{color:#9ca3af}
+  .contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
+  .contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
+  .contact-submit:hover{background:#eff6ff}
+
+  /* ── MODAL ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+  .modal-overlay.open{opacity:1;pointer-events:all}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(10px);transition:transform .2s}
+  .modal-overlay.open .modal{transform:translateY(0)}
+  .modal-hero{width:100%;height:200px;object-fit:cover;border-radius:14px 14px 0 0;background:#f0f0ec;display:block}
+  .modal-hero-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#e8e8e4,#d0d0cb);border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:center}
+  .modal-hero-placeholder svg{width:48px;height:48px;stroke:#bbb;fill:none;stroke-width:1.5}
+  .modal-body{padding:20px 24px 28px}
+  .modal-entity-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .modal-entity-logo{width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee}
+  .modal-entity-name{font-size:12px;color:#666;font-weight:500}
+  .modal-title{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:10px}
+  .modal-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .modal-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:#f0f0ec;color:#555}
+  .modal-tag.high{background:#FEF2F2;color:#dc2626}
+  .modal-tag.medium{background:#FFF7ED;color:#ea7000}
+  .modal-tag.low{background:#FEFCE8;color:#b45309}
+  .modal-section{margin-bottom:16px}
+  .modal-section-label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+  .modal-section-text{font-size:13px;color:#333;line-height:1.6}
+  .modal-divider{border:none;border-top:1px solid #f0f0ec;margin:16px 0}
+  .modal-source-link{font-size:12px;color:#2563eb;text-decoration:none;font-weight:500}
+  .modal-source-link:hover{text-decoration:underline}
+  .modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
 </style>
+
+<!-- Elfsight platform -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<!-- TradingView ticker tape -->
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+{
+  "symbols": [
+    {"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},
+    {"proName":"FOREXCOM:NSXUSD","title":"Nasdaq 100"},
+    {"proName":"FX_IDC:EURUSD","title":"EUR/USD"},
+    {"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},
+    {"proName":"BITSTAMP:ETHUSD","title":"Ethereum"},
+    {"description":"Gold","proName":"OANDA:XAUUSD"},
+    {"description":"10Y Treasury","proName":"TVC:US10Y"},
+    {"description":"DXY","proName":"TVC:DXY"}
+  ],
+  "showSymbolLogo":true,
+  "isTransparent":false,
+  "displayMode":"adaptive",
+  "colorTheme":"light",
+  "locale":"en"
+}
+</script>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="tv-bar">
-    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
-    <tv-ticker-tape symbols="FOREXCOM:SPXUSD,OANDA:USB10YUSD,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
-  </div>
-</div>
+<!-- LEFT NAV -->
+<nav class="nav-rail">
+  <button class="nav-btn active" id="btn-calendar" onclick="showPage('calendar')" title="Calendar">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-news" onclick="showPage('news')" title="News">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-markets" onclick="showPage('markets')" title="Markets">
+    <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-contact" onclick="showPage('contact')" title="Contact">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  </button>
+</nav>
 
-<div class="app">
-  <div class="icon-rail">
-    <div class="rail-icon active" id="rail-calendar" title="Calendar" onclick="switchPage('calendar')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    </div>
-    <div class="rail-icon" id="rail-news" title="News" onclick="switchPage('news')">
-      <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
-    </div>
-    <div class="rail-icon" id="rail-markets" title="Markets" onclick="switchPage('markets')">
-      <svg viewBox="0 0 24 24"><rect x="2" y="12" width="4" height="9" rx="0.5"/><rect x="9" y="7" width="4" height="14" rx="0.5"/><rect x="16" y="3" width="4" height="18" rx="0.5"/><line x1="2" y1="22" x2="22" y2="22"/></svg>
-    </div>
-    <div class="rail-icon" id="rail-contact" title="Contact" onclick="switchPage('contact')">
-      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+<div class="pages">
+
+  <!-- TICKER TAPE -->
+  <div class="ticker-wrap">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
     </div>
   </div>
 
-  <div class="page active" id="page-calendar" style="flex-direction:row">
-    <div class="sidebar" id="sidebar">
-      <div class="sidebar-topbar">
-        <button class="sidebar-btn" id="expandAllBtn" onclick="toggleAllMonths()">
-          <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-          Expand All
-        </button>
-      </div>
-      <div class="sidebar-nav" id="monthNav"></div>
-    </div>
-    <button class="sidebar-arrow" id="sidebarArrow" onclick="toggleSidebar()" title="Toggle panel">
-      <svg id="arrowIcon" viewBox="0 0 24 24"><polyline id="arrowPoly" points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="main">
-      <div class="week-nav">
-        <div>
-          <div class="week-title">What to Watch for the Week</div>
-          <div class="week-sub" id="weekSub">Loading events...</div>
+  <!-- CALENDAR PAGE -->
+  <div class="page active" id="page-calendar">
+    <div class="cal-shell">
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">2026 – 2027</div>
+          <div class="sidebar-sub">Click any event to view details.</div>
         </div>
-        <div class="week-controls">
-          <button class="btn" onclick="prevWeek()">&larr; Prev</button>
-          <button class="btn" onclick="goToday()">Today</button>
-          <button class="btn" onclick="nextWeek()">Next &rarr;</button>
+        <div class="expand-controls">
+          <button class="expand-btn" onclick="expandAll()">Expand all</button>
+          <span class="expand-sep">|</span>
+          <button class="expand-btn" onclick="collapseAll()">Collapse all</button>
+        </div>
+        <div class="sidebar-inner" id="sidebarInner"></div>
+        <div class="sidebar-arrow" onclick="toggleSidebar()">
+          <svg viewBox="0 0 10 10"><polyline id="arrowPoly" points="6,2 2,5 6,8"/></svg>
         </div>
       </div>
-      <div class="week-grid" id="weekGrid">
-        <div class="loading-col"><div class="spinner"></div><span>Loading events...</span></div>
+      <div class="week-area">
+        <div class="week-nav">
+          <div>
+            <div class="week-title" id="weekTitle">Loading…</div>
+            <div class="week-sub" id="weekSub"></div>
+          </div>
+          <button class="nav-arrow" onclick="prevWeek()">&#8592;</button>
+          <button class="nav-arrow" onclick="nextWeek()">&#8594;</button>
+          <button class="today-btn" onclick="goToday()">Today</button>
+        </div>
+        <div class="week-grid-wrap">
+          <div class="week-grid" id="weekGrid"></div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- NEWS PAGE -->
+  <div class="page" id="page-news" style="align-items:center;justify-content:center">
+    <div style="color:#bbb;font-size:14px">News page &mdash; coming soon.</div>
+  </div>
+
+  <!-- MARKETS PAGE -->
   <div class="page" id="page-markets">
     <div class="markets-page">
       <div class="world-clock">
@@ -195,6 +248,7 @@ tv-ticker-tape{display:block;width:100%}
         <div class="clock-city"><span class="flag">&#x1F1EC;&#x1F1E7;</span><span class="city">London</span><strong id="time-lon">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1E9;&#x1F1EA;</span><span class="city">Frankfurt</span><strong id="time-fra">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1F8;&#x1F1E6;</span><span class="city">Riyadh</span><strong id="time-riy">--:--</strong></div>
+        <div class="clock-city"><span class="flag">&#x1F1EE;&#x1F1F3;</span><span class="city">Mumbai</span><strong id="time-mum">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1E8;&#x1F1F3;</span><span class="city">Shanghai</span><strong id="time-sha">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1EF;&#x1F1F5;</span><span class="city">Tokyo</span><strong id="time-tok">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1E6;&#x1F1FA;</span><span class="city">Sydney</span><strong id="time-syd">--:--</strong></div>
@@ -204,7 +258,7 @@ tv-ticker-tape{display:block;width:100%}
           <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-            {"colorTheme":"light","dateRange":"12M","locale":"en","isTransparent":false,"tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD"},{"s":"FX:GBPUSD"},{"s":"FX:USDJPY"},{"s":"FX:USDCHF"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD"},{"s":"COINBASE:ETHUSD"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD"}]}],"support_host":"https://www.tradingview.com","width":"400","height":"550","showSymbolLogo":true,"showChart":true}
+            {"colorTheme":"light","dateRange":"12M","locale":"en","isTransparent":false,"tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD"},{"s":"FX:GBPUSD"},{"s":"FX:USDJPY"},{"s":"FX:USDCHF"},{"s":"FX:AUDUSD"},{"s":"FX:USDCAD"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD"},{"s":"COINBASE:ETHUSD"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD"},{"s":"THINKMARKETS:XAGUSD"}]}],"support_host":"https://www.tradingview.com","width":"400","height":"550","showSymbolLogo":true,"showChart":true}
             </script>
           </div>
         </div>
@@ -218,10 +272,7 @@ tv-ticker-tape{display:block;width:100%}
     </div>
   </div>
 
-  <div class="page" id="page-news" style="align-items:center;justify-content:center">
-    <div style="color:#bbb;font-size:14px">News page coming soon.</div>
-  </div>
-
+  <!-- CONTACT PAGE -->
   <div class="page" id="page-contact">
     <div class="contact-page">
       <div class="contact-form">
@@ -232,30 +283,28 @@ tv-ticker-tape{display:block;width:100%}
       </div>
     </div>
   </div>
-</div>
 
+</div><!-- /pages -->
+
+<!-- EVENT MODAL -->
 <div class="modal-overlay" id="overlay" onclick="overlayClick(event)">
-  <div class="modal" id="modal">
-    <div class="modal-hero" id="modalHero">
-      <img id="modalHeroImg" src="" alt="" style="display:none">
-    </div>
-    <button class="modal-close" onclick="closeModal()">&times;</button>
+  <div class="modal" id="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    <div id="modalHeroWrap"></div>
     <div class="modal-body">
-      <div class="modal-logo-row">
-        <img class="modal-logo" id="modalLogo" src="" alt="" style="display:none">
-        <div>
-          <div class="modal-title" id="modalTitle"></div>
-          <div class="modal-name" id="modalName"></div>
-        </div>
+      <div class="modal-entity-row" id="modalEntityRow" style="display:none">
+        <img class="modal-entity-logo" id="modalEntityLogo" src="" alt="">
+        <span class="modal-entity-name" id="modalEntityName"></span>
       </div>
+      <div class="modal-title" id="modalTitle"></div>
       <div class="modal-meta" id="modalMeta"></div>
-      <hr class="modal-divider" id="modalDiv1" style="display:none">
       <div class="modal-section" id="modalWhySection" style="display:none">
-        <div class="modal-section-label">Why it Matters</div>
+        <div class="modal-section-label">Why It Matters</div>
         <div class="modal-section-text" id="modalWhy"></div>
       </div>
+      <hr class="modal-divider" id="modalDiv1" style="display:none">
       <div class="modal-section" id="modalMeasuresSection" style="display:none">
-        <div class="modal-section-label">Measures</div>
+        <div class="modal-section-label">What It Measures</div>
         <div class="modal-section-text" id="modalMeasures"></div>
       </div>
       <div class="modal-section" id="modalDetailsSection" style="display:none">
@@ -263,360 +312,280 @@ tv-ticker-tape{display:block;width:100%}
         <div class="modal-section-text" id="modalDetails"></div>
       </div>
       <hr class="modal-divider" id="modalDiv2" style="display:none">
-      <a class="modal-source" id="modalSource" href="#" target="_blank" rel="noopener" style="display:none">View Source &rarr;</a>
+      <a class="modal-source-link" id="modalSource" href="#" target="_blank" rel="noopener" style="display:none">View Source &#8599;</a>
     </div>
   </div>
 </div>
 
 <script>
+// ── CONFIG ──
 var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
-var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempnanR6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNjkwMTgsImV4cCI6MjA5Mzk0NTAxOH0.sZA4DPrmldh2XlfpCoNffsnmZKr6IjWusEv_ezAOqaI';
-var LOGO_KEY = 'pk_dv5qQv9ARyGf3wnFfd-oeA';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempqZ3R6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwODM3NDcsImV4cCI6MjA2MjY1OTc0N30.4HBFPSQRzjDaSVZyMjqxBuPuDxMBtLSHCXb_i2VZFtc';
 
-var MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-var MONTHS_SH = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-var DAYS      = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-var DAYS_SH   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-var MMAP      = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
+var allEvents = [];
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAY_HEADS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-var weekStart   = getWeekStart(new Date());
-var openMonths  = {};
-var allExpanded = true;
-var sidebarOpen = true;
-var events      = [];
-
-function switchPage(name) {
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelectorAll('.rail-icon').forEach(function(r) { r.classList.remove('active'); });
-  document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('rail-' + name).classList.add('active');
+function getWeekStart(d) {
+  var s = new Date(d);
+  s.setHours(0,0,0,0);
+  var day = s.getDay();
+  s.setDate(s.getDate() - day);
+  return s;
 }
+var weekStart = getWeekStart(new Date());
 
-function ds(d) { return d.toISOString().split('T')[0]; }
-function getWeekStart(d) { var dt = new Date(d); dt.setHours(0,0,0,0); dt.setDate(dt.getDate() - dt.getDay()); return dt; }
-
-function impCls(v) {
-  v = (v || 'none').toLowerCase();
-  if (v === 'high') { return 'high'; }
-  if (v === 'medium') { return 'medium'; }
-  if (v === 'low') { return 'low'; }
-  return 'none';
-}
-function impLabel(v) {
-  v = (v || 'none').toLowerCase();
-  if (v === 'high') { return 'High Impact'; }
-  if (v === 'medium') { return 'Medium Impact'; }
-  if (v === 'low') { return 'Low Impact'; }
-  return '';
-}
-function mkLogo(domain) {
-  if (!domain) { return ''; }
-  return 'https://img.logo.dev/' + domain + '?token=' + LOGO_KEY + '&size=64';
-}
-
-function deriveName(cat, evt) {
-  if (!cat) { return ''; }
-  if (cat === 'Market Holiday' || cat === 'Early Close') { return 'NYSE / NASDAQ'; }
-  if (cat === 'Fed / FOMC') { return 'Federal Reserve'; }
-  if (cat === 'Economic Release') {
-    var e = evt || '';
-    if (e.indexOf('CPI') > -1 || e.indexOf('PPI') > -1 || e.indexOf('Jobs') > -1 || e.indexOf('NFP') > -1) { return 'Bureau of Labor Statistics'; }
-    if (e.indexOf('GDP') > -1 || e.indexOf('PCE') > -1) { return 'Bureau of Economic Analysis'; }
-    if (e.indexOf('ISM') > -1) { return 'Institute for Supply Management'; }
-    if (e.indexOf('Housing') > -1) { return 'U.S. Census Bureau / HUD'; }
-  }
-  return '';
-}
-
-function deriveLogo(cat, evt) {
-  if (!cat) { return ''; }
-  if (cat === 'Market Holiday' || cat === 'Early Close') { return mkLogo('nyse.com'); }
-  if (cat === 'Fed / FOMC') { return mkLogo('federalreserve.gov'); }
-  if (cat === 'Economic Release') {
-    var e = evt || '';
-    if (e.indexOf('CPI') > -1 || e.indexOf('PPI') > -1 || e.indexOf('Jobs') > -1 || e.indexOf('NFP') > -1) { return mkLogo('bls.gov'); }
-    if (e.indexOf('GDP') > -1 || e.indexOf('PCE') > -1) { return mkLogo('bea.gov'); }
-    if (e.indexOf('ISM') > -1) { return mkLogo('ismworld.org'); }
-    if (e.indexOf('Housing') > -1) { return mkLogo('census.gov'); }
-  }
-  return '';
-}
-
-function deriveSource(cat) {
-  if (!cat) { return ''; }
-  if (cat === 'Market Holiday' || cat === 'Early Close') { return 'https://www.nyse.com'; }
-  if (cat === 'Fed / FOMC') { return 'https://www.federalreserve.gov'; }
-  if (cat === 'Economic Release') { return 'https://www.bls.gov/schedule'; }
-  return '';
-}
-
-function deriveTime(notes) {
-  if (!notes) { return ''; }
-  if (notes.indexOf('8:30 AM') > -1) { return '8:30 AM ET'; }
-  if (notes.indexOf('10:00 AM') > -1) { return '10:00 AM ET'; }
-  if (notes.indexOf('2:00 PM') > -1) { return '2:00 PM ET'; }
-  if (notes.indexOf('1:00 PM') > -1) { return '1:00 PM ET'; }
-  return '';
-}
-
-function parseDate(dateStr, monthStr) {
-  if (!dateStr) { return { start: '', end: '' }; }
-  dateStr = String(dateStr).trim();
-  if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
-  if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
-
-  if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
-    return { start: dateStr.substring(0, 10), end: '' };
-  }
-
-  var m = MMAP[monthStr] || '01';
-  var parts = dateStr.split(' ');
-  var num = parts[parts.length - 1];
-  if (isNaN(parseInt(num.charAt(0)))) { return { start: '', end: '' }; }
-  if (num.indexOf('-') > -1) {
-    var ns = num.split('-');
-    return { start: '2027-' + m + '-' + ns[0].padStart(2,'0'), end: '2027-' + m + '-' + ns[1].padStart(2,'0') };
-  }
-  return { start: '2027-' + m + '-' + num.padStart(2,'0'), end: '' };
-}
-
+// ── FETCH ──
 function fetchEvents() {
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=id.asc&limit=500';
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
   return fetch(url, {
-    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY
+    }
   })
-  .then(function(r) { return r.json(); })
-  .then(function(rows) {
-    events = [];
-    rows.forEach(function(r) {
-      if (!r.date && !r.month) { return; }
-      var parsed = parseDate(r.date, r.month);
-      if (!parsed.start) { return; }
-      var impact = (r.impact || '').toLowerCase();
-      if (impact !== 'high' && impact !== 'medium' && impact !== 'low') { impact = 'none'; }
-      var showMini = true;
-      if (r.show_in_monthly === false) { showMini = false; }
-      var ent = r.entity || {};
-      events.push({
-        id: r.id,
-        title: r.event || '',
-        name: deriveName(r.category, r.event),
-        date: parsed.start,
-        endDate: parsed.end || '',
-        time: r.display_time || deriveTime(r.notes || ''),
-        impact: impact,
-        showMini: showMini,
-        logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
-        hero: r.hero_url || ent.hero_url || '',
-        whyMatters: r.why_it_matters || ent.why_it_matters || '',
-        measures: r.measures || ent.measures || '',
-        impactedAssets: ent.impacted_assets || '',
-        frequency: r.frequency || ent.frequency || '',
-        details: r.details || '',
-        source: r.source_url || deriveSource(r.category),
-        ticker: r.ticker || '',
-        aka: r.aka || '',
-        category: r.category || ''
-      });
-    });
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    allEvents = Array.isArray(data) ? data : [];
   });
+}
+
+// ── DATE PARSING ──
+function parseDate(val) {
+  if (!val) return null;
+  var s = String(val).trim();
+  // ISO timestamp
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
+  // "Mar 19" style
+  var months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+  var m = s.match(/^([A-Za-z]{3})\s+(\d{1,2})$/);
+  if (m) {
+    var mo = months[m[1]]; if (!mo) return null;
+    var yr = (parseInt(mo,10) >= 1) ? '2027' : '2027';
+    return yr + '-' + mo + '-' + m[2].padStart(2,'0');
+  }
+  return null;
+}
+
+// ── SIDEBAR ──
+var openMonths = (function(){
+  try {
+    var saved = sessionStorage.getItem('openMonths');
+    if (saved) return new Set(JSON.parse(saved));
+  } catch(e){}
+  var now = new Date();
+  return new Set([now.getFullYear()+'-'+now.getMonth()]);
+})();
+
+function saveOpenMonths() {
+  try { sessionStorage.setItem('openMonths', JSON.stringify(Array.from(openMonths))); } catch(e){}
 }
 
 function buildSidebar() {
   var today = new Date(); today.setHours(0,0,0,0);
-  if (allExpanded && Object.keys(openMonths).length === 0) {
-    [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openMonths[y+'-'+mi] = true; } });
-  }
-  var wEnd = new Date(weekStart); wEnd.setDate(wEnd.getDate() + 6);
+  var wStart = new Date(weekStart); wStart.setHours(0,0,0,0);
+  var wEnd   = new Date(wStart); wEnd.setDate(wEnd.getDate()+6);
+
   var html = '';
   [2026,2027].forEach(function(y) {
-    MONTHS.forEach(function(m, mi) {
-      var key = y + '-' + mi;
-      var isOpen = !!openMonths[key];
-      var isAct = weekStart.getFullYear() === y && weekStart.getMonth() === mi;
-      var cls = 'month-label' + (isAct ? ' active-month' : '') + (isOpen ? ' open' : '');
-      html += '<div class="' + cls + '" data-key="' + key + '" data-y="' + y + '" data-mi="' + mi + '" onclick="handleMonthClick(this)">';
-      html += '<span>' + m + ' <span class="month-year-tag">' + y + '</span></span><span class="chevron">&#8250;</span></div>';
-      html += '<div class="month-grid-wrap' + (isOpen ? ' visible' : '') + '" id="mg-' + key + '">' + buildMonthGrid(y, mi, today, weekStart, wEnd) + '</div>';
+    MONTHS.forEach(function(m,mi) {
+      var key   = y+'-'+mi;
+      var isOpen = openMonths.has(key);
+      var isAct  = weekStart.getFullYear()===y && weekStart.getMonth()===mi;
+      html += '<div class="month-label'+(isAct?' active-month':'')+(isOpen?' open':'')+'" onclick="toggleMonth(\''+key+'\','+y+','+mi+')">'
+             +'<span>'+m+' <span class="month-year-tag">'+y+'</span></span><span class="chevron">&#x203A;</span>'
+             +'</div>'
+             +'<div class="month-grid-wrap'+(isOpen?' visible':'')+'" id="mg-'+key+'">'
+             +buildMonthGrid(y,mi,today,wStart,wEnd)
+             +'</div>';
     });
   });
-  document.getElementById('monthNav').innerHTML = html;
-  var btn = document.getElementById('expandAllBtn');
-  if (btn) {
-    if (allExpanded) {
-      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Collapse All';
-    } else {
-      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Expand All';
-    }
+  document.getElementById('sidebarInner').innerHTML = html;
+}
+
+function buildMonthGrid(y,mi,today,wStart,wEnd) {
+  var first = new Date(y,mi,1).getDay();
+  var days  = new Date(y,mi+1,0).getDate();
+  var html  = '<div class="month-grid">';
+  DAY_HEADS.forEach(function(h){ html += '<div class="day-head">'+h+'</div>'; });
+  for (var i=0;i<first;i++) html += '<div class="day-cell empty"></div>';
+  for (var d=1;d<=days;d++) {
+    var dt = new Date(y,mi,d); dt.setHours(0,0,0,0);
+    var iso = y+'-'+String(mi+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var cls = 'day-cell';
+    if (dt.getTime()===today.getTime()) cls += ' today';
+    else if (dt >= wStart && dt <= wEnd) cls += ' in-week';
+    else if (dt < today) cls += ' past-day';
+    var evs = allEvents.filter(function(e){ return parseDate(e.date)===iso; });
+    var inner = '<div class="day-num">'+d+'</div>';
+    if (evs.length) inner += '<div class="day-event">'+evs.map(function(e){return e.event||'';}).join(', ')+'</div>';
+    html += '<div class="'+cls+'" onclick="jumpToWeek(\''+iso+'\')">' + inner + '</div>';
   }
+  html += '</div>';
+  return html;
 }
 
-function buildMonthGrid(y, mi, today, wStart, wEnd) {
-  var firstDay = new Date(y, mi, 1);
-  var lastDay = new Date(y, mi+1, 0);
-  var startDow = firstDay.getDay();
-  var html = '<div class="mgrid-head">';
-  DAYS_SH.forEach(function(d) { html += '<span>' + d + '</span>'; });
-  html += '</div><div class="mgrid-body">';
-  for (var i = 0; i < startDow; i++) { html += '<div class="mgrid-cell other-month"></div>'; }
-  for (var d = 1; d <= lastDay.getDate(); d++) {
-    var date = new Date(y, mi, d);
-    var dateStr = ds(date);
-    var isTod = date.getTime() === today.getTime();
-    var inWk = date >= wStart && date <= wEnd;
-    var cls = 'mgrid-cell';
-    if (isTod) { cls += ' today-cell'; } else if (inWk) { cls += ' in-current-week'; }
-    var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
-    var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.title + '</div>'; }).join('');
-    html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
-  }
-  var rem = (startDow + lastDay.getDate()) % 7;
-  if (rem > 0) { for (var i = 0; i < 7 - rem; i++) { html += '<div class="mgrid-cell other-month"></div>'; } }
-  return html + '</div>';
+function toggleMonth(key,y,mi) {
+  if (openMonths.has(key)) openMonths.delete(key); else openMonths.add(key);
+  saveOpenMonths();
+  buildSidebar();
 }
+function expandAll()   { [2026,2027].forEach(function(y){MONTHS.forEach(function(_,mi){openMonths.add(y+'-'+mi);});}); saveOpenMonths(); buildSidebar(); }
+function collapseAll() { openMonths.clear(); saveOpenMonths(); buildSidebar(); }
 
-function handleMonthClick(el) {
-  toggleMonth(el.getAttribute('data-key'), parseInt(el.getAttribute('data-y')), parseInt(el.getAttribute('data-mi')));
-}
-function handleDateClick(el) { jumpToDate(el.getAttribute('data-date')); }
-function handleCardClick(el) { openModal(parseInt(el.getAttribute('data-id'))); }
-
-function toggleMonth(key, y, mi) {
-  if (openMonths[key]) { delete openMonths[key]; } else { openMonths[key] = true; }
-  allExpanded = Object.keys(openMonths).length >= 24;
-  weekStart = getWeekStart(new Date(y, mi, 1));
+function jumpToWeek(iso) {
+  var d = new Date(iso+'T00:00:00');
+  weekStart = getWeekStart(d);
   buildSidebar();
   renderWeek();
+  setTimeout(positionArrow, 50);
 }
-function jumpToDate(dateStr) {
-  weekStart = getWeekStart(new Date(dateStr + 'T12:00:00'));
-  buildSidebar();
-  renderWeek();
-}
-function toggleAllMonths() {
-  allExpanded = !allExpanded;
-  if (allExpanded) {
-    [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openMonths[y+'-'+mi] = true; } });
-  } else {
-    openMonths = {};
-    var t = new Date();
-    openMonths[t.getFullYear() + '-' + t.getMonth()] = true;
-  }
-  buildSidebar();
-}
+
+// ── SIDEBAR TOGGLE ──
+var sidebarOpen = true;
 function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
   var sb = document.getElementById('sidebar');
   var poly = document.getElementById('arrowPoly');
   if (sidebarOpen) {
     sb.classList.remove('collapsed');
-    if (poly) { poly.setAttribute('points','15 18 9 12 15 6'); }
+    poly.setAttribute('points','6,2 2,5 6,8');
   } else {
     sb.classList.add('collapsed');
-    if (poly) { poly.setAttribute('points','9 18 15 12 9 6'); }
+    poly.setAttribute('points','4,2 8,5 4,8');
   }
-  setTimeout(positionArrow, 220);
-  positionArrow();
 }
+
 function positionArrow() {
-  var rail = document.querySelector('.icon-rail');
   var sb = document.getElementById('sidebar');
-  var arrow = document.getElementById('sidebarArrow');
-  var wn = document.querySelector('.week-nav');
-  if (!arrow) { return; }
-  var railW = rail ? rail.offsetWidth : 52;
-  var sbW = (sidebarOpen && sb) ? sb.offsetWidth : 0;
-  arrow.style.left = (railW + sbW - 1) + 'px';
-  if (wn) {
-    var wr = wn.getBoundingClientRect();
-    var ar = document.querySelector('.app').getBoundingClientRect();
-    arrow.style.top = (wr.top - ar.top + 10) + 'px';
-  }
+  var arrow = sb.querySelector('.sidebar-arrow');
+  if (!arrow) return;
+  var h = sb.offsetHeight;
+  arrow.style.top = (h/2) + 'px';
 }
 
+// ── WEEK RENDER ──
 function renderWeek() {
+  var wEnd = new Date(weekStart); wEnd.setDate(wEnd.getDate()+6);
+  var opts = {month:'short',day:'numeric'};
+  document.getElementById('weekTitle').textContent = 'What to Watch for the Week';
+  document.getElementById('weekSub').textContent =
+    weekStart.toLocaleDateString('en-US',opts) + ' – ' + wEnd.toLocaleDateString('en-US',opts);
+
+  var DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var today = new Date(); today.setHours(0,0,0,0);
-  var days = [];
-  for (var i = 0; i < 7; i++) {
-    var d = new Date(weekStart);
-    d.setDate(d.getDate() + i);
-    days.push(d);
+  var html = '';
+  for (var i=0;i<7;i++) {
+    var d = new Date(weekStart); d.setDate(d.getDate()+i);
+    var iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    var isToday = d.getTime()===today.getTime();
+    html += '<div class="day-col">'
+          + '<div class="day-col-head'+(isToday?' today-col':'')+'">'+DAY_NAMES[d.getDay()]+'<br><span style="font-size:13px;font-weight:700;color:'+(isToday?'#2563eb':'#1a1a1a')+'">'+d.getDate()+'</span></div>';
+    var evs = allEvents.filter(function(e){ return parseDate(e.date)===iso; });
+    evs.forEach(function(ev) {
+      var imp = (ev.impact||'none').toLowerCase();
+      var logoUrl = (ev.entity && ev.entity.logo_url) ? ev.entity.logo_url : ev.logo_url;
+      var impLabel = imp==='high'?'High Impact':imp==='medium'?'Medium Impact':imp==='low'?'Low Impact':'';
+      html += '<div class="ecard '+imp+'" onclick="openModal('+ev.id+')">'
+            + (ev.display_time ? '<div class="card-time">'+ev.display_time+'</div>' : '')
+            + (logoUrl ? '<img class="card-logo" src="'+logoUrl+'" alt="" onerror="this.style.display=\'none\'">' : '')
+            + '<div class="card-title">'+(ev.event||'')+'</div>'
+            + (impLabel ? '<div class="card-impact '+imp+'">'+impLabel+'</div>' : '')
+            + '</div>';
+    });
+    html += '</div>';
   }
-  var byDate = {};
-  days.forEach(function(d) { byDate[ds(d)] = []; });
-  events.forEach(function(ev) { if (byDate[ev.date] !== undefined) { byDate[ev.date].push(ev); } });
-  var fmt = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); };
-  document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' - Click any event to view details.';
-  document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
-    var isToday = d.getTime() === today.getTime();
-    var evs = byDate[ds(d)] || [];
-    var cards = evs.map(function(ev) { return cardHtml(ev); }).join('');
-    var hdrCls = 'day-header' + (isToday ? ' today' : '');
-    return '<div class="day-col"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + MONTHS_SH[d.getMonth()] + '</div></div><div class="day-events">' + cards + '</div></div>';
-  }).join('');
+  document.getElementById('weekGrid').innerHTML = html;
 }
 
-function cardHtml(ev) {
-  var cls = impCls(ev.impact);
-  var label = impLabel(ev.impact);
-  var logoHtml = '';
-  if (ev.logo) { logoHtml = '<img class="card-logo" src="' + ev.logo + '" alt="" onerror="this.style.display=\'none\'">'; }
-  var timeHtml = '';
-  if (ev.time) { timeHtml = '<div class="card-time">' + ev.time + '</div>'; }
-  var labelHtml = '';
-  if (label) { labelHtml = '<div class="card-impact ' + cls + '">' + label + '</div>'; }
-  return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + timeHtml + logoHtml + '<div class="card-title">' + ev.title + '</div>' + labelHtml + '</div>';
-}
-
+// ── MODAL ──
 function openModal(id) {
-  var ev = null;
-  for (var i = 0; i < events.length; i++) { if (events[i].id === id) { ev = events[i]; break; } }
-  if (!ev) { return; }
-  var heroImg = document.getElementById('modalHeroImg');
-  if (ev.hero) { heroImg.src = ev.hero; heroImg.style.display = 'block'; } else { heroImg.style.display = 'none'; }
-  var logoEl = document.getElementById('modalLogo');
-  if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
-  document.getElementById('modalTitle').textContent = ev.title;
-  document.getElementById('modalName').textContent = ev.name || ev.category || '';
+  var ev = allEvents.find(function(e){ return e.id===id; });
+  if (!ev) return;
+
+  var heroUrl = (ev.entity && ev.entity.hero_url) ? ev.entity.hero_url : ev.hero_url;
+  var logoUrl = (ev.entity && ev.entity.logo_url) ? ev.entity.logo_url : ev.logo_url;
+  var hw = document.getElementById('modalHeroWrap');
+  if (heroUrl) {
+    hw.innerHTML = '<img class="modal-hero" src="'+heroUrl+'" alt="" onerror="this.parentNode.innerHTML=\'<div class=modal-hero-placeholder><svg viewBox=\\\"0 0 24 24\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"18\\\" height=\\\"18\\\" rx=\\\"2\\\"/></svg></div>\'">';
+  } else {
+    hw.innerHTML = '<div class="modal-hero-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';
+  }
+
+  if (logoUrl) {
+    document.getElementById('modalEntityRow').style.display = 'flex';
+    document.getElementById('modalEntityLogo').src = logoUrl;
+    document.getElementById('modalEntityName').textContent = ev.entity_name || '';
+  } else {
+    document.getElementById('modalEntityRow').style.display = 'none';
+  }
+
+  document.getElementById('modalTitle').textContent = ev.event || '';
+
+  var imp = (ev.impact||'none').toLowerCase();
   var meta = '';
-  if (ev.impact && ev.impact !== 'none') { meta += '<span class="modal-tag ' + ev.impact + '">' + impLabel(ev.impact) + '</span>'; }
-  if (ev.time) { meta += '<span class="modal-tag">' + ev.time + '</span>'; }
-  if (ev.frequency) { meta += '<span class="modal-tag">' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
-  if (ev.ticker) { meta += '<span class="modal-tag">' + ev.ticker + '</span>'; }
-  if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag">' + ev.aka + '</span>'; }
-  if (ev.impactedAssets) { meta += '<span class="modal-tag">' + ev.impactedAssets + '</span>'; }
+  if (ev.month)    meta += '<span class="modal-tag">'+ev.month+'</span>';
+  if (ev.category) meta += '<span class="modal-tag">'+ev.category+'</span>';
+  if (imp && imp!=='none') meta += '<span class="modal-tag '+imp+'">'+(imp.charAt(0).toUpperCase()+imp.slice(1))+' Impact</span>';
   document.getElementById('modalMeta').innerHTML = meta;
-  var hasContent = ev.whyMatters || ev.measures || ev.details;
-  document.getElementById('modalDiv1').style.display = hasContent ? 'block' : 'none';
+
   var ws = document.getElementById('modalWhySection');
-  if (ev.whyMatters) { ws.style.display = 'block'; document.getElementById('modalWhy').textContent = ev.whyMatters; } else { ws.style.display = 'none'; }
+  var whyMatters = (ev.entity && ev.entity.why_it_matters) ? ev.entity.why_it_matters : ev.why_it_matters;
+  if (whyMatters) { ws.style.display='block'; document.getElementById('modalWhy').textContent=whyMatters; } else { ws.style.display='none'; }
+
   var ms = document.getElementById('modalMeasuresSection');
-  if (ev.measures) { ms.style.display = 'block'; document.getElementById('modalMeasures').textContent = ev.measures; } else { ms.style.display = 'none'; }
+  var measures = (ev.entity && ev.entity.measures) ? ev.entity.measures : ev.measures;
+  if (measures) { ms.style.display='block'; document.getElementById('modalMeasures').textContent=measures; } else { ms.style.display='none'; }
+
   var det = document.getElementById('modalDetailsSection');
-  if (ev.details) { det.style.display = 'block'; document.getElementById('modalDetails').innerHTML = ev.details; } else { det.style.display = 'none'; }
+  if (ev.details) { det.style.display='block'; document.getElementById('modalDetails').innerHTML=ev.details; } else { det.style.display='none'; }
+
+  document.getElementById('modalDiv1').style.display = (whyMatters||measures||ev.details) ? 'block' : 'none';
+
   var srcEl = document.getElementById('modalSource');
-  var div2 = document.getElementById('modalDiv2');
-  if (ev.source) { srcEl.href = ev.source; srcEl.style.display = 'inline'; div2.style.display = 'block'; } else { srcEl.style.display = 'none'; div2.style.display = 'none'; }
+  var div2  = document.getElementById('modalDiv2');
+  if (ev.source_url) { srcEl.href=ev.source_url; srcEl.style.display='inline'; div2.style.display='block'; }
+  else               { srcEl.style.display='none'; div2.style.display='none'; }
+
   document.getElementById('overlay').classList.add('open');
 }
-function closeModal() { document.getElementById('overlay').classList.remove('open'); }
-function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
+function closeModal()    { document.getElementById('overlay').classList.remove('open'); }
+function overlayClick(e) { if (e.target===document.getElementById('overlay')) closeModal(); }
 
-function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar(); renderWeek(); }
-function nextWeek() { weekStart.setDate(weekStart.getDate() + 7); buildSidebar(); renderWeek(); }
-function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
+// ── NAVIGATION ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-'+page).classList.add('active');
+  document.getElementById('btn-'+page).classList.add('active');
+}
 
+function prevWeek() { weekStart.setDate(weekStart.getDate()-7); buildSidebar(); renderWeek(); }
+function nextWeek() { weekStart.setDate(weekStart.getDate()+7); buildSidebar(); renderWeek(); }
+function goToday()  { weekStart=getWeekStart(new Date()); buildSidebar(); renderWeek(); }
+
+// ── WORLD CLOCKS ──
 function updateClocks() {
-  var opt = {hour:'2-digit', minute:'2-digit', hour12:true};
-  var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
+  var opt = {hour:'2-digit',minute:'2-digit',hour12:true};
+  var zones = {
+    'time-ny' :'America/New_York',
+    'time-lon':'Europe/London',
+    'time-fra':'Europe/Berlin',
+    'time-riy':'Asia/Riyadh',
+    'time-mum':'Asia/Kolkata',
+    'time-sha':'Asia/Shanghai',
+    'time-tok':'Asia/Tokyo',
+    'time-syd':'Australia/Sydney'
+  };
   Object.keys(zones).forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) { el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({}, opt, {timeZone: zones[id]})); }
+    if (el) el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({},opt,{timeZone:zones[id]}));
   });
 }
 setInterval(updateClocks, 1000);
 updateClocks();
 
+// ── INIT ──
 fetchEvents().then(function() {
   buildSidebar();
   renderWeek();
