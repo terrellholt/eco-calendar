@@ -7,38 +7,23 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
   :root {
-    --bg: #0c0c0e;
-    --surface: #141417;
-    --surface2: #1c1c21;
-    --surface3: #242429;
-    --border: #27272d;
-    --border2: #35353d;
-    --accent: #e8c547;
-    --text: #ebebf0;
-    --text2: #8e8e9e;
-    --text3: #4a4a5a;
-    --red: #e05555;
-    --green: #4cbe85;
-    --blue: #5b8dee;
-    --high: #e05555;
-    --med: #e89844;
-    --low: #4cbe85;
-    --r: 8px;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', -apple-system, sans-serif;
+    --bg: #0c0c0e; --surface: #141417; --surface2: #1c1c21; --surface3: #242429;
+    --border: #27272d; --border2: #35353d;
+    --accent: #e8c547; --text: #ebebf0; --text2: #8e8e9e; --text3: #4a4a5a;
+    --red: #e05555; --green: #4cbe85; --blue: #5b8dee;
+    --high: #dc2626; --med: #ea7000; --low: #d4a000;
+    --r: 8px; --mono: 'DM Mono', monospace; --sans: 'DM Sans', -apple-system, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
 
-  /* TOP BAR */
   .topbar { position: sticky; top: 0; z-index: 100; background: rgba(12,12,14,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 50px; }
   .topbar-logo { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.08em; }
   .topbar-badge { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: var(--text3); font-family: var(--mono); margin-left: 10px; }
   .status-wrap { display: flex; align-items: center; gap: 8px; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; }
   .status-text { font-size: 11px; color: var(--text3); font-family: var(--mono); }
 
-  /* TOOLBAR */
   .toolbar { padding: 14px 24px 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
   .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 340px; }
   .search-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 12px 7px 34px; font-size: 13px; outline: none; font-family: var(--sans); }
@@ -47,7 +32,6 @@
   select.fsel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 28px 7px 10px; font-size: 13px; outline: none; cursor: pointer; font-family: var(--sans); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a4a5a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
   .count-badge { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
 
-  /* TABLE */
   .table-wrap { overflow-x: auto; padding: 0 24px 100px; }
   table { width: 100%; border-collapse: collapse; min-width: 800px; }
   thead th { text-align: left; font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
@@ -60,9 +44,9 @@
   .td-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
   .td-cat { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; color: var(--text2); white-space: nowrap; display: inline-block; }
   .ipill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; font-family: var(--mono); }
-  .ipill-high { background: rgba(224,85,85,.12); color: var(--high); border: 1px solid rgba(224,85,85,.25); }
-  .ipill-medium { background: rgba(232,152,68,.12); color: var(--med); border: 1px solid rgba(232,152,68,.25); }
-  .ipill-low { background: rgba(76,190,133,.12); color: var(--low); border: 1px solid rgba(76,190,133,.25); }
+  .ipill-high { background: rgba(220,38,38,.12); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+  .ipill-medium { background: rgba(234,112,0,.12); color: #ea7000; border: 1px solid rgba(234,112,0,.25); }
+  .ipill-low { background: rgba(212,160,0,.12); color: #d4a000; border: 1px solid rgba(212,160,0,.25); }
   .enr-chips { display: flex; gap: 4px; flex-wrap: wrap; }
   .echip { font-size: 9px; font-family: var(--mono); padding: 2px 5px; border-radius: 3px; border: 1px solid; }
   .echip-y { background: rgba(91,141,238,.1); color: var(--blue); border-color: rgba(91,141,238,.25); }
@@ -73,11 +57,9 @@
   .btn-edit { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); transition: all 0.15s; }
   .btn-edit:hover { border-color: var(--border2); color: var(--text); }
 
-  /* OVERLAY */
   #editOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
   #editOverlay.open { display: flex; }
 
-  /* EDIT PANEL */
   .edit-panel { background: #fff; border-radius: 16px; width: 560px; max-width: 96vw; max-height: 96vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 32px 100px rgba(0,0,0,0.7); color: #1a1a1a; }
   .ep-header { padding: 18px 20px 14px; border-bottom: 1px solid #f0f0ec; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .ep-header-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
@@ -86,24 +68,23 @@
   .ep-body { overflow-y: auto; flex: 1; }
   .ep-footer { padding: 14px 20px; border-top: 1px solid #f0f0ec; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: #fff; }
   .ep-save-status { font-size: 12px; color: #999; }
-  .ep-save-status.saving { color: #e89844; }
+  .ep-save-status.saving { color: #ea7000; }
   .ep-save-status.saved { color: #4cbe85; }
   .ep-save-status.error { color: #e05555; }
   .ep-footer-btns { display: flex; gap: 8px; }
 
-  /* HERO DRAG AREA */
+  /* HERO */
   .hero-drag-wrap { position: relative; height: 200px; background: #1a1a2e; overflow: hidden; cursor: grab; user-select: none; flex-shrink: 0; }
   .hero-drag-wrap.dragging { cursor: grabbing; }
   .hero-drag-img { position: absolute; pointer-events: none; }
   .hero-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #555; font-size: 13px; }
-  .hero-empty svg { opacity: 0.3; }
   .hero-drag-hint { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 20px; pointer-events: none; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
   .hero-drag-wrap:hover .hero-drag-hint { opacity: 1; }
   .hero-change-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-family: var(--sans); cursor: pointer; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(4px); }
   .hero-change-btn:hover { background: rgba(0,0,0,0.8); }
 
-  /* FORM LAYOUT */
-  .ep-section { padding: 18px 20px; border-bottom: 1px solid #f5f5f2; }
+  /* FORM */
+  .ep-section { padding: 16px 20px; border-bottom: 1px solid #f5f5f2; }
   .ep-row { display: grid; gap: 12px; }
   .ep-row.c2 { grid-template-columns: 1fr 1fr; }
   .ep-row.c3 { grid-template-columns: 1fr 1fr 1fr; }
@@ -112,28 +93,30 @@
   .ep-label .opt { font-weight: 400; color: #aaa; margin-left: 4px; }
   .ep-input { background: #fff; border: 1.5px solid #e5e5e0; border-radius: 8px; color: #1a1a1a; padding: 9px 12px; font-size: 13px; outline: none; font-family: var(--sans); width: 100%; transition: border-color 0.15s; }
   .ep-input:focus { border-color: #1a1a1a; }
-  textarea.ep-input { min-height: 80px; resize: vertical; line-height: 1.5; }
+  textarea.ep-input { resize: vertical; line-height: 1.5; }
   select.ep-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; cursor: pointer; }
 
-  /* LOGO AREA */
+  /* LOGO */
   .logo-area { display: flex; align-items: flex-end; gap: 12px; }
   .logo-thumb { width: 72px; height: 72px; border-radius: 12px; border: 1.5px solid #e5e5e0; background: #fafaf8; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
   .logo-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
-  .logo-thumb-empty { color: #ccc; font-size: 11px; text-align: center; font-family: var(--sans); }
+  .logo-thumb-empty { color: #ccc; font-size: 10px; text-align: center; }
   .logo-change-btn { font-size: 11px; color: #666; background: #f5f5f0; border: 1px solid #e5e5e0; border-radius: 6px; padding: 5px 10px; cursor: pointer; margin-top: 4px; display: block; text-align: center; }
   .logo-change-btn:hover { background: #eeeeea; }
 
-  /* IMPACT SELECTOR */
-  .impact-row { display: flex; gap: 8px; }
-  .impact-opt { flex: 1; padding: 8px; border-radius: 8px; border: 1.5px solid #e5e5e0; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; }
-  .impact-opt:hover { border-color: #ccc; }
+  /* IMPACT — Red / Orange / Yellow / None */
+  .impact-row { display: flex; gap: 6px; }
+  .impact-opt { flex: 1; padding: 8px 4px; border-radius: 8px; border: 1.5px solid #e5e5e0; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; color: #999; }
+  .impact-opt:hover { border-color: #ccc; color: #555; }
   .impact-opt.sel-high { background: #FEF2F2; border-color: #FECACA; color: #dc2626; }
   .impact-opt.sel-medium { background: #FFF7ED; border-color: #FED7AA; color: #ea7000; }
-  .impact-opt.sel-low { background: #F0FDF4; border-color: #BBF7D0; color: #16a34a; }
-  .impact-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .impact-opt.sel-low { background: #FEFCE8; border-color: #FEF08A; color: #d4a000; }
+  .impact-opt.sel-none { background: #f5f5f0; border-color: #d0d0cc; color: #555; }
+  .impact-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
   .dot-high { background: #dc2626; }
   .dot-medium { background: #ea7000; }
-  .dot-low { background: #16a34a; }
+  .dot-low { background: #d4a000; }
+  .dot-none { background: #aaa; }
 
   /* ASSETS */
   .asset-wrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border: 1.5px solid #e5e5e0; border-radius: 8px; padding: 7px 10px; min-height: 42px; cursor: text; }
@@ -143,43 +126,53 @@
   .achip-rm:hover { color: #e05555; }
   .asset-inp { border: none; outline: none; font-size: 12px; font-family: var(--sans); color: #1a1a1a; width: 70px; background: transparent; }
 
+  /* TOGGLE SWITCH */
+  .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+  .toggle-track { width: 38px; height: 22px; border-radius: 11px; background: #e0e0da; border: none; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+  .toggle-track.on { background: #1a1a1a; }
+  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: left 0.2s; }
+  .toggle-track.on .toggle-thumb { left: 19px; }
+  .toggle-label { font-size: 13px; color: #333; }
+  .toggle-sub { font-size: 11px; color: #aaa; margin-top: 1px; }
+
   /* PRICE MOVE */
   .price-move-wrap { display: flex; align-items: center; gap: 8px; }
-  .pm-sym { font-size: 15px; color: #999; font-weight: 500; }
+  .pm-sym { font-size: 16px; color: #999; font-weight: 500; }
   .pm-input { width: 80px; }
   .pm-type { flex: 1; }
 
-  /* CHART SECTION */
+  /* DURATION */
+  .duration-row { display: flex; align-items: center; gap: 8px; }
+  .duration-row .ep-input { flex: 1; }
+  .duration-arrow { color: #aaa; font-size: 16px; flex-shrink: 0; }
+
+  /* CHART */
   .chart-area { border: 1.5px solid #e5e5e0; border-radius: 10px; overflow: hidden; background: #fafaf8; }
   .chart-toolbar { padding: 10px 14px; border-bottom: 1px solid #f0f0ec; display: flex; align-items: center; justify-content: space-between; }
-  .chart-ticker-row { display: flex; align-items: center; gap: 8px; }
   .chart-ticker-input { border: 1.5px solid #e5e5e0; border-radius: 6px; padding: 5px 10px; font-size: 13px; font-weight: 700; color: #1a1a1a; width: 90px; outline: none; font-family: var(--sans); }
   .chart-ticker-input:focus { border-color: #1a1a1a; }
   .chart-refresh-btn { background: #f5f5f0; border: 1px solid #e5e5e0; border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer; color: #555; display: flex; align-items: center; gap: 4px; }
   .chart-refresh-btn:hover { background: #eee; }
-  .chart-frame-wrap { height: 300px; position: relative; }
+  .chart-frame-wrap { height: 280px; position: relative; }
   .chart-frame-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
   .chart-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #bbb; font-size: 13px; }
-  .chart-placeholder svg { opacity: 0.3; }
-  .chart-range-row { display: flex; gap: 4px; padding: 8px 14px; border-top: 1px solid #f0f0ec; }
+  .chart-range-row { display: flex; gap: 4px; padding: 8px 14px; border-top: 1px solid #f0f0ec; flex-wrap: wrap; }
   .range-btn { padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; border: 1px solid #e5e5e0; background: #fff; color: #666; cursor: pointer; transition: all 0.12s; }
   .range-btn:hover { background: #f5f5f0; }
   .range-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
-  /* FOOTER BTNS */
   .btn-cancel { padding: 9px 18px; border-radius: 8px; font-size: 13px; font-family: var(--sans); cursor: pointer; border: 1.5px solid #e5e5e0; background: #fff; color: #555; font-weight: 500; }
   .btn-cancel:hover { background: #f5f5f0; }
   .btn-save { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-family: var(--sans); cursor: pointer; border: none; background: #1a1a1a; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px; }
   .btn-save:hover { background: #2a2a2a; }
   .btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* TOAST */
   #toast { position: fixed; bottom: 24px; right: 24px; z-index: 500; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 12px 18px; font-size: 13px; color: var(--text); box-shadow: 0 8px 40px rgba(0,0,0,0.5); transform: translateY(60px); opacity: 0; transition: all 0.25s; display: flex; align-items: center; gap: 10px; }
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.success .ti { color: var(--green); }
   #toast.error .ti { color: var(--red); }
 
-  @media (max-width: 560px) { .ep-row.c2, .ep-row.c3 { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .ep-row.c2, .ep-row.c3 { grid-template-columns: 1fr; } .impact-row { flex-wrap: wrap; } }
 </style>
 </head>
 <body>
@@ -190,7 +183,7 @@
     <span class="topbar-badge">ADMIN</span>
   </div>
   <div class="status-wrap">
-    <div class="status-dot" id="statusDot" style="background:var(--text3);box-shadow:none"></div>
+    <div class="status-dot" id="statusDot" style="background:var(--text3)"></div>
     <span class="status-text" id="statusText">connecting…</span>
   </div>
 </div>
@@ -205,6 +198,7 @@
     <option value="high">High</option>
     <option value="medium">Medium</option>
     <option value="low">Low</option>
+    <option value="none">None</option>
   </select>
   <select class="fsel" id="catFilter" onchange="filterTable()">
     <option value="">All Categories</option>
@@ -248,8 +242,8 @@
     <div class="hero-drag-wrap" id="heroDragWrap">
       <img id="heroDragImg" class="hero-drag-img" src="" alt="" style="display:none">
       <div class="hero-empty" id="heroEmpty">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="13" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2 22l7-6 5 5 4-4 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>No hero image set</span>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="opacity:.3"><rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="13" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2 22l7-6 5 5 4-4 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="color:#555;font-size:13px">No hero image set</span>
       </div>
       <div class="hero-drag-hint" id="heroDragHint">Drag to reposition</div>
       <button class="hero-change-btn" onclick="promptHeroUrl()">
@@ -258,20 +252,19 @@
       </button>
     </div>
 
-    <div class="ep-body" id="epBody">
+    <div class="ep-body">
+
       <!-- LOGO + TITLE -->
       <div class="ep-section">
         <div class="logo-area">
           <div>
-            <div class="logo-thumb" id="logoThumb">
-              <div class="logo-thumb-empty">No logo</div>
-            </div>
+            <div class="logo-thumb" id="logoThumb"><div class="logo-thumb-empty">No logo</div></div>
             <button class="logo-change-btn" onclick="promptLogoUrl()">Change Logo</button>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:10px">
             <div class="ep-field">
               <label class="ep-label">Title</label>
-              <input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default" title="Title is synced from your spreadsheet">
+              <input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default">
             </div>
             <div class="ep-row c2">
               <div class="ep-field">
@@ -287,16 +280,24 @@
         </div>
       </div>
 
-      <!-- TIME + AKA -->
+      <!-- TIME + DURATION + AKA -->
       <div class="ep-section">
-        <div class="ep-row c2">
+        <div class="ep-row c2" style="margin-bottom:12px">
           <div class="ep-field">
             <label class="ep-label">Time</label>
             <input type="text" class="ep-input" id="f_display_time" placeholder="e.g. 10:00 AM ET">
           </div>
           <div class="ep-field">
             <label class="ep-label">Also Known As <span class="opt">(optional)</span></label>
-            <input type="text" class="ep-input" id="f_aka" placeholder="e.g. WWDC 2027 Keynote">
+            <input type="text" class="ep-input" id="f_aka" placeholder="e.g. Quad Witching">
+          </div>
+        </div>
+        <div class="ep-field">
+          <label class="ep-label">Event Duration <span class="opt">(optional — for multi-day events)</span></label>
+          <div class="duration-row">
+            <input type="date" class="ep-input" id="f_start_date" placeholder="Start date">
+            <span class="duration-arrow">→</span>
+            <input type="date" class="ep-input" id="f_end_date" placeholder="End date">
           </div>
         </div>
       </div>
@@ -313,6 +314,7 @@
             <div class="impact-opt" id="imp-high" onclick="selectImpact('high')"><span class="impact-dot dot-high"></span>High</div>
             <div class="impact-opt" id="imp-medium" onclick="selectImpact('medium')"><span class="impact-dot dot-medium"></span>Medium</div>
             <div class="impact-opt" id="imp-low" onclick="selectImpact('low')"><span class="impact-dot dot-low"></span>Low</div>
+            <div class="impact-opt" id="imp-none" onclick="selectImpact('none')"><span class="impact-dot dot-none"></span>None</div>
           </div>
         </div>
         <div class="ep-field">
@@ -323,8 +325,19 @@
         </div>
       </div>
 
-      <!-- FREQUENCY + MEASURES -->
+      <!-- MONTHLY TOGGLE + FREQUENCY -->
       <div class="ep-section">
+        <div style="margin-bottom:14px">
+          <div class="toggle-row" onclick="toggleMonthly()">
+            <div class="toggle-track" id="monthlyToggle">
+              <div class="toggle-thumb"></div>
+            </div>
+            <div>
+              <div class="toggle-label">Show in monthly calendar view</div>
+              <div class="toggle-sub">Multi-day banner — only top events should be enabled</div>
+            </div>
+          </div>
+        </div>
         <div class="ep-row c2">
           <div class="ep-field">
             <label class="ep-label">Frequency</label>
@@ -339,37 +352,33 @@
             </select>
           </div>
           <div class="ep-field">
-            <label class="ep-label">Measures <span class="opt">(optional)</span></label>
-            <input type="text" class="ep-input" id="f_measures" placeholder="e.g. Event / Product Announcements">
+            <label class="ep-label">Expected Price Move (±) <span class="opt">(optional)</span></label>
+            <div class="price-move-wrap">
+              <span class="pm-sym">±</span>
+              <input type="text" class="ep-input pm-input" id="f_price_move_val" placeholder="2.5">
+              <select class="ep-input pm-type" id="f_price_move_type">
+                <option value="percent">%</option>
+                <option value="points">pts</option>
+                <option value="range">range</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- EXPECTED PRICE MOVE -->
+      <!-- MEASURES + WHY IT MATTERS + DETAILS -->
       <div class="ep-section">
-        <div class="ep-field">
-          <label class="ep-label">Expected Price Move (±) <span class="opt">(optional)</span></label>
-          <div class="price-move-wrap">
-            <span class="pm-sym">±</span>
-            <input type="text" class="ep-input pm-input" id="f_price_move_val" placeholder="e.g. 2.5">
-            <select class="ep-input pm-type" id="f_price_move_type">
-              <option value="percent">Percentage (%)</option>
-              <option value="points">Points</option>
-              <option value="range">Range (e.g. 1–3%)</option>
-            </select>
-          </div>
+        <div class="ep-field" style="margin-bottom:14px">
+          <label class="ep-label">Measures <span class="opt">(optional)</span></label>
+          <textarea class="ep-input" id="f_measures" rows="3" placeholder="What this event or release tracks…"></textarea>
         </div>
-      </div>
-
-      <!-- WHY + DETAILS -->
-      <div class="ep-section">
         <div class="ep-field" style="margin-bottom:14px">
           <label class="ep-label">Why it Matters</label>
           <textarea class="ep-input" id="f_why_it_matters" rows="3" placeholder="Add description of why this event matters…"></textarea>
         </div>
         <div class="ep-field">
           <label class="ep-label">Details <span class="opt">(custom content)</span></label>
-          <textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes about this event…"></textarea>
+          <textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes…"></textarea>
         </div>
       </div>
 
@@ -377,9 +386,9 @@
       <div class="ep-section" style="border-bottom:none">
         <div class="ep-field">
           <label class="ep-label">Attach Chart <span class="opt">(optional)</span></label>
-          <div class="chart-area" id="chartArea">
+          <div class="chart-area">
             <div class="chart-toolbar">
-              <div class="chart-ticker-row">
+              <div style="display:flex;align-items:center;gap:8px">
                 <input type="text" class="chart-ticker-input" id="chartTicker" placeholder="AAPL" onkeydown="if(event.key==='Enter')loadChart()">
                 <button class="chart-refresh-btn" onclick="loadChart()">
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9.5 5.5A4 4 0 1 1 7 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 1v2.5H9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -394,7 +403,7 @@
               </div>
               <iframe id="chartFrame" style="display:none" title="TradingView Chart"></iframe>
             </div>
-            <div class="chart-range-row" id="chartRangeRow">
+            <div class="chart-range-row">
               <button class="range-btn" onclick="setRange(this,'1D')">1D</button>
               <button class="range-btn" onclick="setRange(this,'5D')">5D</button>
               <button class="range-btn active" onclick="setRange(this,'1M')">1M</button>
@@ -408,7 +417,8 @@
           </div>
         </div>
       </div>
-    </div>
+
+    </div><!-- ep-body -->
 
     <div class="ep-footer">
       <div class="ep-save-status" id="epStatus"></div>
@@ -432,11 +442,13 @@ var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 
 var allEvents = [], filteredEvents = [], currentEvent = null;
 var sortCol = 'date', sortDir = 1;
-var selectedImpact = '';
-var heroOffsetX = 50, heroOffsetY = 50; // percent
+var selectedImpact = 'none';
+var heroOffsetX = 50, heroOffsetY = 50;
 var chartRange = '1M';
+var showInMonthly = false;
+var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroDragStartOY;
+var currentHeroUrl = '';
 
-// ── SUPABASE ──
 function supaFetch(path, opts) {
   var method = (opts && opts.method) || 'GET';
   var headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
@@ -448,7 +460,6 @@ function supaFetch(path, opts) {
     });
 }
 
-// ── LOAD ──
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
@@ -463,7 +474,7 @@ function loadEvents() {
       document.getElementById('eventsTable').style.display = 'table';
     })
     .catch(function(err) {
-      document.getElementById('statusDot').style.cssText = 'background:#e05555;box-shadow:none';
+      document.getElementById('statusDot').style.cssText = 'background:#e05555';
       document.getElementById('statusText').textContent = 'connection error';
       document.getElementById('tableState').innerHTML = '<div style="color:#e05555;font-family:monospace;font-size:12px">' + err.message + '</div>';
     });
@@ -476,7 +487,6 @@ function populateCats() {
   Object.keys(cats).sort().forEach(function(c) { var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
 }
 
-// ── FILTER / SORT ──
 function filterTable() {
   var q = document.getElementById('searchInput').value.toLowerCase();
   var imp = document.getElementById('impactFilter').value;
@@ -484,7 +494,7 @@ function filterTable() {
   var enr = document.getElementById('enrichFilter').value;
   filteredEvents = allEvents.filter(function(e) {
     if (q && (e.event||'').toLowerCase().indexOf(q) === -1 && (e.category||'').toLowerCase().indexOf(q) === -1) return false;
-    if (imp && (e.impact||'').toLowerCase() !== imp) return false;
+    if (imp && (e.impact||'none').toLowerCase() !== imp) return false;
     if (cat && e.category !== cat) return false;
     var ent = e.entity || {};
     var hero = e.hero_url || ent.hero_url || '';
@@ -502,18 +512,11 @@ function filterTable() {
   renderTable();
 }
 
-function sortBy(col) {
-  if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; }
-  filterTable();
-}
+function sortBy(col) { if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; } filterTable(); }
 
-// ── RENDER TABLE ──
 function renderTable() {
   var tb = document.getElementById('tableBody');
-  if (!filteredEvents.length) {
-    tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3)">No events match your filters</td></tr>';
-    return;
-  }
+  if (!filteredEvents.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>'; return; }
   var html = '';
   filteredEvents.forEach(function(ev, i) {
     var ent = ev.entity || {};
@@ -522,9 +525,7 @@ function renderTable() {
     var why = ev.why_it_matters || ent.why_it_matters || '';
     var imp = (ev.impact||'none').toLowerCase();
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
-    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){
-      return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>';
-    }).join('');
+    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
     var date = ev.date ? String(ev.date).substring(0,10) : '';
     html += '<tr onclick="openEdit('+i+')">'
       + '<td class="td-date">'+date+'</td>'
@@ -538,47 +539,24 @@ function renderTable() {
   tb.innerHTML = html;
 }
 
-// ── OPEN EDIT ──
 function openEdit(idx) {
   currentEvent = filteredEvents[idx];
   var ev = currentEvent;
   var ent = ev.entity || {};
 
   var heroUrl = ev.hero_url || ent.hero_url || '';
-  var logoUrl = ev.logo_url || ent.logo_url || '';
-  var heroPos = ev.hero_position || 'center';
-
-  // Parse heroPos into offsets
   heroOffsetX = 50; heroOffsetY = 50;
-  if (heroPos) {
-    var p = heroPos.toString().trim();
-    if (p.indexOf('%') > -1) {
-      var parts = p.split(' ');
-      if (parts.length >= 2) { heroOffsetX = parseFloat(parts[0])||50; heroOffsetY = parseFloat(parts[1])||50; }
-    } else if (p === 'top') { heroOffsetY = 0; }
-    else if (p === 'bottom') { heroOffsetY = 100; }
-    else if (p === 'left') { heroOffsetX = 0; }
-    else if (p === 'right') { heroOffsetX = 100; }
-    else if (p.indexOf('top') > -1 && p.indexOf('left') > -1) { heroOffsetX = 0; heroOffsetY = 0; }
-    else if (p.indexOf('top') > -1 && p.indexOf('right') > -1) { heroOffsetX = 100; heroOffsetY = 0; }
-    else if (p.indexOf('bottom') > -1 && p.indexOf('left') > -1) { heroOffsetX = 0; heroOffsetY = 100; }
-    else if (p.indexOf('bottom') > -1 && p.indexOf('right') > -1) { heroOffsetX = 100; heroOffsetY = 100; }
-    else if (p.indexOf('top') > -1) { heroOffsetY = 20; }
-    else if (p.indexOf('bottom') > -1) { heroOffsetY = 80; }
+  var heroPos = ev.hero_position || '';
+  if (heroPos && heroPos.indexOf('%') > -1) {
+    var pp = heroPos.split(' ');
+    if (pp.length >= 2) { heroOffsetX = parseFloat(pp[0])||50; heroOffsetY = parseFloat(pp[1])||50; }
   }
-
-  // Hero
   setupHero(heroUrl);
 
-  // Logo thumb
   var lt = document.getElementById('logoThumb');
-  if (logoUrl) {
-    lt.innerHTML = '<img src="'+esc(logoUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">';
-  } else {
-    lt.innerHTML = '<div class="logo-thumb-empty">No logo</div>';
-  }
+  var logoUrl = ev.logo_url || ent.logo_url || '';
+  lt.innerHTML = logoUrl ? '<img src="'+esc(logoUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
 
-  // Fields
   document.getElementById('f_title').value = ev.event || '';
   document.getElementById('f_name').value = ent.name || '';
   document.getElementById('f_ticker').value = ev.ticker || '';
@@ -590,15 +568,24 @@ function openEdit(idx) {
   document.getElementById('f_why_it_matters').value = ev.why_it_matters || ent.why_it_matters || '';
   document.getElementById('f_details').value = ev.details || '';
 
+  // Duration
+  var startD = ev.date ? String(ev.date).substring(0,10) : '';
+  var endD = ev.end_date ? String(ev.end_date).substring(0,10) : '';
+  document.getElementById('f_start_date').value = startD;
+  document.getElementById('f_end_date').value = endD;
+
   // Price move
-  var pm = ev.price_move || '';
-  var pmType = ev.price_move_type || 'percent';
-  document.getElementById('f_price_move_val').value = pm;
-  document.getElementById('f_price_move_type').value = pmType;
+  document.getElementById('f_price_move_val').value = ev.price_move_val || '';
+  document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
 
   // Impact
-  selectedImpact = (ev.impact || 'high').toLowerCase();
+  selectedImpact = (ev.impact || 'none').toLowerCase();
+  if (!['high','medium','low','none'].includes(selectedImpact)) selectedImpact = 'none';
   updateImpactUI();
+
+  // Monthly toggle
+  showInMonthly = ev.show_in_monthly !== false && ev.show_in_monthly !== 0;
+  updateToggleUI();
 
   // Assets
   var assetWrap = document.getElementById('assetWrap');
@@ -608,11 +595,11 @@ function openEdit(idx) {
   assets.forEach(function(a) { assetWrap.insertBefore(makeChip(a), assetInp); });
 
   // Chart
-  var chartTicker = ev.chart_ticker || ev.ticker || '';
-  document.getElementById('chartTicker').value = chartTicker;
+  var ct = ev.chart_ticker || ev.ticker || '';
+  document.getElementById('chartTicker').value = ct;
   chartRange = ev.chart_range || '1M';
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === chartRange); });
-  if (chartTicker) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
+  if (ct) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
 
   document.getElementById('epStatus').textContent = '';
   document.getElementById('saveBtn').disabled = false;
@@ -620,98 +607,61 @@ function openEdit(idx) {
   document.body.style.overflow = 'hidden';
 }
 
-function closeEdit() {
-  document.getElementById('editOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  currentEvent = null;
-}
+function closeEdit() { document.getElementById('editOverlay').classList.remove('open'); document.body.style.overflow = ''; currentEvent = null; }
 function overlayClick(e) { if (e.target === document.getElementById('editOverlay')) closeEdit(); }
 
 // ── HERO DRAG ──
-var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroDragStartOY;
-var currentHeroUrl = '';
-
 function setupHero(url) {
   currentHeroUrl = url;
-  var wrap = document.getElementById('heroDragWrap');
   var img = document.getElementById('heroDragImg');
   var empty = document.getElementById('heroEmpty');
-  var hint = document.getElementById('heroDragHint');
-  if (url) {
-    img.src = url;
-    img.style.display = 'block';
-    empty.style.display = 'none';
-    hint.style.opacity = '';
-    positionHeroImg();
-  } else {
-    img.style.display = 'none';
-    empty.style.display = 'flex';
-    hint.style.opacity = '0';
-  }
+  if (url) { img.src = url; img.style.display = 'block'; empty.style.display = 'none'; positionHeroImg(); }
+  else { img.style.display = 'none'; empty.style.display = 'flex'; }
 }
 
 function positionHeroImg() {
   var wrap = document.getElementById('heroDragWrap');
   var img = document.getElementById('heroDragImg');
+  if (!img.naturalWidth) return;
   var ww = wrap.offsetWidth, wh = wrap.offsetHeight;
-  var naturalW = img.naturalWidth || 800, naturalH = img.naturalHeight || 400;
-  // Scale to cover
-  var scale = Math.max(ww / naturalW, wh / naturalH) * 1.0;
-  var sw = naturalW * scale, sh = naturalH * scale;
-  var maxOffX = sw - ww, maxOffY = sh - wh;
-  var ox = (heroOffsetX / 100) * maxOffX;
-  var oy = (heroOffsetY / 100) * maxOffY;
-  img.style.width = sw + 'px';
-  img.style.height = sh + 'px';
-  img.style.left = -ox + 'px';
-  img.style.top = -oy + 'px';
+  var scale = Math.max(ww / img.naturalWidth, wh / img.naturalHeight);
+  var sw = img.naturalWidth * scale, sh = img.naturalHeight * scale;
+  var maxOffX = Math.max(sw - ww, 0), maxOffY = Math.max(sh - wh, 0);
+  img.style.width = sw + 'px'; img.style.height = sh + 'px';
+  img.style.left = -(heroOffsetX / 100 * maxOffX) + 'px';
+  img.style.top = -(heroOffsetY / 100 * maxOffY) + 'px';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  var img = document.getElementById('heroDragImg');
-  img.addEventListener('load', positionHeroImg);
+  document.getElementById('heroDragImg').addEventListener('load', positionHeroImg);
   var wrap = document.getElementById('heroDragWrap');
-
   wrap.addEventListener('mousedown', function(e) {
-    if (!currentHeroUrl) return;
-    e.preventDefault();
-    heroDragging = true;
-    heroDragStartX = e.clientX; heroDragStartY = e.clientY;
+    if (!currentHeroUrl) return; e.preventDefault();
+    heroDragging = true; heroDragStartX = e.clientX; heroDragStartY = e.clientY;
     heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
     wrap.classList.add('dragging');
   });
   document.addEventListener('mousemove', function(e) {
     if (!heroDragging) return;
-    var img2 = document.getElementById('heroDragImg');
-    var wrap2 = document.getElementById('heroDragWrap');
-    var ww = wrap2.offsetWidth, wh = wrap2.offsetHeight;
-    var sw = parseFloat(img2.style.width)||ww, sh = parseFloat(img2.style.height)||wh;
-    var maxOffX = Math.max(sw - ww, 1), maxOffY = Math.max(sh - wh, 1);
-    var dx = e.clientX - heroDragStartX, dy = e.clientY - heroDragStartY;
-    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - (dx / maxOffX) * 100));
-    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - (dy / maxOffY) * 100));
+    var img = document.getElementById('heroDragImg'), w = document.getElementById('heroDragWrap');
+    var sw = parseFloat(img.style.width)||w.offsetWidth, sh = parseFloat(img.style.height)||w.offsetHeight;
+    var maxX = Math.max(sw - w.offsetWidth, 1), maxY = Math.max(sh - w.offsetHeight, 1);
+    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - ((e.clientX - heroDragStartX) / maxX) * 100));
+    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - ((e.clientY - heroDragStartY) / maxY) * 100));
     positionHeroImg();
   });
   document.addEventListener('mouseup', function() { heroDragging = false; document.getElementById('heroDragWrap').classList.remove('dragging'); });
-
-  // Touch support
   wrap.addEventListener('touchstart', function(e) {
     if (!currentHeroUrl) return;
-    var t = e.touches[0];
-    heroDragging = true; heroDragStartX = t.clientX; heroDragStartY = t.clientY;
-    heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
+    var t = e.touches[0]; heroDragging = true; heroDragStartX = t.clientX; heroDragStartY = t.clientY; heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
   }, {passive:true});
   document.addEventListener('touchmove', function(e) {
     if (!heroDragging) return;
-    var t = e.touches[0];
-    var img2 = document.getElementById('heroDragImg');
-    var wrap2 = document.getElementById('heroDragWrap');
-    var ww = wrap2.offsetWidth, wh = wrap2.offsetHeight;
-    var sw = parseFloat(img2.style.width)||ww, sh = parseFloat(img2.style.height)||wh;
-    var maxOffX = Math.max(sw - ww, 1), maxOffY = Math.max(sh - wh, 1);
-    var dx = t.clientX - heroDragStartX, dy = t.clientY - heroDragStartY;
-    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - (dx / maxOffX) * 100));
-    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - (dy / maxOffY) * 100));
+    var t = e.touches[0], img = document.getElementById('heroDragImg'), w = document.getElementById('heroDragWrap');
+    var sw = parseFloat(img.style.width)||w.offsetWidth, sh = parseFloat(img.style.height)||w.offsetHeight;
+    var maxX = Math.max(sw - w.offsetWidth, 1), maxY = Math.max(sh - w.offsetHeight, 1);
+    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - ((t.clientX - heroDragStartX) / maxX) * 100));
+    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - ((t.clientY - heroDragStartY) / maxY) * 100));
     positionHeroImg();
   }, {passive:true});
   document.addEventListener('touchend', function() { heroDragging = false; });
@@ -719,67 +669,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function promptHeroUrl() {
   var url = prompt('Enter hero image URL:', currentHeroUrl || '');
-  if (url !== null) { setupHero(url.trim()); }
+  if (url !== null) setupHero(url.trim());
 }
 function promptLogoUrl() {
   var cur = document.getElementById('logoThumb').querySelector('img');
   var url = prompt('Enter logo image URL:', (cur ? cur.src : '') || '');
   if (url !== null) {
     var lt = document.getElementById('logoThumb');
-    if (url.trim()) {
-      lt.innerHTML = '<img src="'+esc(url.trim())+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">';
-    } else {
-      lt.innerHTML = '<div class="logo-thumb-empty">No logo</div>';
-    }
+    lt.innerHTML = url.trim() ? '<img src="'+esc(url.trim())+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
   }
 }
 
 // ── IMPACT ──
-function selectImpact(val) {
-  selectedImpact = val;
-  updateImpactUI();
-}
+function selectImpact(val) { selectedImpact = val; updateImpactUI(); }
 function updateImpactUI() {
-  ['high','medium','low'].forEach(function(v) {
-    var el = document.getElementById('imp-' + v);
-    el.className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : '');
+  ['high','medium','low','none'].forEach(function(v) {
+    document.getElementById('imp-' + v).className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : '');
   });
+}
+
+// ── MONTHLY TOGGLE ──
+function toggleMonthly() { showInMonthly = !showInMonthly; updateToggleUI(); }
+function updateToggleUI() {
+  var t = document.getElementById('monthlyToggle');
+  t.classList.toggle('on', showInMonthly);
 }
 
 // ── ASSETS ──
 function makeChip(val) {
-  var span = document.createElement('span');
-  span.className = 'achip';
-  span.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">×</span>';
-  return span;
+  var s = document.createElement('span'); s.className = 'achip';
+  s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">×</span>';
+  return s;
 }
 function addChip(val) {
   val = val.trim().toUpperCase().replace(/,/g,'');
   if (!val) return;
-  var existing = Array.from(document.querySelectorAll('#assetWrap .achip span:first-child')).map(function(s){return s.textContent;});
-  if (existing.indexOf(val) > -1) return;
+  var ex = Array.from(document.querySelectorAll('#assetWrap .achip span:first-child')).map(function(s){return s.textContent;});
+  if (ex.indexOf(val) > -1) return;
   document.getElementById('assetWrap').insertBefore(makeChip(val), document.getElementById('assetInp'));
 }
 function assetKey(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addChip(e.target.value); e.target.value = ''; } }
 function assetBlur() { if (document.getElementById('assetInp').value.trim()) { addChip(document.getElementById('assetInp').value); document.getElementById('assetInp').value = ''; } }
-function getAssets() {
-  return Array.from(document.querySelectorAll('#assetWrap .achip span:first-child')).map(function(s){return s.textContent.trim();}).filter(Boolean).join(', ');
-}
+function getAssets() { return Array.from(document.querySelectorAll('#assetWrap .achip span:first-child')).map(function(s){return s.textContent.trim();}).filter(Boolean).join(', '); }
 
 // ── CHART ──
 function loadChart() {
   var ticker = document.getElementById('chartTicker').value.trim().toUpperCase();
   if (!ticker) return;
   var rangeMap = {'1D':'1D','5D':'5D','1M':'1M','3M':'3M','6M':'6M','YTD':'YTD','1Y':'12M','5Y':'60M','ALL':'ALL'};
-  var tvRange = rangeMap[chartRange] || '1M';
-  var src = 'https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart'
-    + '&symbol=' + encodeURIComponent(ticker)
-    + '&interval=D&range=' + tvRange
-    + '&theme=light&style=1&locale=en&toolbar_bg=%23f1f3f6&enable_publishing=false'
-    + '&hide_top_toolbar=true&hide_legend=true&save_image=false&container_id=tradingview_chart';
+  var src = 'https://s.tradingview.com/widgetembed/?frameElementId=tv_chart&symbol=' + encodeURIComponent(ticker)
+    + '&interval=D&range=' + (rangeMap[chartRange]||'1M')
+    + '&theme=light&style=1&locale=en&toolbar_bg=%23f1f3f6&enable_publishing=false&hide_top_toolbar=true&hide_legend=true&save_image=false';
   var frame = document.getElementById('chartFrame');
-  frame.src = src;
-  frame.style.display = 'block';
+  frame.src = src; frame.style.display = 'block';
   document.getElementById('chartPlaceholder').style.display = 'none';
 }
 function setRange(btn, range) {
@@ -794,14 +736,10 @@ function saveChanges() {
   if (!currentEvent) return;
   var btn = document.getElementById('saveBtn');
   var statusEl = document.getElementById('epStatus');
-  btn.disabled = true;
-  statusEl.className = 'ep-save-status saving';
-  statusEl.textContent = 'Saving…';
+  btn.disabled = true; statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Saving…';
 
   var logoImg = document.getElementById('logoThumb').querySelector('img');
   var pmVal = document.getElementById('f_price_move_val').value.trim();
-  var pmType = document.getElementById('f_price_move_type').value;
-  var priceMove = pmVal ? (pmVal + (pmType === 'percent' ? '%' : pmType === 'points' ? ' pts' : '')) : null;
 
   var payload = {
     hero_url:        currentHeroUrl || null,
@@ -812,13 +750,15 @@ function saveChanges() {
     aka:             document.getElementById('f_aka').value.trim() || null,
     source_url:      document.getElementById('f_source_url').value.trim() || null,
     impact:          selectedImpact || null,
+    show_in_monthly: showInMonthly,
+    end_date:        document.getElementById('f_end_date').value || null,
     frequency:       document.getElementById('f_frequency').value || null,
     measures:        document.getElementById('f_measures').value.trim() || null,
     why_it_matters:  document.getElementById('f_why_it_matters').value.trim() || null,
     details:         document.getElementById('f_details').value.trim() || null,
     impacted_assets: getAssets() || null,
-    price_move:      priceMove,
-    price_move_type: pmVal ? pmType : null,
+    price_move_val:  pmVal || null,
+    price_move_type: pmVal ? document.getElementById('f_price_move_type').value : null,
     chart_ticker:    document.getElementById('chartTicker').value.trim().toUpperCase() || null,
     chart_range:     chartRange,
   };
@@ -826,22 +766,17 @@ function saveChanges() {
   supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
     .then(function() {
       Object.assign(currentEvent, payload);
-      statusEl.className = 'ep-save-status saved';
-      statusEl.textContent = '✓ Saved';
+      statusEl.className = 'ep-save-status saved'; statusEl.textContent = '✓ Saved';
       showToast('Changes saved', 'success');
-      renderTable();
-      btn.disabled = false;
+      renderTable(); btn.disabled = false;
       setTimeout(closeEdit, 800);
     })
     .catch(function(err) {
-      statusEl.className = 'ep-save-status error';
-      statusEl.textContent = '✗ Failed — ' + err.message;
-      showToast('Save failed', 'error');
-      btn.disabled = false;
+      statusEl.className = 'ep-save-status error'; statusEl.textContent = '✗ ' + err.message;
+      showToast('Save failed', 'error'); btn.disabled = false;
     });
 }
 
-// ── TOAST ──
 var toastTimer;
 function showToast(msg, type) {
   clearTimeout(toastTimer);
@@ -851,7 +786,6 @@ function showToast(msg, type) {
   t.className = 'show ' + (type||'');
   toastTimer = setTimeout(function(){ t.className = ''; }, 3000);
 }
-
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 loadEvents();
