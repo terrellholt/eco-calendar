@@ -318,15 +318,20 @@ var sortCol = 'date';
 var sortDir = 1;
 
 // ── SUPABASE HELPERS ──
-function supaHeaders() {
-  return { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+function supaHeaders(extra) {
+  return Object.assign({ 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }, extra || {});
 }
 
 function supaFetch(path, opts) {
-  return fetch(SUPA_URL + path, Object.assign({ headers: supaHeaders() }, opts || {})).then(function(r) {
-    if (!r.ok) return r.text().then(function(t) { throw new Error(t); });
-    return r.text().then(function(t) { try { return JSON.parse(t); } catch(e) { return null; } });
-  });
+  var method = (opts && opts.method) || 'GET';
+  var headers = method === 'GET'
+    ? { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    : supaHeaders();
+  return fetch(SUPA_URL + path, Object.assign({ method: method, headers: headers }, opts ? { body: opts.body } : {}))
+    .then(function(r) {
+      if (!r.ok) return r.text().then(function(t) { throw new Error('HTTP ' + r.status + ': ' + t); });
+      return r.text().then(function(t) { try { return JSON.parse(t); } catch(e) { return null; } });
+    });
 }
 
 // ── LOAD ──
@@ -334,7 +339,7 @@ function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
 
-  var url = '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency,hero_position)&order=date.asc&limit=2000';
+  var url = '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
   supaFetch(url)
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
@@ -350,7 +355,7 @@ function loadEvents() {
       console.error(err);
       document.getElementById('statusDot').style.background = '#e05555';
       document.getElementById('statusText').textContent = 'connection error';
-      document.getElementById('tableState').innerHTML = '<div style="color:#e05555">Failed to load. Check your Supabase connection.</div>';
+      document.getElementById('tableState').innerHTML = '<div style="color:#e05555;font-family:monospace;font-size:12px;max-width:600px;margin:0 auto;word-break:break-all">Error: ' + err.message + '</div>';
     });
 }
 
