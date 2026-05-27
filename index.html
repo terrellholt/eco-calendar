@@ -2,293 +2,282 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Eco Calendar</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;display:flex;height:100vh;overflow:hidden}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column;background:#f5f5f0}
 
-  /* ── LEFT NAV ── */
-  .nav-rail{width:52px;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0;z-index:10}
-  .nav-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;color:#888;transition:background .15s,color .15s}
-  .nav-btn:hover{background:#2a2a2a;color:#fff}
-  .nav-btn.active{background:#2563eb;color:#fff}
-  .nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* ── TICKER TAPE ── */
+.ticker-wrap{flex-shrink:0;z-index:10}
 
-  /* ── PAGES ── */
-  .pages{flex:1;overflow:hidden;display:flex;flex-direction:column}
-  .page{display:none;flex:1;overflow:hidden;flex-direction:column}
-  .page.active{display:flex}
+/* ── APP SHELL ── */
+.app{flex:1;display:flex;overflow:hidden}
 
-  /* ── TICKER TAPE ── */
-  .ticker-wrap{flex-shrink:0}
+/* ── ICON RAIL ── */
+.icon-rail{width:52px;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;flex-shrink:0;z-index:10}
+.rail-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;color:#888;transition:background .15s,color .15s;flex-shrink:0}
+.rail-btn:hover{background:#2a2a2a;color:#fff}
+.rail-btn.active{background:#2563eb;color:#fff}
+.rail-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-  /* ── CALENDAR PAGE ── */
-  .cal-shell{flex:1;display:flex;overflow:hidden}
-  .sidebar{width:240px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;position:relative}
-  .sidebar-inner{flex:1;overflow-y:auto;padding-bottom:20px}
-  .sidebar-header{padding:14px 14px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
-  .sidebar-title{font-size:13px;font-weight:700;color:#1a1a1a;letter-spacing:.01em}
-  .sidebar-sub{font-size:11px;color:#999;margin-top:2px}
-  .expand-controls{display:flex;justify-content:flex-end;padding:6px 30px 2px 14px}
-  .expand-btn{font-size:11px;color:#2563eb;background:none;border:none;cursor:pointer;padding:0}
-  .expand-btn:hover{text-decoration:underline}
-  .expand-sep{font-size:11px;color:#ccc;margin:0 4px}
+/* ── PAGES ── */
+.pages{flex:1;overflow:hidden;display:flex}
+.page{display:none;flex:1;overflow:hidden;flex-direction:column}
+.page.active{display:flex}
 
-  /* month accordion */
-  .month-year-tag{font-size:10px;font-weight:500;color:#bbb;margin-left:3px}
-  .month-label{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;font-size:12px;font-weight:600;color:#444;cursor:pointer;user-select:none;transition:background .1s}
-  .month-label:hover{background:#f5f5f0}
-  .month-label.active-month{color:#2563eb}
-  .chevron{font-size:11px;color:#bbb;transition:transform .2s;display:inline-block}
-  .month-label.open .chevron{transform:rotate(90deg)}
-  .month-grid-wrap{display:none;padding:4px 10px 6px}
-  .month-grid-wrap.visible{display:block}
-  .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-  .day-head{font-size:9px;font-weight:600;color:#bbb;text-align:center;padding:2px 0}
-  .day-cell{min-height:36px;border-radius:5px;padding:3px 4px;font-size:9px;cursor:pointer;transition:background .1s;position:relative}
-  .day-cell:hover{background:#eff6ff}
-  .day-cell.today{background:#2563eb;color:#fff}
-  .day-cell.today .day-num{color:#fff}
-  .day-cell.in-week{background:#eff6ff}
-  .day-cell.past-day{background:#e4e4e1}
-  .day-cell.past-day .day-num{color:#999}
-  .day-cell.past-day .day-event{opacity:.55}
-  .day-cell.empty{cursor:default}
-  .day-num{font-size:9px;font-weight:700;color:#333;line-height:1}
-  .day-cell.today .day-num{color:#fff}
-  .day-event{font-size:8px;color:#555;line-height:1.2;margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+/* ── CALENDAR PAGE ── */
+.cal-shell{flex:1;display:flex;overflow:hidden}
 
-  /* arrow tab */
-  .sidebar-arrow{position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:14px;height:40px;background:#fff;border:1px solid #e5e5e0;border-left:none;border-radius:0 6px 6px 0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}
-  .sidebar-arrow svg{width:10px;height:10px;stroke:#999;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-  .sidebar.collapsed{width:0;overflow:hidden}
-  .sidebar.collapsed .sidebar-arrow{right:-14px}
+/* ── SIDEBAR ── */
+.sidebar{width:240px;background:#fff;border-right:1px solid #e5e5e0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;position:relative;transition:width .2s}
+.sidebar.collapsed{width:0}
+.sidebar-header{padding:14px 14px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
+.sidebar-title{font-size:13px;font-weight:700;color:#1a1a1a;letter-spacing:.01em}
+.sidebar-sub{font-size:11px;color:#999;margin-top:2px}
+.expand-controls{display:flex;justify-content:flex-end;padding:6px 30px 2px 14px}
+.expand-btn{font-size:11px;color:#2563eb;background:none;border:none;cursor:pointer;padding:0}
+.expand-btn:hover{text-decoration:underline}
+.expand-sep{font-size:11px;color:#ccc;margin:0 4px}
+.sidebar-inner{flex:1;overflow-y:auto;padding-bottom:20px}
 
-  /* week grid */
-  .week-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
-  .week-nav{display:flex;align-items:center;gap:10px;padding:12px 20px 10px 40px;flex-shrink:0}
-  .week-title{font-size:15px;font-weight:700;color:#1a1a1a}
-  .week-sub{font-size:11px;color:#999;margin-top:1px}
-  .nav-arrow{width:28px;height:28px;border-radius:7px;border:1px solid #e0e0db;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#555;font-size:14px;transition:background .1s}
-  .nav-arrow:hover{background:#f0f0eb}
-  .today-btn{font-size:12px;font-weight:600;color:#2563eb;background:#fff;border:1px solid #dbeafe;border-radius:7px;padding:5px 12px;cursor:pointer;transition:background .1s}
-  .today-btn:hover{background:#eff6ff}
-  .week-grid-wrap{flex:1;overflow-y:auto;padding:0 16px 16px}
-  .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;min-width:0}
-  .day-col{display:flex;flex-direction:column;gap:6px}
-  .day-col-head{text-align:center;padding:8px 4px 6px;font-size:11px;font-weight:600;color:#999;border-bottom:2px solid transparent;position:sticky;top:0;background:#f5f5f0;z-index:1}
-  .day-col-head.today-col{color:#2563eb;border-bottom-color:#2563eb}
-  .ecard{border:1.5px solid #e5e5e0;border-radius:10px;padding:8px 6px 7px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:box-shadow .15s,transform .1s;background:#fff;text-align:center}
-  .ecard:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
-  .ecard.high{background:#FEF2F2;border-color:#FECACA}
-  .ecard.medium{background:#FFF7ED;border-color:#FED7AA}
-  .ecard.low{background:#FEFCE8;border-color:#FEF08A}
-  .ecard.none{background:#fff;border-color:#e5e5e0}
-  .card-time{font-size:10px;color:#999;font-weight:500;margin-bottom:5px;align-self:flex-start}
-  .card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
-  .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
-  .card-impact{font-size:10px;font-weight:500;margin-top:3px}
-  .card-impact.high{color:#dc2626}
-  .card-impact.medium{color:#ea7000}
-  .card-impact.low{color:#d4a000}
-  .card-impact.none{color:#999}
-  .load-error{color:#dc2626;font-size:13px;padding:20px;text-align:center}
+/* ── MONTH ACCORDION ── */
+.month-year-tag{font-size:10px;font-weight:500;color:#bbb;margin-left:3px}
+.month-label{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;font-size:12px;font-weight:600;color:#444;cursor:pointer;user-select:none;transition:background .1s}
+.month-label:hover{background:#f5f5f0}
+.month-label.active-month{color:#2563eb}
+.chevron{font-size:11px;color:#bbb;transition:transform .2s;display:inline-block}
+.month-label.open .chevron{transform:rotate(90deg)}
+.month-grid-wrap{display:none;padding:4px 10px 6px}
+.month-grid-wrap.visible{display:block}
+.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.day-head{font-size:9px;font-weight:600;color:#bbb;text-align:center;padding:2px 0}
+.day-cell{min-height:36px;border-radius:5px;padding:3px 4px;font-size:9px;cursor:pointer;transition:background .1s;position:relative}
+.day-cell:hover{background:#eff6ff}
+.day-cell.today{background:#2563eb;color:#fff}
+.day-cell.today .day-num{color:#fff}
+.day-cell.in-week{background:#eff6ff}
+.day-cell.past-day{background:#e4e4e1}
+.day-cell.past-day .day-num{color:#999}
+.day-cell.past-day .day-event{opacity:.55}
+.day-cell.empty{cursor:default}
+.day-num{font-size:9px;font-weight:700;color:#333;line-height:1}
+.day-cell.today .day-num{color:#fff}
+.day-event{font-size:8px;color:#555;line-height:1.2;margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 
-  /* ── MARKETS PAGE ── */
-  .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
-  .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
-  .clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
-  .clock-city:first-of-type{border-left:none;padding-left:0;margin-left:0}
-  .clock-city span.flag{font-size:19.5px}
-  .clock-city span.city{font-size:12px;color:#666}
-  .clock-city strong{font-size:12px;font-weight:600;color:#1a1a1a}
-  .markets-body{flex:1;display:flex;overflow:hidden}
-  .markets-main{flex:1;padding:20px;overflow-y:auto}
-  .markets-sidebar{width:680px;background:#fff;border-left:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-  .markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
-  .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
-  .markets-sidebar-body{flex:1;overflow-y:auto}
+/* ── SIDEBAR ARROW ── */
+.sidebar-arrow{position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:14px;height:40px;background:#fff;border:1px solid #e5e5e0;border-left:none;border-radius:0 6px 6px 0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}
+.sidebar-arrow svg{width:10px;height:10px;stroke:#999;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-  /* ── CONTACT PAGE ── */
-  .contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
-  .contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
-  .contact-field{display:flex;flex-direction:column;gap:8px}
-  .contact-field label{font-size:14px;font-weight:500;color:#1a1a1a}
-  .contact-field input,.contact-field textarea{font-size:15px;padding:12px 16px;border:1.5px solid #2563eb;border-radius:10px;outline:none;font-family:inherit;color:#1a1a1a;background:#fff;transition:border .15s;width:100%}
-  .contact-field input:focus,.contact-field textarea:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-  .contact-field input::placeholder,.contact-field textarea::placeholder{color:#9ca3af}
-  .contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
-  .contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
-  .contact-submit:hover{background:#eff6ff}
+/* ── WEEK AREA ── */
+.week-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
+.week-nav{display:flex;align-items:center;gap:10px;padding:12px 20px 10px 40px;flex-shrink:0}
+.week-title{font-size:15px;font-weight:700;color:#1a1a1a}
+.week-sub{font-size:11px;color:#999;margin-top:1px}
+.nav-arrow{width:28px;height:28px;border-radius:7px;border:1px solid #e0e0db;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#555;font-size:14px;transition:background .1s}
+.nav-arrow:hover{background:#f0f0eb}
+.today-btn{font-size:12px;font-weight:600;color:#2563eb;background:#fff;border:1px solid #dbeafe;border-radius:7px;padding:5px 12px;cursor:pointer;transition:background .1s}
+.today-btn:hover{background:#eff6ff}
+.week-grid-wrap{flex:1;overflow-y:auto;padding:0 16px 16px}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;min-width:0}
+.day-col{display:flex;flex-direction:column;gap:6px}
+.day-col-head{text-align:center;padding:8px 4px 6px;font-size:11px;font-weight:600;color:#999;border-bottom:2px solid transparent;position:sticky;top:0;background:#f5f5f0;z-index:1}
+.day-col-head.today-col{color:#2563eb;border-bottom-color:#2563eb}
 
-  /* ── MODAL ── */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
-  .modal-overlay.open{opacity:1;pointer-events:all}
-  .modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(10px);transition:transform .2s}
-  .modal-overlay.open .modal{transform:translateY(0)}
-  .modal-hero{width:100%;height:200px;object-fit:cover;border-radius:14px 14px 0 0;background:#f0f0ec;display:block}
-  .modal-hero-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#e8e8e4,#d0d0cb);border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:center}
-  .modal-hero-placeholder svg{width:48px;height:48px;stroke:#bbb;fill:none;stroke-width:1.5}
-  .modal-body{padding:20px 24px 28px}
-  .modal-entity-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .modal-entity-logo{width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee}
-  .modal-entity-name{font-size:12px;color:#666;font-weight:500}
-  .modal-title{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:10px}
-  .modal-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-  .modal-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:#f0f0ec;color:#555}
-  .modal-tag.high{background:#FEF2F2;color:#dc2626}
-  .modal-tag.medium{background:#FFF7ED;color:#ea7000}
-  .modal-tag.low{background:#FEFCE8;color:#b45309}
-  .modal-section{margin-bottom:16px}
-  .modal-section-label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
-  .modal-section-text{font-size:13px;color:#333;line-height:1.6}
-  .modal-divider{border:none;border-top:1px solid #f0f0ec;margin:16px 0}
-  .modal-source-link{font-size:12px;color:#2563eb;text-decoration:none;font-weight:500}
-  .modal-source-link:hover{text-decoration:underline}
-  .modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+/* ── EVENT CARDS ── */
+.ecard{border:1.5px solid #e5e5e0;border-radius:10px;padding:8px 6px 7px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:box-shadow .15s,transform .1s;background:#fff;text-align:center}
+.ecard:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+.ecard.high{background:#FEF2F2;border-color:#FECACA}
+.ecard.medium{background:#FFF7ED;border-color:#FED7AA}
+.ecard.low{background:#FEFCE8;border-color:#FEF08A}
+.ecard.none{background:#fff;border-color:#e5e5e0}
+.card-time{font-size:10px;color:#999;font-weight:500;margin-bottom:5px;align-self:flex-start}
+.card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
+.card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
+.card-impact{font-size:10px;font-weight:500;margin-top:3px}
+.card-impact.high{color:#dc2626}
+.card-impact.medium{color:#ea7000}
+.card-impact.low{color:#d4a000}
+.card-impact.none{color:#999}
+.load-error{color:#dc2626;font-size:13px;padding:20px;text-align:center}
+
+/* ── MARKETS PAGE ── */
+.markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
+.world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
+.clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
+.clock-city:first-of-type{border-left:none;padding-left:0;margin-left:0}
+.clock-city span.flag{font-size:19.5px}
+.clock-city span.city{font-size:12px;color:#666}
+.clock-city strong{font-size:12px;font-weight:600;color:#1a1a1a}
+.markets-body{flex:1;display:flex;overflow:hidden}
+.markets-main{flex:1;padding:20px;overflow-y:auto}
+.markets-sidebar{width:680px;background:#fff;border-left:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
+.markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.markets-sidebar-body{flex:1;overflow-y:auto}
+
+/* ── CONTACT PAGE ── */
+.contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
+.contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
+.contact-field{display:flex;flex-direction:column;gap:8px}
+.contact-field label{font-size:14px;font-weight:500;color:#1a1a1a}
+.contact-field input,.contact-field textarea{font-size:15px;padding:12px 16px;border:1.5px solid #2563eb;border-radius:10px;outline:none;font-family:inherit;color:#1a1a1a;background:#fff;transition:border .15s;width:100%}
+.contact-field input:focus,.contact-field textarea:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.contact-field input::placeholder,.contact-field textarea::placeholder{color:#9ca3af}
+.contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
+.contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
+.contact-submit:hover{background:#eff6ff}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(10px);transition:transform .2s;position:relative}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-hero{width:100%;height:200px;object-fit:cover;border-radius:14px 14px 0 0;display:block}
+.modal-hero-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#e8e8e4,#d0d0cb);border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:center}
+.modal-hero-placeholder svg{width:48px;height:48px;stroke:#bbb;fill:none;stroke-width:1.5}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+.modal-body{padding:20px 24px 28px}
+.modal-entity-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.modal-entity-logo{width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee}
+.modal-entity-name{font-size:12px;color:#666;font-weight:500}
+.modal-title{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:10px}
+.modal-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.modal-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:#f0f0ec;color:#555}
+.modal-tag.high{background:#FEF2F2;color:#dc2626}
+.modal-tag.medium{background:#FFF7ED;color:#ea7000}
+.modal-tag.low{background:#FEFCE8;color:#b45309}
+.modal-section{margin-bottom:16px}
+.modal-section-label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.modal-section-text{font-size:13px;color:#333;line-height:1.6}
+.modal-divider{border:none;border-top:1px solid #f0f0ec;margin:16px 0}
+.modal-source-link{font-size:12px;color:#2563eb;text-decoration:none;font-weight:500}
+.modal-source-link:hover{text-decoration:underline}
 </style>
-
-<!-- Elfsight platform -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
-<!-- TradingView ticker tape -->
 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-{
-  "symbols": [
-    {"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},
-    {"proName":"FOREXCOM:NSXUSD","title":"Nasdaq 100"},
-    {"proName":"FX_IDC:EURUSD","title":"EUR/USD"},
-    {"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},
-    {"proName":"BITSTAMP:ETHUSD","title":"Ethereum"},
-    {"description":"Gold","proName":"OANDA:XAUUSD"},
-    {"description":"10Y Treasury","proName":"TVC:US10Y"},
-    {"description":"DXY","proName":"TVC:DXY"}
-  ],
-  "showSymbolLogo":true,
-  "isTransparent":false,
-  "displayMode":"adaptive",
-  "colorTheme":"light",
-  "locale":"en"
-}
+{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"Nasdaq 100"},{"proName":"FX_IDC:EURUSD","title":"EUR/USD"},{"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},{"proName":"BITSTAMP:ETHUSD","title":"Ethereum"},{"description":"Gold","proName":"OANDA:XAUUSD"},{"description":"10Y Treasury","proName":"TVC:US10Y"},{"description":"DXY","proName":"TVC:DXY"}],"showSymbolLogo":true,"isTransparent":false,"displayMode":"adaptive","colorTheme":"light","locale":"en"}
 </script>
 </head>
 <body>
 
-<!-- LEFT NAV -->
-<nav class="nav-rail">
-  <button class="nav-btn active" id="btn-calendar" onclick="showPage('calendar')" title="Calendar">
-    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-  </button>
-  <button class="nav-btn" id="btn-news" onclick="showPage('news')" title="News">
-    <svg viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
-  </button>
-  <button class="nav-btn" id="btn-markets" onclick="showPage('markets')" title="Markets">
-    <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
-  </button>
-  <button class="nav-btn" id="btn-contact" onclick="showPage('contact')" title="Contact">
-    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-  </button>
-</nav>
-
-<div class="pages">
-
-  <!-- TICKER TAPE -->
-  <div class="ticker-wrap">
-    <div class="tradingview-widget-container">
-      <div class="tradingview-widget-container__widget"></div>
-    </div>
+<div class="ticker-wrap">
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
   </div>
+</div>
 
-  <!-- CALENDAR PAGE -->
-  <div class="page active" id="page-calendar">
-    <div class="cal-shell">
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <div class="sidebar-title">2026 – 2027</div>
-          <div class="sidebar-sub">Click any event to view details.</div>
-        </div>
-        <div class="expand-controls">
-          <button class="expand-btn" onclick="expandAll()">Expand all</button>
-          <span class="expand-sep">|</span>
-          <button class="expand-btn" onclick="collapseAll()">Collapse all</button>
-        </div>
-        <div class="sidebar-inner" id="sidebarInner"></div>
-        <div class="sidebar-arrow" onclick="toggleSidebar()">
-          <svg viewBox="0 0 10 10"><polyline id="arrowPoly" points="6,2 2,5 6,8"/></svg>
-        </div>
-      </div>
-      <div class="week-area">
-        <div class="week-nav">
-          <div>
-            <div class="week-title" id="weekTitle">Loading…</div>
-            <div class="week-sub" id="weekSub"></div>
+<div class="app">
+
+  <!-- ICON RAIL -->
+  <nav class="icon-rail">
+    <button class="rail-btn active" id="btn-calendar" onclick="showPage('calendar')" title="Calendar">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </button>
+    <button class="rail-btn" id="btn-news" onclick="showPage('news')" title="News">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
+    </button>
+    <button class="rail-btn" id="btn-markets" onclick="showPage('markets')" title="Markets">
+      <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
+    </button>
+    <button class="rail-btn" id="btn-contact" onclick="showPage('contact')" title="Contact">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    </button>
+  </nav>
+
+  <div class="pages">
+
+    <!-- CALENDAR PAGE -->
+    <div class="page active" id="page-calendar">
+      <div class="cal-shell">
+        <div class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="sidebar-title">2026 – 2027</div>
+            <div class="sidebar-sub">Click any event to view details.</div>
           </div>
-          <button class="nav-arrow" onclick="prevWeek()">&#8592;</button>
-          <button class="nav-arrow" onclick="nextWeek()">&#8594;</button>
-          <button class="today-btn" onclick="goToday()">Today</button>
-        </div>
-        <div class="week-grid-wrap">
-          <div class="week-grid" id="weekGrid"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- NEWS PAGE -->
-  <div class="page" id="page-news" style="align-items:center;justify-content:center">
-    <div style="color:#bbb;font-size:14px">News page &mdash; coming soon.</div>
-  </div>
-
-  <!-- MARKETS PAGE -->
-  <div class="page" id="page-markets">
-    <div class="markets-page">
-      <div class="world-clock">
-        <div class="clock-city"><span class="flag">&#x1F1FA;&#x1F1F8;</span><span class="city">New York</span><strong id="time-ny">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1EC;&#x1F1E7;</span><span class="city">London</span><strong id="time-lon">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1E9;&#x1F1EA;</span><span class="city">Frankfurt</span><strong id="time-fra">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1F8;&#x1F1E6;</span><span class="city">Riyadh</span><strong id="time-riy">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1EE;&#x1F1F3;</span><span class="city">Mumbai</span><strong id="time-mum">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1E8;&#x1F1F3;</span><span class="city">Shanghai</span><strong id="time-sha">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1EF;&#x1F1F5;</span><span class="city">Tokyo</span><strong id="time-tok">--:--</strong></div>
-        <div class="clock-city"><span class="flag">&#x1F1E6;&#x1F1FA;</span><span class="city">Sydney</span><strong id="time-syd">--:--</strong></div>
-      </div>
-      <div class="markets-body">
-        <div class="markets-main">
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-            {"colorTheme":"light","dateRange":"12M","locale":"en","isTransparent":false,"tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD"},{"s":"FX:GBPUSD"},{"s":"FX:USDJPY"},{"s":"FX:USDCHF"},{"s":"FX:AUDUSD"},{"s":"FX:USDCAD"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD"},{"s":"COINBASE:ETHUSD"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD"},{"s":"THINKMARKETS:XAGUSD"}]}],"support_host":"https://www.tradingview.com","width":"400","height":"550","showSymbolLogo":true,"showChart":true}
-            </script>
+          <div class="expand-controls">
+            <button class="expand-btn" onclick="expandAll()">Expand all</button>
+            <span class="expand-sep">|</span>
+            <button class="expand-btn" onclick="collapseAll()">Collapse all</button>
+          </div>
+          <div class="sidebar-inner" id="sidebarInner"></div>
+          <div class="sidebar-arrow" onclick="toggleSidebar()">
+            <svg viewBox="0 0 10 10"><polyline id="arrowPoly" points="6,2 2,5 6,8"/></svg>
           </div>
         </div>
-        <div class="markets-sidebar">
-          <div class="markets-sidebar-header"><div class="markets-sidebar-title">In the News</div></div>
-          <div class="markets-sidebar-body">
-            <div class="elfsight-app-7c0b8da7-6dc1-4ddb-b3ef-e1246b11f59a" data-elfsight-app-lazy></div>
+        <div class="week-area">
+          <div class="week-nav">
+            <div>
+              <div class="week-title" id="weekTitle">Loading…</div>
+              <div class="week-sub" id="weekSub"></div>
+            </div>
+            <button class="nav-arrow" onclick="prevWeek()">&#8592;</button>
+            <button class="nav-arrow" onclick="nextWeek()">&#8594;</button>
+            <button class="today-btn" onclick="goToday()">Today</button>
+          </div>
+          <div class="week-grid-wrap">
+            <div class="week-grid" id="weekGrid"></div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- CONTACT PAGE -->
-  <div class="page" id="page-contact">
-    <div class="contact-page">
-      <div class="contact-form">
-        <div class="contact-field"><label>Name</label><input type="text" placeholder="First and Last"></div>
-        <div class="contact-field"><label>Email Address</label><input type="email" placeholder="Your email address"></div>
-        <div class="contact-field"><label>Message</label><textarea placeholder="Your message"></textarea></div>
-        <button class="contact-submit">Submit</button>
+    <!-- NEWS PAGE -->
+    <div class="page" id="page-news" style="align-items:center;justify-content:center">
+      <div style="color:#bbb;font-size:14px">News page &mdash; coming soon.</div>
+    </div>
+
+    <!-- MARKETS PAGE -->
+    <div class="page" id="page-markets">
+      <div class="markets-page">
+        <div class="world-clock">
+          <div class="clock-city"><span class="flag">&#x1F1FA;&#x1F1F8;</span><span class="city">New York</span><strong id="time-ny">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1EC;&#x1F1E7;</span><span class="city">London</span><strong id="time-lon">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1E9;&#x1F1EA;</span><span class="city">Frankfurt</span><strong id="time-fra">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1F8;&#x1F1E6;</span><span class="city">Riyadh</span><strong id="time-riy">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1EE;&#x1F1F3;</span><span class="city">Mumbai</span><strong id="time-mum">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1E8;&#x1F1F3;</span><span class="city">Shanghai</span><strong id="time-sha">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1EF;&#x1F1F5;</span><span class="city">Tokyo</span><strong id="time-tok">--:--</strong></div>
+          <div class="clock-city"><span class="flag">&#x1F1E6;&#x1F1FA;</span><span class="city">Sydney</span><strong id="time-syd">--:--</strong></div>
+        </div>
+        <div class="markets-body">
+          <div class="markets-main">
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+              {"colorTheme":"light","dateRange":"12M","locale":"en","isTransparent":false,"tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD"},{"s":"FX:GBPUSD"},{"s":"FX:USDJPY"},{"s":"FX:USDCHF"},{"s":"FX:AUDUSD"},{"s":"FX:USDCAD"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD"},{"s":"COINBASE:ETHUSD"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD"},{"s":"THINKMARKETS:XAGUSD"}]}],"support_host":"https://www.tradingview.com","width":"400","height":"550","showSymbolLogo":true,"showChart":true}
+              </script>
+            </div>
+          </div>
+          <div class="markets-sidebar">
+            <div class="markets-sidebar-header"><div class="markets-sidebar-title">In the News</div></div>
+            <div class="markets-sidebar-body">
+              <div class="elfsight-app-7c0b8da7-6dc1-4ddb-b3ef-e1246b11f59a" data-elfsight-app-lazy></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-</div><!-- /pages -->
+    <!-- CONTACT PAGE -->
+    <div class="page" id="page-contact">
+      <div class="contact-page">
+        <div class="contact-form">
+          <div class="contact-field"><label>Name</label><input type="text" placeholder="First and Last"></div>
+          <div class="contact-field"><label>Email Address</label><input type="email" placeholder="Your email address"></div>
+          <div class="contact-field"><label>Message</label><textarea placeholder="Your message"></textarea></div>
+          <button class="contact-submit">Submit</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+</div><!-- /app -->
 
 <!-- EVENT MODAL -->
 <div class="modal-overlay" id="overlay" onclick="overlayClick(event)">
-  <div class="modal" id="modal" style="position:relative">
+  <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     <div id="modalHeroWrap"></div>
     <div class="modal-body">
@@ -318,7 +307,6 @@
 </div>
 
 <script>
-// ── CONFIG ──
 var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempqZ3R6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwODM3NDcsImV4cCI6MjA2MjY1OTc0N30.4HBFPSQRzjDaSVZyMjqxBuPuDxMBtLSHCXb_i2VZFtc';
 
@@ -327,77 +315,52 @@ var MONTHS = ['January','February','March','April','May','June','July','August',
 var DAY_HEADS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
 function getWeekStart(d) {
-  var s = new Date(d);
-  s.setHours(0,0,0,0);
-  var day = s.getDay();
-  s.setDate(s.getDate() - day);
+  var s = new Date(d); s.setHours(0,0,0,0);
+  s.setDate(s.getDate() - s.getDay());
   return s;
 }
 var weekStart = getWeekStart(new Date());
 
-// ── FETCH ──
 function fetchEvents() {
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
-  return fetch(url, {
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': 'Bearer ' + SUPA_KEY
-    }
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    allEvents = Array.isArray(data) ? data : [];
-  });
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
+  return fetch(url, {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(data){allEvents = Array.isArray(data)?data:[];});
 }
 
-// ── DATE PARSING ──
 function parseDate(val) {
   if (!val) return null;
   var s = String(val).trim();
-  // ISO timestamp
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
-  // "Mar 19" style
   var months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
   var m = s.match(/^([A-Za-z]{3})\s+(\d{1,2})$/);
-  if (m) {
-    var mo = months[m[1]]; if (!mo) return null;
-    var yr = (parseInt(mo,10) >= 1) ? '2027' : '2027';
-    return yr + '-' + mo + '-' + m[2].padStart(2,'0');
-  }
+  if (m) { var mo = months[m[1]]; if (!mo) return null; return '2027-'+mo+'-'+m[2].padStart(2,'0'); }
   return null;
 }
 
 // ── SIDEBAR ──
 var openMonths = (function(){
-  try {
-    var saved = sessionStorage.getItem('openMonths');
-    if (saved) return new Set(JSON.parse(saved));
-  } catch(e){}
-  var now = new Date();
-  return new Set([now.getFullYear()+'-'+now.getMonth()]);
+  try { var saved = sessionStorage.getItem('openMonths'); if (saved) return new Set(JSON.parse(saved)); } catch(e){}
+  var now = new Date(); return new Set([now.getFullYear()+'-'+now.getMonth()]);
 })();
-
-function saveOpenMonths() {
-  try { sessionStorage.setItem('openMonths', JSON.stringify(Array.from(openMonths))); } catch(e){}
-}
+function saveOpenMonths(){ try{sessionStorage.setItem('openMonths',JSON.stringify(Array.from(openMonths)));}catch(e){} }
 
 function buildSidebar() {
   var today = new Date(); today.setHours(0,0,0,0);
   var wStart = new Date(weekStart); wStart.setHours(0,0,0,0);
-  var wEnd   = new Date(wStart); wEnd.setDate(wEnd.getDate()+6);
-
+  var wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate()+6);
   var html = '';
   [2026,2027].forEach(function(y) {
     MONTHS.forEach(function(m,mi) {
-      var key   = y+'-'+mi;
+      var key = y+'-'+mi;
       var isOpen = openMonths.has(key);
-      var isAct  = weekStart.getFullYear()===y && weekStart.getMonth()===mi;
+      var isAct = weekStart.getFullYear()===y && weekStart.getMonth()===mi;
       html += '<div class="month-label'+(isAct?' active-month':'')+(isOpen?' open':'')+'" onclick="toggleMonth(\''+key+'\','+y+','+mi+')">'
-             +'<span>'+m+' <span class="month-year-tag">'+y+'</span></span><span class="chevron">&#x203A;</span>'
-             +'</div>'
-             +'<div class="month-grid-wrap'+(isOpen?' visible':'')+'" id="mg-'+key+'">'
-             +buildMonthGrid(y,mi,today,wStart,wEnd)
-             +'</div>';
+            + '<span>'+m+' <span class="month-year-tag">'+y+'</span></span><span class="chevron">&#x203A;</span>'
+            + '</div>'
+            + '<div class="month-grid-wrap'+(isOpen?' visible':'')+'" id="mg-'+key+'">'
+            + buildMonthGrid(y,mi,today,wStart,wEnd)
+            + '</div>';
     });
   });
   document.getElementById('sidebarInner').innerHTML = html;
@@ -407,192 +370,143 @@ function buildMonthGrid(y,mi,today,wStart,wEnd) {
   var first = new Date(y,mi,1).getDay();
   var days  = new Date(y,mi+1,0).getDate();
   var html  = '<div class="month-grid">';
-  DAY_HEADS.forEach(function(h){ html += '<div class="day-head">'+h+'</div>'; });
-  for (var i=0;i<first;i++) html += '<div class="day-cell empty"></div>';
+  DAY_HEADS.forEach(function(h){html+='<div class="day-head">'+h+'</div>';});
+  for (var i=0;i<first;i++) html+='<div class="day-cell empty"></div>';
   for (var d=1;d<=days;d++) {
     var dt = new Date(y,mi,d); dt.setHours(0,0,0,0);
     var iso = y+'-'+String(mi+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var cls = 'day-cell';
-    if (dt.getTime()===today.getTime()) cls += ' today';
-    else if (dt >= wStart && dt <= wEnd) cls += ' in-week';
-    else if (dt < today) cls += ' past-day';
-    var evs = allEvents.filter(function(e){ return parseDate(e.date)===iso; });
+    if (dt.getTime()===today.getTime()) cls+=' today';
+    else if (dt>=wStart && dt<=wEnd) cls+=' in-week';
+    else if (dt<today) cls+=' past-day';
+    var evs = allEvents.filter(function(e){return parseDate(e.date)===iso;});
     var inner = '<div class="day-num">'+d+'</div>';
-    if (evs.length) inner += '<div class="day-event">'+evs.map(function(e){return e.event||'';}).join(', ')+'</div>';
-    html += '<div class="'+cls+'" onclick="jumpToWeek(\''+iso+'\')">' + inner + '</div>';
+    if (evs.length) inner+='<div class="day-event">'+evs.map(function(e){return e.event||'';}).join(', ')+'</div>';
+    html+='<div class="'+cls+'" onclick="jumpToWeek(\''+iso+'\')">' +inner+'</div>';
   }
-  html += '</div>';
-  return html;
+  return html+'</div>';
 }
 
-function toggleMonth(key,y,mi) {
-  if (openMonths.has(key)) openMonths.delete(key); else openMonths.add(key);
-  saveOpenMonths();
-  buildSidebar();
+function toggleMonth(key,y,mi){
+  if(openMonths.has(key))openMonths.delete(key);else openMonths.add(key);
+  saveOpenMonths(); buildSidebar();
 }
-function expandAll()   { [2026,2027].forEach(function(y){MONTHS.forEach(function(_,mi){openMonths.add(y+'-'+mi);});}); saveOpenMonths(); buildSidebar(); }
-function collapseAll() { openMonths.clear(); saveOpenMonths(); buildSidebar(); }
+function expandAll(){[2026,2027].forEach(function(y){MONTHS.forEach(function(_,mi){openMonths.add(y+'-'+mi);});});saveOpenMonths();buildSidebar();}
+function collapseAll(){openMonths.clear();saveOpenMonths();buildSidebar();}
 
-function jumpToWeek(iso) {
-  var d = new Date(iso+'T00:00:00');
-  weekStart = getWeekStart(d);
-  buildSidebar();
-  renderWeek();
-  setTimeout(positionArrow, 50);
+function jumpToWeek(iso){
+  weekStart=getWeekStart(new Date(iso+'T00:00:00'));
+  buildSidebar(); renderWeek(); setTimeout(positionArrow,50);
 }
 
-// ── SIDEBAR TOGGLE ──
 var sidebarOpen = true;
-function toggleSidebar() {
-  sidebarOpen = !sidebarOpen;
-  var sb = document.getElementById('sidebar');
-  var poly = document.getElementById('arrowPoly');
-  if (sidebarOpen) {
-    sb.classList.remove('collapsed');
-    poly.setAttribute('points','6,2 2,5 6,8');
-  } else {
-    sb.classList.add('collapsed');
-    poly.setAttribute('points','4,2 8,5 4,8');
-  }
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  var sb=document.getElementById('sidebar');
+  var poly=document.getElementById('arrowPoly');
+  if(sidebarOpen){sb.classList.remove('collapsed');poly.setAttribute('points','6,2 2,5 6,8');}
+  else{sb.classList.add('collapsed');poly.setAttribute('points','4,2 8,5 4,8');}
 }
-
-function positionArrow() {
-  var sb = document.getElementById('sidebar');
-  var arrow = sb.querySelector('.sidebar-arrow');
-  if (!arrow) return;
-  var h = sb.offsetHeight;
-  arrow.style.top = (h/2) + 'px';
+function positionArrow(){
+  var sb=document.getElementById('sidebar');
+  if(!sb)return;
+  var arrow=sb.querySelector('.sidebar-arrow');
+  if(arrow) arrow.style.top=(sb.offsetHeight/2)+'px';
 }
 
 // ── WEEK RENDER ──
-function renderWeek() {
-  var wEnd = new Date(weekStart); wEnd.setDate(wEnd.getDate()+6);
-  var opts = {month:'short',day:'numeric'};
-  document.getElementById('weekTitle').textContent = 'What to Watch for the Week';
-  document.getElementById('weekSub').textContent =
-    weekStart.toLocaleDateString('en-US',opts) + ' – ' + wEnd.toLocaleDateString('en-US',opts);
-
-  var DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var today = new Date(); today.setHours(0,0,0,0);
-  var html = '';
-  for (var i=0;i<7;i++) {
-    var d = new Date(weekStart); d.setDate(d.getDate()+i);
-    var iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    var isToday = d.getTime()===today.getTime();
-    html += '<div class="day-col">'
-          + '<div class="day-col-head'+(isToday?' today-col':'')+'">'+DAY_NAMES[d.getDay()]+'<br><span style="font-size:13px;font-weight:700;color:'+(isToday?'#2563eb':'#1a1a1a')+'">'+d.getDate()+'</span></div>';
-    var evs = allEvents.filter(function(e){ return parseDate(e.date)===iso; });
-    evs.forEach(function(ev) {
-      var imp = (ev.impact||'none').toLowerCase();
-      var logoUrl = (ev.entity && ev.entity.logo_url) ? ev.entity.logo_url : ev.logo_url;
-      var impLabel = imp==='high'?'High Impact':imp==='medium'?'Medium Impact':imp==='low'?'Low Impact':'';
-      html += '<div class="ecard '+imp+'" onclick="openModal('+ev.id+')">'
-            + (ev.display_time ? '<div class="card-time">'+ev.display_time+'</div>' : '')
-            + (logoUrl ? '<img class="card-logo" src="'+logoUrl+'" alt="" onerror="this.style.display=\'none\'">' : '')
-            + '<div class="card-title">'+(ev.event||'')+'</div>'
-            + (impLabel ? '<div class="card-impact '+imp+'">'+impLabel+'</div>' : '')
-            + '</div>';
+function renderWeek(){
+  var wEnd=new Date(weekStart);wEnd.setDate(wEnd.getDate()+6);
+  var opts={month:'short',day:'numeric'};
+  document.getElementById('weekTitle').textContent='What to Watch for the Week';
+  document.getElementById('weekSub').textContent=weekStart.toLocaleDateString('en-US',opts)+' \u2013 '+wEnd.toLocaleDateString('en-US',opts);
+  var DAY_NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var today=new Date();today.setHours(0,0,0,0);
+  var html='';
+  for(var i=0;i<7;i++){
+    var d=new Date(weekStart);d.setDate(d.getDate()+i);
+    var iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    var isToday=d.getTime()===today.getTime();
+    html+='<div class="day-col">'
+        +'<div class="day-col-head'+(isToday?' today-col':'')+'">'+DAY_NAMES[d.getDay()]+'<br><span style="font-size:13px;font-weight:700;color:'+(isToday?'#2563eb':'#1a1a1a')+'">'+d.getDate()+'</span></div>';
+    allEvents.filter(function(e){return parseDate(e.date)===iso;}).forEach(function(ev){
+      var imp=(ev.impact||'none').toLowerCase();
+      var logoUrl=(ev.entity&&ev.entity.logo_url)?ev.entity.logo_url:ev.logo_url;
+      var impLabel=imp==='high'?'High Impact':imp==='medium'?'Medium Impact':imp==='low'?'Low Impact':'';
+      html+='<div class="ecard '+imp+'" onclick="openModal('+ev.id+')">'
+          +(ev.display_time?'<div class="card-time">'+ev.display_time+'</div>':'')
+          +(logoUrl?'<img class="card-logo" src="'+logoUrl+'" alt="" onerror="this.style.display=\'none\'">':'')
+          +'<div class="card-title">'+(ev.event||'')+'</div>'
+          +(impLabel?'<div class="card-impact '+imp+'">'+impLabel+'</div>':'')
+          +'</div>';
     });
-    html += '</div>';
+    html+='</div>';
   }
-  document.getElementById('weekGrid').innerHTML = html;
+  document.getElementById('weekGrid').innerHTML=html;
 }
 
 // ── MODAL ──
-function openModal(id) {
-  var ev = allEvents.find(function(e){ return e.id===id; });
-  if (!ev) return;
-
-  var heroUrl = (ev.entity && ev.entity.hero_url) ? ev.entity.hero_url : ev.hero_url;
-  var logoUrl = (ev.entity && ev.entity.logo_url) ? ev.entity.logo_url : ev.logo_url;
-  var hw = document.getElementById('modalHeroWrap');
-  if (heroUrl) {
-    hw.innerHTML = '<img class="modal-hero" src="'+heroUrl+'" alt="" onerror="this.parentNode.innerHTML=\'<div class=modal-hero-placeholder><svg viewBox=\\\"0 0 24 24\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"18\\\" height=\\\"18\\\" rx=\\\"2\\\"/></svg></div>\'">';
-  } else {
-    hw.innerHTML = '<div class="modal-hero-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';
-  }
-
-  if (logoUrl) {
-    document.getElementById('modalEntityRow').style.display = 'flex';
-    document.getElementById('modalEntityLogo').src = logoUrl;
-    document.getElementById('modalEntityName').textContent = ev.entity_name || '';
-  } else {
-    document.getElementById('modalEntityRow').style.display = 'none';
-  }
-
-  document.getElementById('modalTitle').textContent = ev.event || '';
-
-  var imp = (ev.impact||'none').toLowerCase();
-  var meta = '';
-  if (ev.month)    meta += '<span class="modal-tag">'+ev.month+'</span>';
-  if (ev.category) meta += '<span class="modal-tag">'+ev.category+'</span>';
-  if (imp && imp!=='none') meta += '<span class="modal-tag '+imp+'">'+(imp.charAt(0).toUpperCase()+imp.slice(1))+' Impact</span>';
-  document.getElementById('modalMeta').innerHTML = meta;
-
-  var ws = document.getElementById('modalWhySection');
-  var whyMatters = (ev.entity && ev.entity.why_it_matters) ? ev.entity.why_it_matters : ev.why_it_matters;
-  if (whyMatters) { ws.style.display='block'; document.getElementById('modalWhy').textContent=whyMatters; } else { ws.style.display='none'; }
-
-  var ms = document.getElementById('modalMeasuresSection');
-  var measures = (ev.entity && ev.entity.measures) ? ev.entity.measures : ev.measures;
-  if (measures) { ms.style.display='block'; document.getElementById('modalMeasures').textContent=measures; } else { ms.style.display='none'; }
-
-  var det = document.getElementById('modalDetailsSection');
-  if (ev.details) { det.style.display='block'; document.getElementById('modalDetails').innerHTML=ev.details; } else { det.style.display='none'; }
-
-  document.getElementById('modalDiv1').style.display = (whyMatters||measures||ev.details) ? 'block' : 'none';
-
-  var srcEl = document.getElementById('modalSource');
-  var div2  = document.getElementById('modalDiv2');
-  if (ev.source_url) { srcEl.href=ev.source_url; srcEl.style.display='inline'; div2.style.display='block'; }
-  else               { srcEl.style.display='none'; div2.style.display='none'; }
-
+function openModal(id){
+  var ev=allEvents.find(function(e){return e.id===id;});
+  if(!ev)return;
+  var heroUrl=(ev.entity&&ev.entity.hero_url)?ev.entity.hero_url:ev.hero_url;
+  var logoUrl=(ev.entity&&ev.entity.logo_url)?ev.entity.logo_url:ev.logo_url;
+  var hw=document.getElementById('modalHeroWrap');
+  if(heroUrl){hw.innerHTML='<img class="modal-hero" src="'+heroUrl+'" alt="" onerror="this.parentNode.innerHTML=\'<div class=modal-hero-placeholder></div>\'">';}
+  else{hw.innerHTML='<div class="modal-hero-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';}
+  if(logoUrl){document.getElementById('modalEntityRow').style.display='flex';document.getElementById('modalEntityLogo').src=logoUrl;document.getElementById('modalEntityName').textContent=ev.entity_name||'';}
+  else{document.getElementById('modalEntityRow').style.display='none';}
+  document.getElementById('modalTitle').textContent=ev.event||'';
+  var imp=(ev.impact||'none').toLowerCase();
+  var meta='';
+  if(ev.month)meta+='<span class="modal-tag">'+ev.month+'</span>';
+  if(ev.category)meta+='<span class="modal-tag">'+ev.category+'</span>';
+  if(imp&&imp!=='none')meta+='<span class="modal-tag '+imp+'">'+(imp.charAt(0).toUpperCase()+imp.slice(1))+' Impact</span>';
+  document.getElementById('modalMeta').innerHTML=meta;
+  var whyMatters=(ev.entity&&ev.entity.why_it_matters)?ev.entity.why_it_matters:ev.why_it_matters;
+  var ws=document.getElementById('modalWhySection');
+  if(whyMatters){ws.style.display='block';document.getElementById('modalWhy').textContent=whyMatters;}else{ws.style.display='none';}
+  var measures=(ev.entity&&ev.entity.measures)?ev.entity.measures:ev.measures;
+  var ms=document.getElementById('modalMeasuresSection');
+  if(measures){ms.style.display='block';document.getElementById('modalMeasures').textContent=measures;}else{ms.style.display='none';}
+  var det=document.getElementById('modalDetailsSection');
+  if(ev.details){det.style.display='block';document.getElementById('modalDetails').innerHTML=ev.details;}else{det.style.display='none';}
+  document.getElementById('modalDiv1').style.display=(whyMatters||measures||ev.details)?'block':'none';
+  var srcEl=document.getElementById('modalSource');
+  var div2=document.getElementById('modalDiv2');
+  if(ev.source_url){srcEl.href=ev.source_url;srcEl.style.display='inline';div2.style.display='block';}
+  else{srcEl.style.display='none';div2.style.display='none';}
   document.getElementById('overlay').classList.add('open');
 }
-function closeModal()    { document.getElementById('overlay').classList.remove('open'); }
-function overlayClick(e) { if (e.target===document.getElementById('overlay')) closeModal(); }
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+function overlayClick(e){if(e.target===document.getElementById('overlay'))closeModal();}
 
-// ── NAVIGATION ──
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+function showPage(page){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.rail-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('page-'+page).classList.add('active');
   document.getElementById('btn-'+page).classList.add('active');
 }
 
-function prevWeek() { weekStart.setDate(weekStart.getDate()-7); buildSidebar(); renderWeek(); }
-function nextWeek() { weekStart.setDate(weekStart.getDate()+7); buildSidebar(); renderWeek(); }
-function goToday()  { weekStart=getWeekStart(new Date()); buildSidebar(); renderWeek(); }
+function prevWeek(){weekStart.setDate(weekStart.getDate()-7);buildSidebar();renderWeek();}
+function nextWeek(){weekStart.setDate(weekStart.getDate()+7);buildSidebar();renderWeek();}
+function goToday(){weekStart=getWeekStart(new Date());buildSidebar();renderWeek();}
 
-// ── WORLD CLOCKS ──
-function updateClocks() {
-  var opt = {hour:'2-digit',minute:'2-digit',hour12:true};
-  var zones = {
-    'time-ny' :'America/New_York',
-    'time-lon':'Europe/London',
-    'time-fra':'Europe/Berlin',
-    'time-riy':'Asia/Riyadh',
-    'time-mum':'Asia/Kolkata',
-    'time-sha':'Asia/Shanghai',
-    'time-tok':'Asia/Tokyo',
-    'time-syd':'Australia/Sydney'
-  };
-  Object.keys(zones).forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({},opt,{timeZone:zones[id]}));
-  });
+function updateClocks(){
+  var opt={hour:'2-digit',minute:'2-digit',hour12:true};
+  var zones={'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-mum':'Asia/Kolkata','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
+  Object.keys(zones).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=new Date().toLocaleTimeString('en-US',Object.assign({},opt,{timeZone:zones[id]}));});
 }
-setInterval(updateClocks, 1000);
+setInterval(updateClocks,1000);
 updateClocks();
 
-// ── INIT ──
-fetchEvents().then(function() {
+fetchEvents().then(function(){
   buildSidebar();
   renderWeek();
-  setTimeout(positionArrow, 50);
-}).catch(function(err) {
-  console.error('Supabase fetch failed:', err);
-  document.getElementById('weekGrid').innerHTML = '<div class="load-error">Could not load events. Please refresh.</div>';
+  setTimeout(positionArrow,50);
+}).catch(function(err){
+  console.error('Supabase fetch failed:',err);
+  document.getElementById('weekGrid').innerHTML='<div class="load-error">Could not load events. Please refresh.</div>';
 });
 </script>
 </body>
