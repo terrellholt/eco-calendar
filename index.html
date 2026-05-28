@@ -104,11 +104,11 @@ tv-ticker-tape{display:block;width:100%}
 
 /* ── WORLD CLOCK — fluid: each city shares equal width ── */
 .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:0;display:flex;align-items:stretch;overflow:hidden;flex-shrink:0}
-.clock-city{flex:1;display:flex;align-items:center;justify-content:center;gap:var(--clk-gap,5px);border-left:1px solid #e5e5e0;padding:8px var(--clk-pad,4px);min-width:0}
+.clock-city{flex:1;display:flex;align-items:center;justify-content:center;gap:var(--clk-gap,4px);border-left:1px solid #e5e5e0;padding:8px var(--clk-pad,4px);min-width:0}
 .clock-city:first-of-type{border-left:none}
-.clock-city span.flag{font-size:var(--clk-flag,15px);line-height:1;flex-shrink:0}
-.clock-city span.city{font-size:var(--clk-text,12px);color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.clock-city strong{font-size:var(--clk-text,12px);font-weight:600;color:#1a1a1a;white-space:nowrap;flex-shrink:0}
+.clock-city span.flag{font-size:var(--clk-flag,13px);line-height:1;flex-shrink:0}
+.clock-city span.city{font-size:var(--clk-text,11px);color:#666;white-space:nowrap}
+.clock-city strong{font-size:var(--clk-text,11px);font-weight:600;color:#1a1a1a;white-space:nowrap;flex-shrink:0}
 /* ── end world clock ── */
 
 .markets-body{flex:1;display:flex;overflow:hidden}
@@ -803,14 +803,16 @@ updateClocks();
   var clock = document.getElementById('worldClock');
   if (!clock || !window.ResizeObserver) { return; }
   var NUM_CITIES = clock.querySelectorAll('.clock-city').length;
-  var MIN_W = 80, MAX_W = 170; // per-city px range
+  // perItem range: at MIN_W content is cramped, at MAX_W it's comfortably spaced.
+  // Max values are capped so "Frankfurt 09:37 PM" never overflows its slot.
+  var MIN_W = 70, MAX_W = 150;
   function applyScale(containerW) {
     var perItem = containerW / NUM_CITIES;
     var t = Math.max(0, Math.min(1, (perItem - MIN_W) / (MAX_W - MIN_W)));
-    clock.style.setProperty('--clk-flag', (10 + t * 8 ).toFixed(1) + 'px'); // 10→18px
-    clock.style.setProperty('--clk-text', (9  + t * 5 ).toFixed(1) + 'px'); // 9→14px
-    clock.style.setProperty('--clk-gap',  (2  + t * 6 ).toFixed(1) + 'px'); // 2→8px
-    clock.style.setProperty('--clk-pad',  (3  + t * 10).toFixed(1) + 'px'); // 3→13px
+    clock.style.setProperty('--clk-flag', (9  + t * 5).toFixed(1) + 'px'); // 9→14px
+    clock.style.setProperty('--clk-text', (8  + t * 3).toFixed(1) + 'px'); // 8→11px
+    clock.style.setProperty('--clk-gap',  (2  + t * 4).toFixed(1) + 'px'); // 2→6px
+    clock.style.setProperty('--clk-pad',  (2  + t * 7).toFixed(1) + 'px'); // 2→9px
   }
   var ro = new ResizeObserver(function(entries) {
     applyScale(entries[0].contentRect.width);
