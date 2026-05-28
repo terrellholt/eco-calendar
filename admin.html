@@ -17,13 +17,39 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
 
+  /* PASSWORD GATE */
+  #pwGate { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  #pwGate.unlocking { animation: gateOut 0.45s ease forwards; }
+  @keyframes gateOut { 0% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(1.04); pointer-events:none; } }
+  .gate-inner { display: flex; flex-direction: column; align-items: center; gap: 28px; animation: gateIn 0.5s ease; }
+  @keyframes gateIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .gate-logo { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+  .gate-logo-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: 0.6; }
+  .gate-lock-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; color: var(--text3); }
+  .gate-title { font-size: 20px; font-weight: 600; color: var(--text); text-align: center; letter-spacing: -0.02em; }
+  .gate-sub { font-size: 12px; color: var(--text3); font-family: var(--mono); letter-spacing: 0.04em; text-align: center; margin-top: 6px; }
+  .gate-form { display: flex; flex-direction: column; gap: 10px; width: 280px; }
+  .gate-input-wrap { position: relative; }
+  .gate-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); padding: 13px 44px 13px 16px; font-size: 15px; outline: none; font-family: var(--sans); letter-spacing: 0.1em; transition: border-color 0.15s, box-shadow 0.15s; }
+  .gate-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,197,71,0.1); }
+  .gate-input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(224,85,85,0.12); animation: shake 0.35s ease; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+  .gate-toggle-pw { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text3); cursor: pointer; padding: 4px; line-height: 0; transition: color 0.15s; }
+  .gate-toggle-pw:hover { color: var(--text2); }
+  .gate-btn { width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--accent); color: #0c0c0e; font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0.04em; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+  .gate-btn:hover { opacity: 0.9; }
+  .gate-btn:active { transform: scale(0.98); }
+  .gate-error { font-size: 11px; color: var(--red); font-family: var(--mono); text-align: center; height: 14px; letter-spacing: 0.04em; }
+
+  /* MAIN APP */
+  #appWrap { display: none; }
+
   .topbar { position: sticky; top: 0; z-index: 100; background: rgba(12,12,14,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 50px; }
   .topbar-logo { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.08em; }
   .topbar-badge { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: var(--text3); font-family: var(--mono); margin-left: 10px; }
   .status-wrap { display: flex; align-items: center; gap: 8px; }
   .status-dot { width: 6px; height: 6px; border-radius: 50%; }
   .status-text { font-size: 11px; color: var(--text3); font-family: var(--mono); }
-
   .toolbar { padding: 14px 24px 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
   .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 340px; }
   .search-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 12px 7px 34px; font-size: 13px; outline: none; font-family: var(--sans); }
@@ -31,7 +57,6 @@
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
   select.fsel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 28px 7px 10px; font-size: 13px; outline: none; cursor: pointer; font-family: var(--sans); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a4a5a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
   .count-badge { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
-
   .table-wrap { overflow-x: auto; padding: 0 24px 100px; }
   table { width: 100%; border-collapse: collapse; min-width: 800px; }
   thead th { text-align: left; font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
@@ -56,10 +81,8 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn-edit { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); transition: all 0.15s; }
   .btn-edit:hover { border-color: var(--border2); color: var(--text); }
-
   #editOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
   #editOverlay.open { display: flex; }
-
   .edit-panel { background: #fff; border-radius: 16px; width: 560px; max-width: 96vw; max-height: 96vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 32px 100px rgba(0,0,0,0.7); color: #1a1a1a; }
   .ep-header { padding: 18px 20px 14px; border-bottom: 1px solid #f0f0ec; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .ep-header-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
@@ -72,8 +95,6 @@
   .ep-save-status.saved { color: #4cbe85; }
   .ep-save-status.error { color: #e05555; }
   .ep-footer-btns { display: flex; gap: 8px; }
-
-  /* HERO */
   .hero-drag-wrap { position: relative; height: 200px; background: #1a1a2e; overflow: hidden; cursor: grab; user-select: none; flex-shrink: 0; }
   .hero-drag-wrap.dragging { cursor: grabbing; }
   .hero-drag-img { position: absolute; pointer-events: none; }
@@ -82,8 +103,6 @@
   .hero-drag-wrap:hover .hero-drag-hint { opacity: 1; }
   .hero-change-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-family: var(--sans); cursor: pointer; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(4px); }
   .hero-change-btn:hover { background: rgba(0,0,0,0.8); }
-
-  /* FORM */
   .ep-section { padding: 16px 20px; border-bottom: 1px solid #f5f5f2; }
   .ep-row { display: grid; gap: 12px; }
   .ep-row.c2 { grid-template-columns: 1fr 1fr; }
@@ -95,16 +114,12 @@
   .ep-input:focus { border-color: #1a1a1a; }
   textarea.ep-input { resize: vertical; line-height: 1.5; }
   select.ep-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; cursor: pointer; }
-
-  /* LOGO */
   .logo-area { display: flex; align-items: flex-end; gap: 12px; }
   .logo-thumb { width: 72px; height: 72px; border-radius: 12px; border: 1.5px solid #e5e5e0; background: #fafaf8; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
   .logo-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
   .logo-thumb-empty { color: #ccc; font-size: 10px; text-align: center; }
   .logo-change-btn { font-size: 11px; color: #666; background: #f5f5f0; border: 1px solid #e5e5e0; border-radius: 6px; padding: 5px 10px; cursor: pointer; margin-top: 4px; display: block; text-align: center; }
   .logo-change-btn:hover { background: #eeeeea; }
-
-  /* IMPACT — Red / Orange / Yellow / None */
   .impact-row { display: flex; gap: 6px; }
   .impact-opt { flex: 1; padding: 8px 4px; border-radius: 8px; border: 1.5px solid #e5e5e0; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; color: #999; }
   .impact-opt:hover { border-color: #ccc; color: #555; }
@@ -117,16 +132,12 @@
   .dot-medium { background: #ea7000; }
   .dot-low { background: #d4a000; }
   .dot-none { background: #aaa; }
-
-  /* ASSETS */
   .asset-wrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border: 1.5px solid #e5e5e0; border-radius: 8px; padding: 7px 10px; min-height: 42px; cursor: text; }
   .asset-wrap:focus-within { border-color: #1a1a1a; }
   .achip { background: #f5f5f0; border: 1px solid #e5e5e0; border-radius: 5px; padding: 3px 8px; font-size: 12px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 4px; }
   .achip-rm { color: #aaa; cursor: pointer; font-size: 14px; line-height: 1; }
   .achip-rm:hover { color: #e05555; }
   .asset-inp { border: none; outline: none; font-size: 12px; font-family: var(--sans); color: #1a1a1a; width: 70px; background: transparent; }
-
-  /* TOGGLE SWITCH */
   .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
   .toggle-track { width: 38px; height: 22px; border-radius: 11px; background: #e0e0da; border: none; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
   .toggle-track.on { background: #1a1a1a; }
@@ -134,19 +145,13 @@
   .toggle-track.on .toggle-thumb { left: 19px; }
   .toggle-label { font-size: 13px; color: #333; }
   .toggle-sub { font-size: 11px; color: #aaa; margin-top: 1px; }
-
-  /* PRICE MOVE */
   .price-move-wrap { display: flex; align-items: center; gap: 8px; }
   .pm-sym { font-size: 16px; color: #999; font-weight: 500; }
   .pm-input { width: 80px; }
   .pm-type { flex: 1; }
-
-  /* DURATION */
   .duration-row { display: flex; align-items: center; gap: 8px; }
   .duration-row .ep-input { flex: 1; }
   .duration-arrow { color: #aaa; font-size: 16px; flex-shrink: 0; }
-
-  /* CHART */
   .chart-area { border: 1.5px solid #e5e5e0; border-radius: 10px; overflow: hidden; background: #fafaf8; }
   .chart-toolbar { padding: 10px 14px; border-bottom: 1px solid #f0f0ec; display: flex; align-items: center; justify-content: space-between; }
   .chart-ticker-input { border: 1.5px solid #e5e5e0; border-radius: 6px; padding: 5px 10px; font-size: 13px; font-weight: 700; color: #1a1a1a; width: 90px; outline: none; font-family: var(--sans); }
@@ -160,23 +165,53 @@
   .range-btn { padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; border: 1px solid #e5e5e0; background: #fff; color: #666; cursor: pointer; transition: all 0.12s; }
   .range-btn:hover { background: #f5f5f0; }
   .range-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-
   .btn-cancel { padding: 9px 18px; border-radius: 8px; font-size: 13px; font-family: var(--sans); cursor: pointer; border: 1.5px solid #e5e5e0; background: #fff; color: #555; font-weight: 500; }
   .btn-cancel:hover { background: #f5f5f0; }
   .btn-save { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-family: var(--sans); cursor: pointer; border: none; background: #1a1a1a; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px; }
   .btn-save:hover { background: #2a2a2a; }
   .btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
-
   #toast { position: fixed; bottom: 24px; right: 24px; z-index: 500; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 12px 18px; font-size: 13px; color: var(--text); box-shadow: 0 8px 40px rgba(0,0,0,0.5); transform: translateY(60px); opacity: 0; transition: all 0.25s; display: flex; align-items: center; gap: 10px; }
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.success .ti { color: var(--green); }
   #toast.error .ti { color: var(--red); }
-
   @media (max-width: 560px) { .ep-row.c2, .ep-row.c3 { grid-template-columns: 1fr; } .impact-row { flex-wrap: wrap; } }
 </style>
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div id="pwGate">
+  <div class="gate-inner">
+    <div class="gate-logo"><span class="gate-logo-dot"></span>ECO CALENDAR<span class="gate-logo-dot"></span></div>
+    <div class="gate-lock-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="10" cy="13.5" r="1.2" fill="currentColor"/>
+      </svg>
+    </div>
+    <div>
+      <div class="gate-title">Admin Access</div>
+      <div class="gate-sub">RESTRICTED — AUTHORIZED USE ONLY</div>
+    </div>
+    <div class="gate-form">
+      <div class="gate-input-wrap">
+        <input type="password" id="pwInput" class="gate-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()" autocomplete="current-password">
+        <button class="gate-toggle-pw" onclick="togglePwVisibility()" tabindex="-1" id="eyeBtn">
+          <svg id="eyeIcon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
+            <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>
+          </svg>
+        </button>
+      </div>
+      <button class="gate-btn" onclick="checkPassword()">Unlock</button>
+      <div class="gate-error" id="gateError"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appWrap">
 <div class="topbar">
   <div style="display:flex;align-items:center">
     <span class="topbar-logo">ECO CALENDAR</span>
@@ -187,58 +222,36 @@
     <span class="status-text" id="statusText">connecting…</span>
   </div>
 </div>
-
 <div class="toolbar">
   <div class="search-wrap">
     <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9 9L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
     <input type="text" id="searchInput" placeholder="Search events…" oninput="filterTable()">
   </div>
   <select class="fsel" id="impactFilter" onchange="filterTable()">
-    <option value="">All Impact</option>
-    <option value="high">High</option>
-    <option value="medium">Medium</option>
-    <option value="low">Low</option>
-    <option value="none">None</option>
+    <option value="">All Impact</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option><option value="none">None</option>
   </select>
-  <select class="fsel" id="catFilter" onchange="filterTable()">
-    <option value="">All Categories</option>
-  </select>
+  <select class="fsel" id="catFilter" onchange="filterTable()"><option value="">All Categories</option></select>
   <select class="fsel" id="enrichFilter" onchange="filterTable()">
-    <option value="">All Enrichment</option>
-    <option value="missing">Missing enrichment</option>
-    <option value="has-hero">Has hero image</option>
-    <option value="has-why">Has why it matters</option>
+    <option value="">All Enrichment</option><option value="missing">Missing enrichment</option><option value="has-hero">Has hero image</option><option value="has-why">Has why it matters</option>
   </select>
   <span class="count-badge" id="countBadge"></span>
 </div>
-
 <div class="table-wrap">
   <div id="tableState" class="state-msg"><span class="spinner"></span></div>
   <table id="eventsTable" style="display:none">
-    <thead>
-      <tr>
-        <th onclick="sortBy('date')">DATE</th>
-        <th onclick="sortBy('event')">EVENT</th>
-        <th>CATEGORY</th>
-        <th onclick="sortBy('impact')">IMPACT</th>
-        <th>ENRICHMENT</th>
-        <th style="width:60px"></th>
-      </tr>
-    </thead>
+    <thead><tr>
+      <th onclick="sortBy('date')">DATE</th><th onclick="sortBy('event')">EVENT</th><th>CATEGORY</th>
+      <th onclick="sortBy('impact')">IMPACT</th><th>ENRICHMENT</th><th style="width:60px"></th>
+    </tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
 </div>
-
-<!-- EDIT OVERLAY -->
 <div id="editOverlay" onclick="overlayClick(event)">
   <div class="edit-panel" id="editPanel">
-
     <div class="ep-header">
       <div class="ep-header-title">Edit Event Details</div>
-      <button class="ep-close" onclick="closeEdit()">✕</button>
+      <button class="ep-close" onclick="closeEdit()">&#10005;</button>
     </div>
-
-    <!-- HERO DRAG -->
     <div class="hero-drag-wrap" id="heroDragWrap">
       <img id="heroDragImg" class="hero-drag-img" src="" alt="" style="display:none">
       <div class="hero-empty" id="heroEmpty">
@@ -251,10 +264,7 @@
         Change Hero Image
       </button>
     </div>
-
     <div class="ep-body">
-
-      <!-- LOGO + TITLE -->
       <div class="ep-section">
         <div class="logo-area">
           <div>
@@ -262,52 +272,28 @@
             <button class="logo-change-btn" onclick="promptLogoUrl()">Change Logo</button>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:10px">
-            <div class="ep-field">
-              <label class="ep-label">Title</label>
-              <input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default">
-            </div>
+            <div class="ep-field"><label class="ep-label">Title</label><input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default"></div>
             <div class="ep-row c2">
-              <div class="ep-field">
-                <label class="ep-label">Name</label>
-                <input type="text" class="ep-input" id="f_name" readonly style="background:#fafaf8;color:#888;cursor:default">
-              </div>
-              <div class="ep-field">
-                <label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label>
-                <input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL">
-              </div>
+              <div class="ep-field"><label class="ep-label">Name</label><input type="text" class="ep-input" id="f_name" readonly style="background:#fafaf8;color:#888;cursor:default"></div>
+              <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- TIME + DURATION + AKA -->
       <div class="ep-section">
         <div class="ep-row c2" style="margin-bottom:12px">
-          <div class="ep-field">
-            <label class="ep-label">Time</label>
-            <input type="text" class="ep-input" id="f_display_time" placeholder="e.g. 10:00 AM ET">
-          </div>
-          <div class="ep-field">
-            <label class="ep-label">Also Known As <span class="opt">(optional)</span></label>
-            <input type="text" class="ep-input" id="f_aka" placeholder="e.g. Quad Witching">
-          </div>
+          <div class="ep-field"><label class="ep-label">Time</label><input type="text" class="ep-input" id="f_display_time" placeholder="e.g. 10:00 AM ET"></div>
+          <div class="ep-field"><label class="ep-label">Also Known As <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_aka" placeholder="e.g. Quad Witching"></div>
         </div>
         <div class="ep-field">
-          <label class="ep-label">Event Duration <span class="opt">(optional — for multi-day events)</span></label>
+          <label class="ep-label">Event Duration <span class="opt">(optional)</span></label>
           <div class="duration-row">
-            <input type="date" class="ep-input" id="f_start_date" placeholder="Start date">
-            <span class="duration-arrow">→</span>
-            <input type="date" class="ep-input" id="f_end_date" placeholder="End date">
+            <input type="date" class="ep-input" id="f_start_date"><span class="duration-arrow">&#8594;</span><input type="date" class="ep-input" id="f_end_date">
           </div>
         </div>
       </div>
-
-      <!-- SOURCE + IMPACT -->
       <div class="ep-section">
-        <div class="ep-field" style="margin-bottom:14px">
-          <label class="ep-label">Source</label>
-          <input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here">
-        </div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
         <div class="ep-field" style="margin-bottom:14px">
           <label class="ep-label">Impact Level</label>
           <div class="impact-row">
@@ -324,65 +310,37 @@
           </div>
         </div>
       </div>
-
-      <!-- MONTHLY TOGGLE + FREQUENCY -->
       <div class="ep-section">
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleMonthly()">
-            <div class="toggle-track" id="monthlyToggle">
-              <div class="toggle-thumb"></div>
-            </div>
-            <div>
-              <div class="toggle-label">Show in monthly calendar view</div>
-              <div class="toggle-sub">Multi-day banner — only top events should be enabled</div>
-            </div>
+            <div class="toggle-track" id="monthlyToggle"><div class="toggle-thumb"></div></div>
+            <div><div class="toggle-label">Show in monthly calendar view</div><div class="toggle-sub">Multi-day banner — only top events should be enabled</div></div>
           </div>
         </div>
         <div class="ep-row c2">
           <div class="ep-field">
             <label class="ep-label">Frequency</label>
             <select class="ep-input" id="f_frequency">
-              <option value="">— not set —</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="roughly every six weeks">Roughly every six weeks</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="semi-annual">Semi-Annual</option>
-              <option value="annual">Annual</option>
+              <option value="">— not set —</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>
+              <option value="roughly every six weeks">Roughly every six weeks</option><option value="quarterly">Quarterly</option>
+              <option value="semi-annual">Semi-Annual</option><option value="annual">Annual</option>
             </select>
           </div>
           <div class="ep-field">
-            <label class="ep-label">Expected Price Move (±) <span class="opt">(optional)</span></label>
+            <label class="ep-label">Expected Price Move (&#177;) <span class="opt">(optional)</span></label>
             <div class="price-move-wrap">
-              <span class="pm-sym">±</span>
+              <span class="pm-sym">&#177;</span>
               <input type="text" class="ep-input pm-input" id="f_price_move_val" placeholder="2.5">
-              <select class="ep-input pm-type" id="f_price_move_type">
-                <option value="percent">%</option>
-                <option value="points">pts</option>
-                <option value="range">range</option>
-              </select>
+              <select class="ep-input pm-type" id="f_price_move_type"><option value="percent">%</option><option value="points">pts</option><option value="range">range</option></select>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- MEASURES + WHY IT MATTERS + DETAILS -->
       <div class="ep-section">
-        <div class="ep-field" style="margin-bottom:14px">
-          <label class="ep-label">Measures <span class="opt">(optional)</span></label>
-          <textarea class="ep-input" id="f_measures" rows="3" placeholder="What this event or release tracks…"></textarea>
-        </div>
-        <div class="ep-field" style="margin-bottom:14px">
-          <label class="ep-label">Why it Matters</label>
-          <textarea class="ep-input" id="f_why_it_matters" rows="3" placeholder="Add description of why this event matters…"></textarea>
-        </div>
-        <div class="ep-field">
-          <label class="ep-label">Details <span class="opt">(custom content)</span></label>
-          <textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes…"></textarea>
-        </div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Measures <span class="opt">(optional)</span></label><textarea class="ep-input" id="f_measures" rows="3" placeholder="What this event or release tracks…"></textarea></div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Why it Matters</label><textarea class="ep-input" id="f_why_it_matters" rows="3" placeholder="Add description of why this event matters…"></textarea></div>
+        <div class="ep-field"><label class="ep-label">Details <span class="opt">(custom content)</span></label><textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes…"></textarea></div>
       </div>
-
-      <!-- CHART -->
       <div class="ep-section" style="border-bottom:none">
         <div class="ep-field">
           <label class="ep-label">Attach Chart <span class="opt">(optional)</span></label>
@@ -404,22 +362,16 @@
               <iframe id="chartFrame" style="display:none" title="TradingView Chart"></iframe>
             </div>
             <div class="chart-range-row">
-              <button class="range-btn" onclick="setRange(this,'1D')">1D</button>
-              <button class="range-btn" onclick="setRange(this,'5D')">5D</button>
-              <button class="range-btn active" onclick="setRange(this,'1M')">1M</button>
-              <button class="range-btn" onclick="setRange(this,'3M')">3M</button>
-              <button class="range-btn" onclick="setRange(this,'6M')">6M</button>
-              <button class="range-btn" onclick="setRange(this,'YTD')">YTD</button>
-              <button class="range-btn" onclick="setRange(this,'1Y')">1Y</button>
-              <button class="range-btn" onclick="setRange(this,'5Y')">5Y</button>
+              <button class="range-btn" onclick="setRange(this,'1D')">1D</button><button class="range-btn" onclick="setRange(this,'5D')">5D</button>
+              <button class="range-btn active" onclick="setRange(this,'1M')">1M</button><button class="range-btn" onclick="setRange(this,'3M')">3M</button>
+              <button class="range-btn" onclick="setRange(this,'6M')">6M</button><button class="range-btn" onclick="setRange(this,'YTD')">YTD</button>
+              <button class="range-btn" onclick="setRange(this,'1Y')">1Y</button><button class="range-btn" onclick="setRange(this,'5Y')">5Y</button>
               <button class="range-btn" onclick="setRange(this,'ALL')">ALL</button>
             </div>
           </div>
         </div>
       </div>
-
-    </div><!-- ep-body -->
-
+    </div>
     <div class="ep-footer">
       <div class="ep-save-status" id="epStatus"></div>
       <div class="ep-footer-btns">
@@ -430,16 +382,86 @@
         </button>
       </div>
     </div>
-
   </div>
 </div>
-
-<div id="toast"><span class="ti" id="toastIcon">✓</span><span id="toastMsg"></span></div>
+<div id="toast"><span class="ti" id="toastIcon">&#10003;</span><span id="toastMsg"></span></div>
+</div><!-- /appWrap -->
 
 <script>
+// ── CHANGE THIS to your desired password ──
+var ADMIN_PASSWORD = 'eco2027!';
+
+function checkPassword() {
+  var input = document.getElementById('pwInput');
+  var errorEl = document.getElementById('gateError');
+  if (input.value === ADMIN_PASSWORD) {
+    errorEl.textContent = '';
+    var gate = document.getElementById('pwGate');
+    gate.classList.add('unlocking');
+    setTimeout(function() {
+      gate.style.display = 'none';
+      document.getElementById('appWrap').style.display = 'block';
+      loadEvents();
+    }, 440);
+  } else {
+    input.classList.add('error');
+    errorEl.textContent = 'Incorrect password';
+    input.value = '';
+    setTimeout(function() { input.classList.remove('error'); }, 400);
+    input.focus();
+  }
+}
+
+function togglePwVisibility() {
+  var inp = document.getElementById('pwInput');
+  var icon = document.getElementById('eyeIcon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.innerHTML = '<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>';
+  } else {
+    inp.type = 'password';
+    icon.innerHTML = '<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('pwInput').focus();
+  document.getElementById('heroDragImg').addEventListener('load', positionHeroImg);
+  var wrap = document.getElementById('heroDragWrap');
+  wrap.addEventListener('mousedown', function(e) {
+    if (!currentHeroUrl) return; e.preventDefault();
+    heroDragging = true; heroDragStartX = e.clientX; heroDragStartY = e.clientY;
+    heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
+    wrap.classList.add('dragging');
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!heroDragging) return;
+    var img = document.getElementById('heroDragImg'), w = document.getElementById('heroDragWrap');
+    var sw = parseFloat(img.style.width)||w.offsetWidth, sh = parseFloat(img.style.height)||w.offsetHeight;
+    var maxX = Math.max(sw - w.offsetWidth, 1), maxY = Math.max(sh - w.offsetHeight, 1);
+    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - ((e.clientX - heroDragStartX) / maxX) * 100));
+    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - ((e.clientY - heroDragStartY) / maxY) * 100));
+    positionHeroImg();
+  });
+  document.addEventListener('mouseup', function() { heroDragging = false; document.getElementById('heroDragWrap').classList.remove('dragging'); });
+  wrap.addEventListener('touchstart', function(e) {
+    if (!currentHeroUrl) return;
+    var t = e.touches[0]; heroDragging = true; heroDragStartX = t.clientX; heroDragStartY = t.clientY; heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
+  }, {passive:true});
+  document.addEventListener('touchmove', function(e) {
+    if (!heroDragging) return;
+    var t = e.touches[0], img = document.getElementById('heroDragImg'), w = document.getElementById('heroDragWrap');
+    var sw = parseFloat(img.style.width)||w.offsetWidth, sh = parseFloat(img.style.height)||w.offsetHeight;
+    var maxX = Math.max(sw - w.offsetWidth, 1), maxY = Math.max(sh - w.offsetHeight, 1);
+    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - ((t.clientX - heroDragStartX) / maxX) * 100));
+    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - ((t.clientY - heroDragStartY) / maxY) * 100));
+    positionHeroImg();
+  }, {passive:true});
+  document.addEventListener('touchend', function() { heroDragging = false; });
+});
+
 var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempnanR6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNjkwMTgsImV4cCI6MjA5Mzk0NTAxOH0.sZA4DPrmldh2XlfpCoNffsnmZKr6IjWusEv_ezAOqaI';
-
 var allEvents = [], filteredEvents = [], currentEvent = null;
 var sortCol = 'date', sortDir = 1;
 var selectedImpact = 'none';
@@ -468,8 +490,7 @@ function loadEvents() {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
       document.getElementById('statusText').textContent = allEvents.length + ' events loaded';
-      populateCats();
-      filterTable();
+      populateCats(); filterTable();
       document.getElementById('tableState').style.display = 'none';
       document.getElementById('eventsTable').style.display = 'table';
     })
@@ -529,9 +550,9 @@ function renderTable() {
     var date = ev.date ? String(ev.date).substring(0,10) : '';
     html += '<tr onclick="openEdit('+i+')">'
       + '<td class="td-date">'+date+'</td>'
-      + '<td><div class="td-event">'+esc(ev.event||'—')+'</div>'+(ev.display_time?'<div class="td-sub">⏰ '+esc(ev.display_time)+'</div>':'')+'</td>'
-      + '<td><span class="td-cat">'+esc(ev.category||'—')+'</span></td>'
-      + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">—</span>')+'</td>'
+      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+'</div>'+(ev.display_time?'<div class="td-sub">&#9200; '+esc(ev.display_time)+'</div>':'')+'</td>'
+      + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
+      + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
       + '<td><div class="enr-chips">'+chips+'</div></td>'
       + '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit('+i+')">Edit</button></td>'
       + '</tr>';
@@ -541,9 +562,7 @@ function renderTable() {
 
 function openEdit(idx) {
   currentEvent = filteredEvents[idx];
-  var ev = currentEvent;
-  var ent = ev.entity || {};
-
+  var ev = currentEvent, ent = ev.entity || {};
   var heroUrl = ev.hero_url || ent.hero_url || '';
   heroOffsetX = 50; heroOffsetY = 50;
   var heroPos = ev.hero_position || '';
@@ -552,11 +571,9 @@ function openEdit(idx) {
     if (pp.length >= 2) { heroOffsetX = parseFloat(pp[0])||50; heroOffsetY = parseFloat(pp[1])||50; }
   }
   setupHero(heroUrl);
-
   var lt = document.getElementById('logoThumb');
   var logoUrl = ev.logo_url || ent.logo_url || '';
   lt.innerHTML = logoUrl ? '<img src="'+esc(logoUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
-
   document.getElementById('f_title').value = ev.event || '';
   document.getElementById('f_name').value = ent.name || '';
   document.getElementById('f_ticker').value = ev.ticker || '';
@@ -567,40 +584,24 @@ function openEdit(idx) {
   document.getElementById('f_measures').value = ev.measures || ent.measures || '';
   document.getElementById('f_why_it_matters').value = ev.why_it_matters || ent.why_it_matters || '';
   document.getElementById('f_details').value = ev.details || '';
-
-  // Duration
-  var startD = ev.date ? String(ev.date).substring(0,10) : '';
-  var endD = ev.end_date ? String(ev.end_date).substring(0,10) : '';
-  document.getElementById('f_start_date').value = startD;
-  document.getElementById('f_end_date').value = endD;
-
-  // Price move
+  document.getElementById('f_start_date').value = ev.date ? String(ev.date).substring(0,10) : '';
+  document.getElementById('f_end_date').value = ev.end_date ? String(ev.end_date).substring(0,10) : '';
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
-
-  // Impact
   selectedImpact = (ev.impact || 'none').toLowerCase();
   if (!['high','medium','low','none'].includes(selectedImpact)) selectedImpact = 'none';
   updateImpactUI();
-
-  // Monthly toggle
   showInMonthly = ev.show_in_monthly !== false && ev.show_in_monthly !== 0;
   updateToggleUI();
-
-  // Assets
-  var assetWrap = document.getElementById('assetWrap');
-  var assetInp = document.getElementById('assetInp');
+  var assetWrap = document.getElementById('assetWrap'), assetInp = document.getElementById('assetInp');
   assetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
   var assets = (ev.impacted_assets || ent.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean);
   assets.forEach(function(a) { assetWrap.insertBefore(makeChip(a), assetInp); });
-
-  // Chart
   var ct = ev.chart_ticker || ev.ticker || '';
   document.getElementById('chartTicker').value = ct;
   chartRange = ev.chart_range || '1M';
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === chartRange); });
   if (ct) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
-
   document.getElementById('epStatus').textContent = '';
   document.getElementById('saveBtn').disabled = false;
   document.getElementById('editOverlay').classList.add('open');
@@ -610,18 +611,14 @@ function openEdit(idx) {
 function closeEdit() { document.getElementById('editOverlay').classList.remove('open'); document.body.style.overflow = ''; currentEvent = null; }
 function overlayClick(e) { if (e.target === document.getElementById('editOverlay')) closeEdit(); }
 
-// ── HERO DRAG ──
 function setupHero(url) {
   currentHeroUrl = url;
-  var img = document.getElementById('heroDragImg');
-  var empty = document.getElementById('heroEmpty');
+  var img = document.getElementById('heroDragImg'), empty = document.getElementById('heroEmpty');
   if (url) { img.src = url; img.style.display = 'block'; empty.style.display = 'none'; positionHeroImg(); }
   else { img.style.display = 'none'; empty.style.display = 'flex'; }
 }
-
 function positionHeroImg() {
-  var wrap = document.getElementById('heroDragWrap');
-  var img = document.getElementById('heroDragImg');
+  var wrap = document.getElementById('heroDragWrap'), img = document.getElementById('heroDragImg');
   if (!img.naturalWidth) return;
   var ww = wrap.offsetWidth, wh = wrap.offsetHeight;
   var scale = Math.max(ww / img.naturalWidth, wh / img.naturalHeight);
@@ -631,42 +628,6 @@ function positionHeroImg() {
   img.style.left = -(heroOffsetX / 100 * maxOffX) + 'px';
   img.style.top = -(heroOffsetY / 100 * maxOffY) + 'px';
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('heroDragImg').addEventListener('load', positionHeroImg);
-  var wrap = document.getElementById('heroDragWrap');
-  wrap.addEventListener('mousedown', function(e) {
-    if (!currentHeroUrl) return; e.preventDefault();
-    heroDragging = true; heroDragStartX = e.clientX; heroDragStartY = e.clientY;
-    heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
-    wrap.classList.add('dragging');
-  });
-  document.addEventListener('mousemove', function(e) {
-    if (!heroDragging) return;
-    var img = document.getElementById('heroDragImg'), w = document.getElementById('heroDragWrap');
-    var sw = parseFloat(img.style.width)||w.offsetWidth, sh = parseFloat(img.style.height)||w.offsetHeight;
-    var maxX = Math.max(sw - w.offsetWidth, 1), maxY = Math.max(sh - w.offsetHeight, 1);
-    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - ((e.clientX - heroDragStartX) / maxX) * 100));
-    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - ((e.clientY - heroDragStartY) / maxY) * 100));
-    positionHeroImg();
-  });
-  document.addEventListener('mouseup', function() { heroDragging = false; document.getElementById('heroDragWrap').classList.remove('dragging'); });
-  wrap.addEventListener('touchstart', function(e) {
-    if (!currentHeroUrl) return;
-    var t = e.touches[0]; heroDragging = true; heroDragStartX = t.clientX; heroDragStartY = t.clientY; heroDragStartOX = heroOffsetX; heroDragStartOY = heroOffsetY;
-  }, {passive:true});
-  document.addEventListener('touchmove', function(e) {
-    if (!heroDragging) return;
-    var t = e.touches[0], img = document.getElementById('heroDragImg'), w = document.getElementById('heroDragWrap');
-    var sw = parseFloat(img.style.width)||w.offsetWidth, sh = parseFloat(img.style.height)||w.offsetHeight;
-    var maxX = Math.max(sw - w.offsetWidth, 1), maxY = Math.max(sh - w.offsetHeight, 1);
-    heroOffsetX = Math.max(0, Math.min(100, heroDragStartOX - ((t.clientX - heroDragStartX) / maxX) * 100));
-    heroOffsetY = Math.max(0, Math.min(100, heroDragStartOY - ((t.clientY - heroDragStartY) / maxY) * 100));
-    positionHeroImg();
-  }, {passive:true});
-  document.addEventListener('touchend', function() { heroDragging = false; });
-});
-
 function promptHeroUrl() {
   var url = prompt('Enter hero image URL:', currentHeroUrl || '');
   if (url !== null) setupHero(url.trim());
@@ -679,26 +640,13 @@ function promptLogoUrl() {
     lt.innerHTML = url.trim() ? '<img src="'+esc(url.trim())+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
   }
 }
-
-// ── IMPACT ──
 function selectImpact(val) { selectedImpact = val; updateImpactUI(); }
-function updateImpactUI() {
-  ['high','medium','low','none'].forEach(function(v) {
-    document.getElementById('imp-' + v).className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : '');
-  });
-}
-
-// ── MONTHLY TOGGLE ──
+function updateImpactUI() { ['high','medium','low','none'].forEach(function(v) { document.getElementById('imp-' + v).className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : ''); }); }
 function toggleMonthly() { showInMonthly = !showInMonthly; updateToggleUI(); }
-function updateToggleUI() {
-  var t = document.getElementById('monthlyToggle');
-  t.classList.toggle('on', showInMonthly);
-}
-
-// ── ASSETS ──
+function updateToggleUI() { document.getElementById('monthlyToggle').classList.toggle('on', showInMonthly); }
 function makeChip(val) {
   var s = document.createElement('span'); s.className = 'achip';
-  s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">×</span>';
+  s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>';
   return s;
 }
 function addChip(val) {
@@ -711,15 +659,11 @@ function addChip(val) {
 function assetKey(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addChip(e.target.value); e.target.value = ''; } }
 function assetBlur() { if (document.getElementById('assetInp').value.trim()) { addChip(document.getElementById('assetInp').value); document.getElementById('assetInp').value = ''; } }
 function getAssets() { return Array.from(document.querySelectorAll('#assetWrap .achip span:first-child')).map(function(s){return s.textContent.trim();}).filter(Boolean).join(', '); }
-
-// ── CHART ──
 function loadChart() {
   var ticker = document.getElementById('chartTicker').value.trim().toUpperCase();
   if (!ticker) return;
   var rangeMap = {'1D':'1D','5D':'5D','1M':'1M','3M':'3M','6M':'6M','YTD':'YTD','1Y':'12M','5Y':'60M','ALL':'ALL'};
-  var src = 'https://s.tradingview.com/widgetembed/?frameElementId=tv_chart&symbol=' + encodeURIComponent(ticker)
-    + '&interval=D&range=' + (rangeMap[chartRange]||'1M')
-    + '&theme=light&style=1&locale=en&toolbar_bg=%23f1f3f6&enable_publishing=false&hide_top_toolbar=true&hide_legend=true&save_image=false';
+  var src = 'https://s.tradingview.com/widgetembed/?frameElementId=tv_chart&symbol=' + encodeURIComponent(ticker) + '&interval=D&range=' + (rangeMap[chartRange]||'1M') + '&theme=light&style=1&locale=en&toolbar_bg=%23f1f3f6&enable_publishing=false&hide_top_toolbar=true&hide_legend=true&save_image=false';
   var frame = document.getElementById('chartFrame');
   frame.src = src; frame.style.display = 'block';
   document.getElementById('chartPlaceholder').style.display = 'none';
@@ -727,68 +671,58 @@ function loadChart() {
 function setRange(btn, range) {
   chartRange = range;
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  loadChart();
+  btn.classList.add('active'); loadChart();
 }
-
-// ── SAVE ──
 function saveChanges() {
   if (!currentEvent) return;
-  var btn = document.getElementById('saveBtn');
-  var statusEl = document.getElementById('epStatus');
-  btn.disabled = true; statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Saving…';
-
+  var btn = document.getElementById('saveBtn'), statusEl = document.getElementById('epStatus');
+  btn.disabled = true; statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Saving\u2026';
   var logoImg = document.getElementById('logoThumb').querySelector('img');
   var pmVal = document.getElementById('f_price_move_val').value.trim();
-
   var payload = {
-    hero_url:        currentHeroUrl || null,
-    hero_position:   heroOffsetX.toFixed(1) + '% ' + heroOffsetY.toFixed(1) + '%',
-    logo_url:        logoImg ? logoImg.src : null,
-    display_time:    document.getElementById('f_display_time').value.trim() || null,
-    ticker:          document.getElementById('f_ticker').value.trim() || null,
-    aka:             document.getElementById('f_aka').value.trim() || null,
-    source_url:      document.getElementById('f_source_url').value.trim() || null,
-    impact:          selectedImpact || null,
+    hero_url: currentHeroUrl || null,
+    hero_position: heroOffsetX.toFixed(1) + '% ' + heroOffsetY.toFixed(1) + '%',
+    logo_url: logoImg ? logoImg.src : null,
+    display_time: document.getElementById('f_display_time').value.trim() || null,
+    ticker: document.getElementById('f_ticker').value.trim() || null,
+    aka: document.getElementById('f_aka').value.trim() || null,
+    source_url: document.getElementById('f_source_url').value.trim() || null,
+    impact: selectedImpact || null,
     show_in_monthly: showInMonthly,
-    end_date:        document.getElementById('f_end_date').value || null,
-    frequency:       document.getElementById('f_frequency').value || null,
-    measures:        document.getElementById('f_measures').value.trim() || null,
-    why_it_matters:  document.getElementById('f_why_it_matters').value.trim() || null,
-    details:         document.getElementById('f_details').value.trim() || null,
+    end_date: document.getElementById('f_end_date').value || null,
+    frequency: document.getElementById('f_frequency').value || null,
+    measures: document.getElementById('f_measures').value.trim() || null,
+    why_it_matters: document.getElementById('f_why_it_matters').value.trim() || null,
+    details: document.getElementById('f_details').value.trim() || null,
     impacted_assets: getAssets() || null,
-    price_move_val:  pmVal || null,
+    price_move_val: pmVal || null,
     price_move_type: pmVal ? document.getElementById('f_price_move_type').value : null,
-    chart_ticker:    document.getElementById('chartTicker').value.trim().toUpperCase() || null,
-    chart_range:     chartRange,
+    chart_ticker: document.getElementById('chartTicker').value.trim().toUpperCase() || null,
+    chart_range: chartRange,
   };
-
   supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
     .then(function() {
       Object.assign(currentEvent, payload);
-      statusEl.className = 'ep-save-status saved'; statusEl.textContent = '✓ Saved';
+      statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved';
       showToast('Changes saved', 'success');
       renderTable(); btn.disabled = false;
       setTimeout(closeEdit, 800);
     })
     .catch(function(err) {
-      statusEl.className = 'ep-save-status error'; statusEl.textContent = '✗ ' + err.message;
+      statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message;
       showToast('Save failed', 'error'); btn.disabled = false;
     });
 }
-
 var toastTimer;
 function showToast(msg, type) {
   clearTimeout(toastTimer);
   var t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
-  document.getElementById('toastIcon').textContent = type === 'success' ? '✓' : '✗';
+  document.getElementById('toastIcon').textContent = type === 'success' ? '\u2713' : '\u2717';
   t.className = 'show ' + (type||'');
   toastTimer = setTimeout(function(){ t.className = ''; }, 3000);
 }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-loadEvents();
 </script>
 </body>
 </html>
