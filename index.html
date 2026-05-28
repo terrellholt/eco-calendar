@@ -112,7 +112,10 @@ tv-ticker-tape{display:block;width:100%}
 /* ── end world clock ── */
 
 .markets-body{flex:1;display:flex;overflow:hidden}
-.markets-main{flex:1;padding:20px;overflow-y:auto}
+.markets-main{flex:1;padding:20px;overflow:hidden;display:flex;flex-direction:column}
+.tradingview-widget-container{flex:1;display:flex;flex-direction:column;min-height:0}
+.tradingview-widget-container__widget{flex:1;min-height:0}
+.tradingview-widget-copyright{padding:4px 0;font-size:11px;flex-shrink:0}
 .markets-sidebar{width:680px;background:#fff;border-left:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
 .markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
 .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
@@ -245,7 +248,7 @@ tv-ticker-tape{display:block;width:100%}
           <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-            {"colorTheme":"light","dateRange":"12M","locale":"en","isTransparent":false,"tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD"},{"s":"FX:GBPUSD"},{"s":"FX:USDJPY"},{"s":"FX:USDCHF"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD"},{"s":"COINBASE:ETHUSD"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD"}]}],"support_host":"https://www.tradingview.com","width":"400","height":"550","showSymbolLogo":true,"showChart":true}
+            {"colorTheme":"light","dateRange":"12M","locale":"en","isTransparent":false,"autosize":true,"tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD"},{"s":"FX:GBPUSD"},{"s":"FX:USDJPY"},{"s":"FX:USDCHF"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD"},{"s":"COINBASE:ETHUSD"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD"}]}],"support_host":"https://www.tradingview.com","showSymbolLogo":true,"showChart":true}
             </script>
           </div>
         </div>
