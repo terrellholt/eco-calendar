@@ -463,7 +463,7 @@ function supaFetch(path, opts) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=*,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,price_move_val,price_move_type,chart_ticker,chart_range,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
