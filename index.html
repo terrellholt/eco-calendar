@@ -60,6 +60,24 @@ tv-ticker-tape{display:block;width:100%}
 .week-controls{display:flex;gap:6px;align-items:center}
 .btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
 .btn:hover{background:#f5f5f0}
+
+/* ── Timezone selector ─────────────────────────────────── */
+.tz-wrap{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;transition:background .12s}
+.tz-wrap:hover{background:#f5f5f0}
+.tz-globe{width:13px;height:13px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
+.tz-label{font-size:12px;color:#333;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.tz-caret{font-size:9px;color:#aaa;margin-left:1px}
+.tz-dropdown{position:absolute;top:100%;right:0;margin-top:4px;background:#fff;border:1px solid #e0e0db;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;min-width:260px;max-height:340px;overflow-y:auto;display:none}
+.tz-dropdown.open{display:block}
+.tz-section-label{font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px 3px}
+.tz-opt{font-size:12px;padding:7px 12px;cursor:pointer;color:#333;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:background .1s}
+.tz-opt:hover{background:#f5f5f0}
+.tz-opt.selected{color:#2563eb;font-weight:600}
+.tz-opt-time{font-size:11px;color:#aaa;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tz-opt-check{font-size:12px;color:#2563eb;width:14px;text-align:right}
+.tz-container{position:relative}
+/* ── end timezone selector ─────────────────────────────── */
+
 .week-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);overflow-y:auto}
 .day-col{border-right:1px solid #e5e5e0;display:flex;flex-direction:column}
 .day-col:last-child{border-right:none}
@@ -182,6 +200,22 @@ tv-ticker-tape{display:block;width:100%}
           <button class="btn" onclick="prevWeek()">&larr; Prev</button>
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next &rarr;</button>
+
+          <!-- ── Timezone toggle ───────────────────────────── -->
+          <div class="tz-container" id="tzContainer">
+            <div class="tz-wrap" onclick="toggleTzDropdown(event)" title="Change timezone">
+              <svg class="tz-globe" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+              </svg>
+              <span class="tz-label" id="tzLabel">ET</span>
+              <span class="tz-caret">&#9660;</span>
+            </div>
+            <div class="tz-dropdown" id="tzDropdown"></div>
+          </div>
+          <!-- ── end timezone toggle ──────────────────────── -->
+
         </div>
       </div>
       <div class="week-grid" id="weekGrid">
@@ -288,6 +322,144 @@ var allExpanded = true;
 var sidebarOpen = true;
 var events      = [];
 
+// ── TIMEZONE SYSTEM ────────────────────────────────────────────────────
+// TZ_LIST: grouped list of timezones shown in the dropdown.
+// Each entry: { iana, label, short }
+// short = what appears on the button (kept brief for space)
+// Add more groups / cities as you expand internationally.
+var TZ_LIST = [
+  { group: 'Americas' },
+  { iana: 'America/New_York',    label: 'New York (ET)',        short: 'ET'  },
+  { iana: 'America/Chicago',     label: 'Chicago (CT)',         short: 'CT'  },
+  { iana: 'America/Denver',      label: 'Denver (MT)',          short: 'MT'  },
+  { iana: 'America/Los_Angeles', label: 'Los Angeles (PT)',     short: 'PT'  },
+  { iana: 'America/Sao_Paulo',   label: 'Sao Paulo (BRT)',      short: 'BRT' },
+  { group: 'Europe' },
+  { iana: 'Europe/London',       label: 'London (GMT/BST)',     short: 'LON' },
+  { iana: 'Europe/Paris',        label: 'Paris / Frankfurt (CET/CEST)', short: 'CET' },
+  { iana: 'Europe/Zurich',       label: 'Zurich (CET/CEST)',   short: 'ZRH' },
+  { group: 'Middle East & Africa' },
+  { iana: 'Asia/Riyadh',         label: 'Riyadh (AST)',         short: 'AST' },
+  { iana: 'Asia/Dubai',          label: 'Dubai (GST)',          short: 'GST' },
+  { group: 'Asia Pacific' },
+  { iana: 'Asia/Kolkata',        label: 'Mumbai (IST)',         short: 'IST' },
+  { iana: 'Asia/Singapore',      label: 'Singapore (SGT)',      short: 'SGT' },
+  { iana: 'Asia/Shanghai',       label: 'Shanghai (CST)',       short: 'CST' },
+  { iana: 'Asia/Tokyo',          label: 'Tokyo (JST)',          short: 'JST' },
+  { iana: 'Australia/Sydney',    label: 'Sydney (AEST/AEDT)',   short: 'SYD' },
+  { group: 'Universal' },
+  { iana: 'UTC',                 label: 'UTC',                  short: 'UTC' },
+];
+
+// Detect user's local timezone on first load; fall back to ET
+var userLocalTz = (function() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'; }
+  catch(e) { return 'America/New_York'; }
+})();
+
+// selectedTz = currently active IANA timezone string
+var selectedTz = userLocalTz;
+
+// Find short label for a given IANA string
+function tzShort(iana) {
+  for (var i = 0; i < TZ_LIST.length; i++) {
+    if (TZ_LIST[i].iana === iana) { return TZ_LIST[i].short; }
+  }
+  // Not in list — derive a compact offset string e.g. "UTC+9"
+  try {
+    var parts = new Intl.DateTimeFormat('en', { timeZone: iana, timeZoneName: 'short' })
+      .formatToParts(new Date());
+    for (var j = 0; j < parts.length; j++) {
+      if (parts[j].type === 'timeZoneName') { return parts[j].value; }
+    }
+  } catch(e) {}
+  return iana.split('/').pop();
+}
+
+// Convert a UTC ISO string (e.g. "2027-01-08T13:30:00Z") to a display
+// time string in the selected timezone, e.g. "8:30 AM ET"
+function utcToLocalTime(isoUtc, tzIana) {
+  if (!isoUtc || isoUtc.length < 10) { return ''; }
+  // All-day events stored as "YYYY-MM-DD" — no time to convert
+  if (isoUtc.length === 10) { return ''; }
+  try {
+    var d = new Date(isoUtc);
+    if (isNaN(d.getTime())) { return ''; }
+    var timeStr = d.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: tzIana
+    });
+    return timeStr + ' ' + tzShort(tzIana);
+  } catch(e) { return ''; }
+}
+
+// Given an event object, return the best time string for the current TZ.
+// Priority: UTC timestamp conversion > legacy ET string from Notes
+function eventTimeDisplay(ev) {
+  if (ev.utcDatetime) {
+    var converted = utcToLocalTime(ev.utcDatetime, selectedTz);
+    if (converted) { return converted; }
+  }
+  // Fall back to stored ET string (pre-UTC events or all-day)
+  return ev.time || '';
+}
+
+// Build and populate the timezone dropdown
+function buildTzDropdown() {
+  var html = '';
+  var now = new Date();
+  TZ_LIST.forEach(function(item) {
+    if (item.group) {
+      html += '<div class="tz-section-label">' + item.group + '</div>';
+      return;
+    }
+    var isSel = item.iana === selectedTz;
+    var localTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: item.iana });
+    html += '<div class="tz-opt' + (isSel ? ' selected' : '') + '" onclick="selectTz(\'' + item.iana + '\')">';
+    html += '<span>' + item.label + '</span>';
+    html += '<span style="display:flex;align-items:center;gap:6px">';
+    html += '<span class="tz-opt-time">' + localTime + '</span>';
+    html += '<span class="tz-opt-check">' + (isSel ? '&#10003;' : '') + '</span>';
+    html += '</span></div>';
+  });
+  document.getElementById('tzDropdown').innerHTML = html;
+}
+
+function toggleTzDropdown(e) {
+  e.stopPropagation();
+  var dd = document.getElementById('tzDropdown');
+  var isOpen = dd.classList.contains('open');
+  // Close any open dropdowns first
+  document.querySelectorAll('.tz-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+  if (!isOpen) {
+    buildTzDropdown();
+    dd.classList.add('open');
+  }
+}
+
+function selectTz(iana) {
+  selectedTz = iana;
+  document.getElementById('tzLabel').textContent = tzShort(iana);
+  document.getElementById('tzDropdown').classList.remove('open');
+  // Re-render week cards with new timezone
+  renderWeek();
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  var container = document.getElementById('tzContainer');
+  if (container && !container.contains(e.target)) {
+    var dd = document.getElementById('tzDropdown');
+    if (dd) { dd.classList.remove('open'); }
+  }
+});
+
+// Init: set label to user's detected timezone short name
+document.getElementById('tzLabel').textContent = tzShort(selectedTz);
+// ── END TIMEZONE SYSTEM ────────────────────────────────────────────────
+
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.rail-icon').forEach(function(r) { r.classList.remove('active'); });
@@ -367,11 +539,9 @@ function parseDate(dateStr, monthStr) {
   dateStr = String(dateStr).trim();
   if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
   if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
-
   if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
     return { start: dateStr.substring(0, 10), end: '' };
   }
-
   var m = MMAP[monthStr] || '01';
   var parts = dateStr.split(' ');
   var num = parts[parts.length - 1];
@@ -401,26 +571,28 @@ function fetchEvents() {
       if (r.show_in_monthly === false) { showMini = false; }
       var ent = r.entity || {};
       events.push({
-        id: r.id,
-        title: r.event || '',
-        name: deriveName(r.category, r.event),
-        date: parsed.start,
-        endDate: parsed.end || '',
-        time: r.display_time || deriveTime(r.notes || ''),
-        impact: impact,
-        showMini: showMini,
-        logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
-        hero: r.hero_url || ent.hero_url || '',
-        heroPosition: r.hero_position || 'center',
-        whyMatters: r.why_it_matters || ent.why_it_matters || '',
-        measures: r.measures || ent.measures || '',
+        id:             r.id,
+        title:          r.event || '',
+        name:           deriveName(r.category, r.event),
+        date:           parsed.start,
+        endDate:        parsed.end || '',
+        time:           r.display_time || deriveTime(r.notes || ''),
+        utcDatetime:    r.event_datetime_utc || '',   // NEW: ISO 8601 UTC from H col
+        sourceTz:       r.source_tz || 'America/New_York', // NEW: IANA origin tz
+        impact:         impact,
+        showMini:       showMini,
+        logo:           r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
+        hero:           r.hero_url || ent.hero_url || '',
+        heroPosition:   r.hero_position || 'center',
+        whyMatters:     r.why_it_matters || ent.why_it_matters || '',
+        measures:       r.measures || ent.measures || '',
         impactedAssets: ent.impacted_assets || '',
-        frequency: r.frequency || ent.frequency || '',
-        details: r.details || '',
-        source: r.source_url || deriveSource(r.category),
-        ticker: r.ticker || '',
-        aka: r.aka || '',
-        category: r.category || ''
+        frequency:      r.frequency || ent.frequency || '',
+        details:        r.details || '',
+        source:         r.source_url || deriveSource(r.category),
+        ticker:         r.ticker || '',
+        aka:            r.aka || '',
+        category:       r.category || ''
       });
     });
   });
@@ -565,10 +737,10 @@ function cardHtml(ev) {
   var label = impLabel(ev.impact);
   var logoHtml = '';
   if (ev.logo) { logoHtml = '<img class="card-logo" src="' + ev.logo + '" alt="" onerror="this.style.display=\'none\'">'; }
-  var timeHtml = '';
-  if (ev.time) { timeHtml = '<div class="card-time">' + ev.time + '</div>'; }
-  var labelHtml = '';
-  if (label) { labelHtml = '<div class="card-impact ' + cls + '">' + label + '</div>'; }
+  // Use timezone-aware time display
+  var displayTime = eventTimeDisplay(ev);
+  var timeHtml = displayTime ? '<div class="card-time">' + displayTime + '</div>' : '';
+  var labelHtml = label ? '<div class="card-impact ' + cls + '">' + label + '</div>' : '';
   return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + timeHtml + logoHtml + '<div class="card-title">' + ev.title + '</div>' + labelHtml + '</div>';
 }
 
@@ -591,7 +763,9 @@ function openModal(id) {
   document.getElementById('modalName').textContent = ev.name || ev.category || '';
   var meta = '';
   if (ev.impact && ev.impact !== 'none') { meta += '<span class="modal-tag ' + ev.impact + '">' + impLabel(ev.impact) + '</span>'; }
-  if (ev.time) { meta += '<span class="modal-tag">' + ev.time + '</span>'; }
+  // Modal time tag also uses timezone-aware display
+  var displayTime = eventTimeDisplay(ev);
+  if (displayTime) { meta += '<span class="modal-tag">' + displayTime + '</span>'; }
   if (ev.frequency) { meta += '<span class="modal-tag">' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
   if (ev.ticker) { meta += '<span class="modal-tag">' + ev.ticker + '</span>'; }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag">' + ev.aka + '</span>'; }
