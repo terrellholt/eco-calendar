@@ -101,12 +101,16 @@ tv-ticker-tape{display:block;width:100%}
 .card-impact{font-size:10px;font-weight:500;margin-top:3px}
 .card-impact.high{color:#dc2626}.card-impact.medium{color:#ea7000}.card-impact.low{color:#d4a000}.card-impact.none{color:#999}
 .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
-.world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:10px 20px;display:flex;align-items:center;overflow-x:auto;white-space:nowrap;flex-shrink:0;gap:0}
-.clock-city{display:flex;align-items:center;gap:6px;border-left:1px solid #e5e5e0;padding-left:18px;margin-left:18px;flex-shrink:0}
+
+/* ── WORLD CLOCK — responsive via CSS variables ── */
+.world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:8px 16px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;flex-shrink:0;gap:0}
+.clock-city{display:flex;align-items:center;gap:var(--clk-gap,5px);border-left:1px solid #e5e5e0;padding-left:var(--clk-pad,14px);margin-left:var(--clk-pad,14px);flex-shrink:0}
 .clock-city:first-of-type{border-left:none;padding-left:0;margin-left:0}
-.clock-city span.flag{font-size:19.5px}
-.clock-city span.city{font-size:12px;color:#666}
-.clock-city strong{font-size:12px;font-weight:600;color:#1a1a1a}
+.clock-city span.flag{font-size:var(--clk-flag,15px);line-height:1}
+.clock-city span.city{font-size:var(--clk-text,12px);color:#666}
+.clock-city strong{font-size:var(--clk-text,12px);font-weight:600;color:#1a1a1a}
+/* ── end world clock ── */
+
 .markets-body{flex:1;display:flex;overflow:hidden}
 .markets-main{flex:1;padding:20px;overflow-y:auto}
 .markets-sidebar{width:680px;background:#fff;border-left:1px solid #e5e5e0;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
@@ -226,7 +230,7 @@ tv-ticker-tape{display:block;width:100%}
 
   <div class="page" id="page-markets">
     <div class="markets-page">
-      <div class="world-clock">
+      <div class="world-clock" id="worldClock">
         <div class="clock-city"><span class="flag">&#x1F1FA;&#x1F1F8;</span><span class="city">New York</span><strong id="time-ny">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1EC;&#x1F1E7;</span><span class="city">London</span><strong id="time-lon">--:--</strong></div>
         <div class="clock-city"><span class="flag">&#x1F1E9;&#x1F1EA;</span><span class="city">Frankfurt</span><strong id="time-fra">--:--</strong></div>
@@ -323,10 +327,6 @@ var sidebarOpen = true;
 var events      = [];
 
 // ── TIMEZONE SYSTEM ────────────────────────────────────────────────────
-// TZ_LIST: grouped list of timezones shown in the dropdown.
-// Each entry: { iana, label, short }
-// short = what appears on the button (kept brief for space)
-// Add more groups / cities as you expand internationally.
 var TZ_LIST = [
   { group: 'Americas' },
   { iana: 'America/New_York',    label: 'New York (ET)',        short: 'ET'  },
@@ -351,21 +351,17 @@ var TZ_LIST = [
   { iana: 'UTC',                 label: 'UTC',                  short: 'UTC' },
 ];
 
-// Detect user's local timezone on first load; fall back to ET
 var userLocalTz = (function() {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'; }
   catch(e) { return 'America/New_York'; }
 })();
 
-// selectedTz = currently active IANA timezone string
 var selectedTz = userLocalTz;
 
-// Find short label for a given IANA string
 function tzShort(iana) {
   for (var i = 0; i < TZ_LIST.length; i++) {
     if (TZ_LIST[i].iana === iana) { return TZ_LIST[i].short; }
   }
-  // Not in list — derive a compact offset string e.g. "UTC+9"
   try {
     var parts = new Intl.DateTimeFormat('en', { timeZone: iana, timeZoneName: 'short' })
       .formatToParts(new Date());
@@ -376,11 +372,8 @@ function tzShort(iana) {
   return iana.split('/').pop();
 }
 
-// Convert a UTC ISO string (e.g. "2027-01-08T13:30:00Z") to a display
-// time string in the selected timezone, e.g. "8:30 AM ET"
 function utcToLocalTime(isoUtc, tzIana) {
   if (!isoUtc || isoUtc.length < 10) { return ''; }
-  // All-day events stored as "YYYY-MM-DD" — no time to convert
   if (isoUtc.length === 10) { return ''; }
   try {
     var d = new Date(isoUtc);
@@ -395,18 +388,14 @@ function utcToLocalTime(isoUtc, tzIana) {
   } catch(e) { return ''; }
 }
 
-// Given an event object, return the best time string for the current TZ.
-// Priority: UTC timestamp conversion > legacy ET string from Notes
 function eventTimeDisplay(ev) {
   if (ev.utcDatetime) {
     var converted = utcToLocalTime(ev.utcDatetime, selectedTz);
     if (converted) { return converted; }
   }
-  // Fall back to stored ET string (pre-UTC events or all-day)
   return ev.time || '';
 }
 
-// Build and populate the timezone dropdown
 function buildTzDropdown() {
   var html = '';
   var now = new Date();
@@ -431,7 +420,6 @@ function toggleTzDropdown(e) {
   e.stopPropagation();
   var dd = document.getElementById('tzDropdown');
   var isOpen = dd.classList.contains('open');
-  // Close any open dropdowns first
   document.querySelectorAll('.tz-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
   if (!isOpen) {
     buildTzDropdown();
@@ -443,11 +431,9 @@ function selectTz(iana) {
   selectedTz = iana;
   document.getElementById('tzLabel').textContent = tzShort(iana);
   document.getElementById('tzDropdown').classList.remove('open');
-  // Re-render week cards with new timezone
   renderWeek();
 }
 
-// Close dropdown when clicking outside
 document.addEventListener('click', function(e) {
   var container = document.getElementById('tzContainer');
   if (container && !container.contains(e.target)) {
@@ -456,7 +442,6 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Init: set label to user's detected timezone short name
 document.getElementById('tzLabel').textContent = tzShort(selectedTz);
 // ── END TIMEZONE SYSTEM ────────────────────────────────────────────────
 
@@ -577,8 +562,8 @@ function fetchEvents() {
         date:           parsed.start,
         endDate:        parsed.end || '',
         time:           r.display_time || deriveTime(r.notes || ''),
-        utcDatetime:    r.event_datetime_utc || '',   // NEW: ISO 8601 UTC from H col
-        sourceTz:       r.source_tz || 'America/New_York', // NEW: IANA origin tz
+        utcDatetime:    r.event_datetime_utc || '',
+        sourceTz:       r.source_tz || 'America/New_York',
         impact:         impact,
         showMini:       showMini,
         logo:           r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
@@ -737,7 +722,6 @@ function cardHtml(ev) {
   var label = impLabel(ev.impact);
   var logoHtml = '';
   if (ev.logo) { logoHtml = '<img class="card-logo" src="' + ev.logo + '" alt="" onerror="this.style.display=\'none\'">'; }
-  // Use timezone-aware time display
   var displayTime = eventTimeDisplay(ev);
   var timeHtml = displayTime ? '<div class="card-time">' + displayTime + '</div>' : '';
   var labelHtml = label ? '<div class="card-impact ' + cls + '">' + label + '</div>' : '';
@@ -763,7 +747,6 @@ function openModal(id) {
   document.getElementById('modalName').textContent = ev.name || ev.category || '';
   var meta = '';
   if (ev.impact && ev.impact !== 'none') { meta += '<span class="modal-tag ' + ev.impact + '">' + impLabel(ev.impact) + '</span>'; }
-  // Modal time tag also uses timezone-aware display
   var displayTime = eventTimeDisplay(ev);
   if (displayTime) { meta += '<span class="modal-tag">' + displayTime + '</span>'; }
   if (ev.frequency) { meta += '<span class="modal-tag">' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
@@ -791,9 +774,19 @@ function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar()
 function nextWeek() { weekStart.setDate(weekStart.getDate() + 7); buildSidebar(); renderWeek(); }
 function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
 
+// ── WORLD CLOCK ────────────────────────────────────────────────────────
 function updateClocks() {
   var opt = {hour:'2-digit', minute:'2-digit', hour12:true};
-  var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-mum':'Asia/Kolkata','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
+  var zones = {
+    'time-ny' :'America/New_York',
+    'time-lon':'Europe/London',
+    'time-fra':'Europe/Berlin',
+    'time-riy':'Asia/Riyadh',
+    'time-mum':'Asia/Kolkata',
+    'time-sha':'Asia/Shanghai',
+    'time-tok':'Asia/Tokyo',
+    'time-syd':'Australia/Sydney'
+  };
   Object.keys(zones).forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({}, opt, {timeZone: zones[id]})); }
@@ -801,6 +794,34 @@ function updateClocks() {
 }
 setInterval(updateClocks, 1000);
 updateClocks();
+
+// ── RESPONSIVE WORLD CLOCK ─────────────────────────────────────────────
+// Watches the clock bar's actual width (not the window) and steps down
+// font size + spacing through 5 tiers as the available space shrinks.
+(function() {
+  var clock = document.getElementById('worldClock');
+  if (!clock || !window.ResizeObserver) { return; }
+  var TIERS = [
+    { minW: 900, pad: '14px', gap: '5px', flag: '15px', text: '12px'  },
+    { minW: 760, pad: '10px', gap: '4px', flag: '13px', text: '11px'  },
+    { minW: 620, pad:  '7px', gap: '3px', flag: '12px', text: '10px'  },
+    { minW: 500, pad:  '5px', gap: '3px', flag: '11px', text:  '9.5px'},
+    { minW:   0, pad:  '3px', gap: '2px', flag: '10px', text:  '9px'  }
+  ];
+  function applyTier(w) {
+    var t = TIERS.find(function(t) { return w >= t.minW; });
+    clock.style.setProperty('--clk-pad',  t.pad);
+    clock.style.setProperty('--clk-gap',  t.gap);
+    clock.style.setProperty('--clk-flag', t.flag);
+    clock.style.setProperty('--clk-text', t.text);
+  }
+  var ro = new ResizeObserver(function(entries) {
+    applyTier(entries[0].contentRect.width);
+  });
+  ro.observe(clock);
+  applyTier(clock.offsetWidth);
+}());
+// ── END RESPONSIVE WORLD CLOCK ─────────────────────────────────────────
 
 fetchEvents().then(function() {
   buildSidebar();
