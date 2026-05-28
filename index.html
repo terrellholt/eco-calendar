@@ -113,6 +113,7 @@ tv-ticker-tape{display:block;width:100%}
 
 .markets-body{flex:1;display:flex;overflow:hidden}
 .markets-main{flex:1;padding:0;overflow:hidden;display:flex;flex-direction:column}
+.market-overview-wrap{flex:1;display:flex;flex-direction:column;min-height:0;min-height:560px}
 .tradingview-widget-container{flex:1;display:flex;flex-direction:column;min-height:0}
 .tradingview-widget-container__widget{flex:1;min-height:0}
 .tradingview-widget-copyright{padding:2px 8px;font-size:10px;flex-shrink:0;border-top:1px solid #e5e5e0}
@@ -164,7 +165,7 @@ tv-ticker-tape{display:block;width:100%}
 <div class="topbar">
   <div class="tv-bar">
     <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
-    <tv-ticker-tape symbols="FOREXCOM:SPXUSD,TVC:US10Y,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
+    <tv-ticker-tape symbols="FOREXCOM:SPXUSD,AMEX:TLT,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
   </div>
 </div>
 
@@ -245,11 +246,13 @@ tv-ticker-tape{display:block;width:100%}
       </div>
       <div class="markets-body">
         <div class="markets-main">
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-            {"colorTheme":"light","dateRange":"1D","locale":"en","isTransparent":false,"autosize":true,"showSymbolLogo":true,"showChart":true,"support_host":"https://www.tradingview.com","tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD","d":"Euro / US Dollar"},{"s":"FX:GBPUSD","d":"British Pound / US Dollar"},{"s":"FX:USDJPY","d":"US Dollar / Japanese Yen"},{"s":"FX:USDCHF","d":"US Dollar / Swiss Franc"},{"s":"FX:USDCAD","d":"US Dollar / Canadian Dollar"},{"s":"FX:AUDUSD","d":"Australian Dollar / US Dollar"},{"s":"FX:NZDUSD","d":"New Zealand Dollar / US Dollar"},{"s":"FX:EURGBP","d":"Euro / British Pound"},{"s":"FX:EURJPY","d":"Euro / Japanese Yen"},{"s":"FX:EURCHF","d":"Euro / Swiss Franc"},{"s":"FX:EURCAD","d":"Euro / Canadian Dollar"},{"s":"FX:EURAUD","d":"Euro / Australian Dollar"},{"s":"FX:EURNZD","d":"Euro / New Zealand Dollar"},{"s":"FX:GBPJPY","d":"British Pound / Japanese Yen"},{"s":"FX:GBPCHF","d":"British Pound / Swiss Franc"},{"s":"FX:GBPCAD","d":"British Pound / Canadian Dollar"},{"s":"FX:GBPAUD","d":"British Pound / Australian Dollar"},{"s":"FX:GBPNZD","d":"British Pound / New Zealand Dollar"},{"s":"FX:CHFJPY","d":"Swiss Franc / Japanese Yen"},{"s":"FX:CADJPY","d":"Canadian Dollar / Japanese Yen"},{"s":"FX:AUDJPY","d":"Australian Dollar / Japanese Yen"},{"s":"FX:NZDJPY","d":"New Zealand Dollar / Japanese Yen"},{"s":"FX:CADCHF","d":"Canadian Dollar / Swiss Franc"},{"s":"FX:AUDCHF","d":"Australian Dollar / Swiss Franc"},{"s":"FX:NZDCHF","d":"New Zealand Dollar / Swiss Franc"},{"s":"FX:AUDCAD","d":"Australian Dollar / Canadian Dollar"},{"s":"FX:NZDCAD","d":"New Zealand Dollar / Canadian Dollar"},{"s":"FX:AUDNZD","d":"Australian Dollar / New Zealand Dollar"}]},{"title":"Treasuries","symbols":[{"s":"TVC:US02Y","d":"US 2-Year Yield"},{"s":"TVC:US05Y","d":"US 5-Year Yield"},{"s":"TVC:US10Y","d":"US 10-Year Yield"},{"s":"TVC:US30Y","d":"US 30-Year Yield"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD","d":"Bitcoin"},{"s":"COINBASE:ETHUSD","d":"Ethereum"},{"s":"COINBASE:SOLUSD","d":"Solana"},{"s":"COINBASE:XRPUSD","d":"XRP"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD","d":"Gold"},{"s":"OANDA:XAGUSD","d":"Silver"},{"s":"OANDA:XCUUSD","d":"Copper"},{"s":"OANDA:XPDUSD","d":"Palladium"}]}]}
-            </script>
+          <div class="market-overview-wrap">
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+              {"colorTheme":"light","dateRange":"1W","locale":"en","isTransparent":false,"autosize":true,"showSymbolLogo":true,"showChart":true,"support_host":"https://www.tradingview.com","tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"FX:EURUSD","d":"Euro / US Dollar"},{"s":"FX:GBPUSD","d":"British Pound / US Dollar"},{"s":"FX:USDJPY","d":"US Dollar / Japanese Yen"},{"s":"FX:USDCHF","d":"US Dollar / Swiss Franc"},{"s":"FX:USDCAD","d":"US Dollar / Canadian Dollar"},{"s":"FX:AUDUSD","d":"Australian Dollar / US Dollar"},{"s":"FX:NZDUSD","d":"New Zealand Dollar / US Dollar"},{"s":"FX:EURGBP","d":"Euro / British Pound"},{"s":"FX:EURJPY","d":"Euro / Japanese Yen"},{"s":"FX:EURCHF","d":"Euro / Swiss Franc"},{"s":"FX:EURCAD","d":"Euro / Canadian Dollar"},{"s":"FX:EURAUD","d":"Euro / Australian Dollar"},{"s":"FX:EURNZD","d":"Euro / New Zealand Dollar"},{"s":"FX:GBPJPY","d":"British Pound / Japanese Yen"},{"s":"FX:GBPCHF","d":"British Pound / Swiss Franc"},{"s":"FX:GBPCAD","d":"British Pound / Canadian Dollar"},{"s":"FX:GBPAUD","d":"British Pound / Australian Dollar"},{"s":"FX:GBPNZD","d":"British Pound / New Zealand Dollar"},{"s":"FX:CHFJPY","d":"Swiss Franc / Japanese Yen"},{"s":"FX:CADJPY","d":"Canadian Dollar / Japanese Yen"},{"s":"FX:AUDJPY","d":"Australian Dollar / Japanese Yen"},{"s":"FX:NZDJPY","d":"New Zealand Dollar / Japanese Yen"},{"s":"FX:CADCHF","d":"Canadian Dollar / Swiss Franc"},{"s":"FX:AUDCHF","d":"Australian Dollar / Swiss Franc"},{"s":"FX:NZDCHF","d":"New Zealand Dollar / Swiss Franc"},{"s":"FX:AUDCAD","d":"Australian Dollar / Canadian Dollar"},{"s":"FX:NZDCAD","d":"New Zealand Dollar / Canadian Dollar"},{"s":"FX:AUDNZD","d":"Australian Dollar / New Zealand Dollar"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD","d":"Bitcoin"},{"s":"COINBASE:ETHUSD","d":"Ethereum"},{"s":"COINBASE:SOLUSD","d":"Solana"},{"s":"COINBASE:XRPUSD","d":"XRP"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD","d":"Gold"},{"s":"OANDA:XAGUSD","d":"Silver"},{"s":"OANDA:XCUUSD","d":"Copper"},{"s":"OANDA:XPDUSD","d":"Palladium"}]}]}
+              </script>
+            </div>
           </div>
         </div>
         <div class="markets-sidebar">
