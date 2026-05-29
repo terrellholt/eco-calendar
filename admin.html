@@ -57,6 +57,15 @@
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
   select.fsel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 28px 7px 10px; font-size: 13px; outline: none; cursor: pointer; font-family: var(--sans); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a4a5a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
   .count-badge { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
+
+  /* NEW: + New Event button */
+  .btn-new-event { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 600; font-family: var(--sans); cursor: pointer; border: none; background: var(--accent); color: #0c0c0e; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; }
+  .btn-new-event:hover { opacity: 0.88; }
+  .btn-new-event:active { transform: scale(0.97); }
+
+  /* NEW: create mode banner inside panel */
+  .create-banner { background: linear-gradient(135deg,rgba(232,197,71,0.08),rgba(232,197,71,0.03)); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
+
   .table-wrap { overflow-x: auto; padding: 0 24px 100px; }
   table { width: 100%; border-collapse: collapse; min-width: 800px; }
   thead th { text-align: left; font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
@@ -235,6 +244,11 @@
     <option value="">All Enrichment</option><option value="missing">Missing enrichment</option><option value="has-hero">Has hero image</option><option value="has-why">Has why it matters</option>
   </select>
   <span class="count-badge" id="countBadge"></span>
+  <!-- NEW: Add Event button -->
+  <button class="btn-new-event" onclick="openNewEvent()">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    New Event
+  </button>
 </div>
 <div class="table-wrap">
   <div id="tableState" class="state-msg"><span class="spinner"></span></div>
@@ -249,8 +263,14 @@
 <div id="editOverlay" onclick="overlayClick(event)">
   <div class="edit-panel" id="editPanel">
     <div class="ep-header">
-      <div class="ep-header-title">Edit Event Details</div>
+      <!-- NEW: dynamic title -->
+      <div class="ep-header-title" id="panelTitle">Edit Event Details</div>
       <button class="ep-close" onclick="closeEdit()">&#10005;</button>
+    </div>
+    <!-- NEW: create mode banner (hidden by default) -->
+    <div class="create-banner" id="createBanner" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      NEW EVENT — Fill in the details below and click Add to Calendar
     </div>
     <div class="hero-drag-wrap" id="heroDragWrap">
       <img id="heroDragImg" class="hero-drag-img" src="" alt="" style="display:none">
@@ -272,10 +292,35 @@
             <button class="logo-change-btn" onclick="promptLogoUrl()">Change Logo</button>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:10px">
-            <div class="ep-field"><label class="ep-label">Title</label><input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default"></div>
+            <!-- NEW: Title editable in create mode, read-only in edit mode -->
+            <div class="ep-field">
+              <label class="ep-label" id="titleLabel">Title</label>
+              <input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default" placeholder="e.g. Federal Reserve Rate Decision">
+            </div>
             <div class="ep-row c2">
-              <div class="ep-field"><label class="ep-label">Name</label><input type="text" class="ep-input" id="f_name" readonly style="background:#fafaf8;color:#888;cursor:default"></div>
+              <!-- NEW: Name editable in create mode -->
+              <div class="ep-field">
+                <label class="ep-label" id="nameLabel">Name</label>
+                <input type="text" class="ep-input" id="f_name" readonly style="background:#fafaf8;color:#888;cursor:default" placeholder="e.g. Federal Reserve">
+              </div>
               <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
+            </div>
+            <!-- NEW: Category field — only shown in create mode -->
+            <div class="ep-field" id="categoryField" style="display:none">
+              <label class="ep-label">Category <span style="color:#dc2626">*</span></label>
+              <select class="ep-input" id="f_category">
+                <option value="">— select a category —</option>
+                <option value="Central Bank">Central Bank</option>
+                <option value="Economic Release">Economic Release</option>
+                <option value="Earnings">Earnings</option>
+                <option value="IPO">IPO</option>
+                <option value="Corporate Event">Corporate Event</option>
+                <option value="Market Structure">Market Structure</option>
+                <option value="Political / Macro">Political / Macro</option>
+                <option value="Sector Conference">Sector Conference</option>
+                <option value="Market Holiday">Market Holiday</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
         </div>
@@ -376,9 +421,12 @@
       <div class="ep-save-status" id="epStatus"></div>
       <div class="ep-footer-btns">
         <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+        <!-- NEW: Delete button (edit mode only) -->
+        <button id="deleteBtn" style="display:none;padding:9px 16px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #fecaca;background:#fff;color:#dc2626;font-weight:500;" onclick="deleteEvent()">Delete</button>
         <button class="btn-save" id="saveBtn" onclick="saveChanges()">
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3.5 3.5L11 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Save Changes
+          <!-- NEW: dynamic label -->
+          <span id="saveBtnLabel">Save Changes</span>
         </button>
       </div>
     </div>
@@ -388,7 +436,6 @@
 </div><!-- /appWrap -->
 
 <script>
-// ── CHANGE THIS to your desired password ──
 var ADMIN_PASSWORD = 'Nnahoj1986!';
 
 function checkPassword() {
@@ -470,6 +517,7 @@ var chartRange = '1M';
 var showInMonthly = false;
 var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroDragStartOY;
 var currentHeroUrl = '';
+var isNewEvent = false; // NEW
 
 function supaFetch(path, opts) {
   var method = (opts && opts.method) || 'GET';
@@ -560,8 +608,80 @@ function renderTable() {
   tb.innerHTML = html;
 }
 
+// ── NEW: open blank panel for creating an event ──────────────────────────
+function openNewEvent() {
+  isNewEvent = true;
+  currentEvent = null;
+  // Panel chrome
+  document.getElementById('panelTitle').textContent = 'Add New Event';
+  document.getElementById('saveBtnLabel').textContent = 'Add to Calendar';
+  document.getElementById('createBanner').style.display = 'flex';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('categoryField').style.display = 'block';
+  // Make title + name editable
+  var ft = document.getElementById('f_title');
+  ft.readOnly = false; ft.style.background = ''; ft.style.color = ''; ft.style.cursor = '';
+  var fn = document.getElementById('f_name');
+  fn.readOnly = false; fn.style.background = ''; fn.style.color = ''; fn.style.cursor = '';
+  // Clear everything
+  setupHero('');
+  document.getElementById('logoThumb').innerHTML = '<div class="logo-thumb-empty">No logo</div>';
+  ['f_title','f_name','f_ticker','f_display_time','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('f_frequency').value = '';
+  document.getElementById('f_price_move_type').value = 'percent';
+  document.getElementById('f_category').value = '';
+  document.getElementById('chartTicker').value = '';
+  document.getElementById('chartFrame').style.display = 'none';
+  document.getElementById('chartPlaceholder').style.display = 'flex';
+  // Default date = today
+  document.getElementById('f_start_date').value = new Date().toISOString().substring(0,10);
+  document.getElementById('f_end_date').value = '';
+  document.getElementById('assetWrap').querySelectorAll('.achip').forEach(function(c){c.remove()});
+  selectedImpact = 'none'; updateImpactUI();
+  showInMonthly = false; updateToggleUI();
+  chartRange = '1M';
+  document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === '1M'); });
+  document.getElementById('epStatus').textContent = '';
+  document.getElementById('saveBtn').disabled = false;
+  document.getElementById('editOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('f_title').focus(); }, 100);
+}
+
+// ── NEW: delete an existing event ────────────────────────────────────────
+function deleteEvent() {
+  if (!currentEvent || isNewEvent) return;
+  if (!confirm('Delete "' + (currentEvent.event || 'this event') + '"?\n\nThis cannot be undone.')) return;
+  var btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'DELETE' })
+    .then(function() {
+      allEvents = allEvents.filter(function(e){ return e.id !== currentEvent.id; });
+      filterTable();
+      closeEdit();
+      showToast('Event deleted', 'success');
+    })
+    .catch(function(err) {
+      showToast('Delete failed: ' + err.message, 'error');
+      btn.disabled = false;
+    });
+}
+
 function openEdit(idx) {
+  isNewEvent = false;
   currentEvent = filteredEvents[idx];
+  // Reset panel to edit mode
+  document.getElementById('panelTitle').textContent = 'Edit Event Details';
+  document.getElementById('saveBtnLabel').textContent = 'Save Changes';
+  document.getElementById('createBanner').style.display = 'none';
+  document.getElementById('deleteBtn').style.display = 'inline-flex';
+  document.getElementById('categoryField').style.display = 'none';
+  // Title + name read-only
+  var ft = document.getElementById('f_title');
+  ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
+  var fn = document.getElementById('f_name');
+  fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
+
   var ev = currentEvent, ent = ev.entity || {};
   var heroUrl = ev.hero_url || ent.hero_url || '';
   heroOffsetX = 50; heroOffsetY = 50;
@@ -608,7 +728,23 @@ function openEdit(idx) {
   document.body.style.overflow = 'hidden';
 }
 
-function closeEdit() { document.getElementById('editOverlay').classList.remove('open'); document.body.style.overflow = ''; currentEvent = null; }
+function closeEdit() {
+  document.getElementById('editOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentEvent = null;
+  isNewEvent = false;
+  // Reset panel chrome back to edit defaults
+  document.getElementById('panelTitle').textContent = 'Edit Event Details';
+  document.getElementById('saveBtnLabel').textContent = 'Save Changes';
+  document.getElementById('createBanner').style.display = 'none';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('categoryField').style.display = 'none';
+  var ft = document.getElementById('f_title');
+  ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
+  var fn = document.getElementById('f_name');
+  fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
+}
+
 function overlayClick(e) { if (e.target === document.getElementById('editOverlay')) closeEdit(); }
 
 function setupHero(url) {
@@ -673,9 +809,21 @@ function setRange(btn, range) {
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active'); loadChart();
 }
+
+// ── saveChanges: handles both PATCH (edit) and POST (new) ────────────────
 function saveChanges() {
-  if (!currentEvent) return;
   var btn = document.getElementById('saveBtn'), statusEl = document.getElementById('epStatus');
+  // Validate required fields for new events
+  if (isNewEvent) {
+    var title = document.getElementById('f_title').value.trim();
+    var date  = document.getElementById('f_start_date').value;
+    var cat   = document.getElementById('f_category').value;
+    if (!title) { document.getElementById('f_title').focus(); showToast('Event title is required', 'error'); return; }
+    if (!date)  { document.getElementById('f_start_date').focus(); showToast('Date is required', 'error'); return; }
+    if (!cat)   { document.getElementById('f_category').focus(); showToast('Category is required', 'error'); return; }
+  } else {
+    if (!currentEvent) return;
+  }
   btn.disabled = true; statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Saving\u2026';
   var logoImg = document.getElementById('logoThumb').querySelector('img');
   var pmVal = document.getElementById('f_price_move_val').value.trim();
@@ -700,19 +848,43 @@ function saveChanges() {
     chart_ticker: document.getElementById('chartTicker').value.trim().toUpperCase() || null,
     chart_range: chartRange,
   };
-  supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
-    .then(function() {
-      Object.assign(currentEvent, payload);
-      statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved';
-      showToast('Changes saved', 'success');
-      renderTable(); btn.disabled = false;
-      setTimeout(closeEdit, 800);
-    })
-    .catch(function(err) {
-      statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message;
-      showToast('Save failed', 'error'); btn.disabled = false;
-    });
+
+  if (isNewEvent) {
+    // POST — create new row
+    payload.event    = document.getElementById('f_title').value.trim();
+    payload.date     = document.getElementById('f_start_date').value;
+    payload.category = document.getElementById('f_category').value;
+    supaFetch('/rest/v1/Master%20Calendar', { method: 'POST', body: JSON.stringify(payload) })
+      .then(function(result) {
+        var newRow = (Array.isArray(result) ? result[0] : result) || payload;
+        allEvents.unshift(newRow);
+        filterTable();
+        statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Added';
+        showToast('Event added to calendar', 'success');
+        btn.disabled = false;
+        setTimeout(closeEdit, 800);
+      })
+      .catch(function(err) {
+        statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message;
+        showToast('Could not add event: ' + err.message, 'error'); btn.disabled = false;
+      });
+  } else {
+    // PATCH — update existing row
+    supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
+      .then(function() {
+        Object.assign(currentEvent, payload);
+        statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved';
+        showToast('Changes saved', 'success');
+        renderTable(); btn.disabled = false;
+        setTimeout(closeEdit, 800);
+      })
+      .catch(function(err) {
+        statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message;
+        showToast('Save failed', 'error'); btn.disabled = false;
+      });
+  }
 }
+
 var toastTimer;
 function showToast(msg, type) {
   clearTimeout(toastTimer);
