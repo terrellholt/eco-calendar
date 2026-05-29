@@ -58,12 +58,10 @@
   select.fsel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 28px 7px 10px; font-size: 13px; outline: none; cursor: pointer; font-family: var(--sans); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a4a5a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
   .count-badge { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
 
-  /* NEW: + New Event button */
   .btn-new-event { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 600; font-family: var(--sans); cursor: pointer; border: none; background: var(--accent); color: #0c0c0e; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; }
   .btn-new-event:hover { opacity: 0.88; }
   .btn-new-event:active { transform: scale(0.97); }
 
-  /* NEW: create mode banner inside panel */
   .create-banner { background: linear-gradient(135deg,rgba(232,197,71,0.08),rgba(232,197,71,0.03)); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
 
   .table-wrap { overflow-x: auto; padding: 0 24px 100px; }
@@ -154,6 +152,17 @@
   .toggle-track.on .toggle-thumb { left: 19px; }
   .toggle-label { font-size: 13px; color: #333; }
   .toggle-sub { font-size: 11px; color: #aaa; margin-top: 1px; }
+
+  /* ── ESTIMATED EVENT toggle & preview styles ── */
+  #estimatedToggle.on { background: #b8820a !important; }
+  .est-preview-banner { display: none; align-items: center; gap: 8px; padding: 9px 13px; background: rgba(184,130,10,0.10); border: 1px dashed #b8820a; border-radius: 6px; margin-bottom: 14px; font-size: 12px; color: #b8820a; font-weight: 600; letter-spacing: 0.01em; }
+  .est-preview-banner svg { flex-shrink: 0; }
+  .edit-panel.is-estimated .est-preview-banner { display: flex; }
+  .edit-panel.is-estimated .hero-drag-wrap { opacity: 0.75; outline: 2px dashed #b8820a; outline-offset: -2px; }
+  .edit-panel.is-estimated .ep-header { background: linear-gradient(135deg, #2e2000, #161000) !important; }
+  .edit-panel.is-estimated .ep-header .ep-header-title { color: #e8c070; }
+  .edit-panel.is-estimated .ep-header .ep-close { background: rgba(255,255,255,0.1); color: #e8c070; }
+
   .price-move-wrap { display: flex; align-items: center; gap: 8px; }
   .pm-sym { font-size: 16px; color: #999; font-weight: 500; }
   .pm-input { width: 80px; }
@@ -244,7 +253,6 @@
     <option value="">All Enrichment</option><option value="missing">Missing enrichment</option><option value="has-hero">Has hero image</option><option value="has-why">Has why it matters</option>
   </select>
   <span class="count-badge" id="countBadge"></span>
-  <!-- NEW: Add Event button -->
   <button class="btn-new-event" onclick="openNewEvent()">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     New Event
@@ -263,11 +271,9 @@
 <div id="editOverlay" onclick="overlayClick(event)">
   <div class="edit-panel" id="editPanel">
     <div class="ep-header">
-      <!-- NEW: dynamic title -->
       <div class="ep-header-title" id="panelTitle">Edit Event Details</div>
       <button class="ep-close" onclick="closeEdit()">&#10005;</button>
     </div>
-    <!-- NEW: create mode banner (hidden by default) -->
     <div class="create-banner" id="createBanner" style="display:none">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       NEW EVENT — Fill in the details below and click Add to Calendar
@@ -292,20 +298,17 @@
             <button class="logo-change-btn" onclick="promptLogoUrl()">Change Logo</button>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:10px">
-            <!-- NEW: Title editable in create mode, read-only in edit mode -->
             <div class="ep-field">
               <label class="ep-label" id="titleLabel">Title</label>
               <input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default" placeholder="e.g. Federal Reserve Rate Decision">
             </div>
             <div class="ep-row c2">
-              <!-- NEW: Name editable in create mode -->
               <div class="ep-field">
                 <label class="ep-label" id="nameLabel">Name</label>
                 <input type="text" class="ep-input" id="f_name" readonly style="background:#fafaf8;color:#888;cursor:default" placeholder="e.g. Federal Reserve">
               </div>
               <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
             </div>
-            <!-- NEW: Category field — only shown in create mode -->
             <div class="ep-field" id="categoryField" style="display:none">
               <label class="ep-label">Category <span style="color:#dc2626">*</span></label>
               <select class="ep-input" id="f_category">
@@ -356,6 +359,26 @@
         </div>
       </div>
       <div class="ep-section">
+        <!-- ESTIMATED EVENT banner (visible when toggle is on) -->
+        <div class="est-preview-banner">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5L14.5 14H1.5L8 1.5Z" stroke="#b8820a" stroke-width="1.3" stroke-linejoin="round"/>
+            <line x1="8" y1="6.5" x2="8" y2="10" stroke="#b8820a" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="8" cy="12" r=".65" fill="#b8820a"/>
+          </svg>
+          Estimated / Unconfirmed — amber dashed style active on calendar
+        </div>
+        <!-- ESTIMATED EVENT toggle -->
+        <div style="margin-bottom:14px">
+          <div class="toggle-row" onclick="toggleEstimated()">
+            <div class="toggle-track" id="estimatedToggle"><div class="toggle-thumb"></div></div>
+            <div>
+              <div class="toggle-label">Estimated Event</div>
+              <div class="toggle-sub">Date unconfirmed — applies amber dashed visual on calendar &amp; event card</div>
+            </div>
+          </div>
+        </div>
+        <!-- MONTHLY TOGGLE (unchanged) -->
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleMonthly()">
             <div class="toggle-track" id="monthlyToggle"><div class="toggle-thumb"></div></div>
@@ -421,11 +444,9 @@
       <div class="ep-save-status" id="epStatus"></div>
       <div class="ep-footer-btns">
         <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
-        <!-- NEW: Delete button (edit mode only) -->
         <button id="deleteBtn" style="display:none;padding:9px 16px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #fecaca;background:#fff;color:#dc2626;font-weight:500;" onclick="deleteEvent()">Delete</button>
         <button class="btn-save" id="saveBtn" onclick="saveChanges()">
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3.5 3.5L11 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <!-- NEW: dynamic label -->
           <span id="saveBtnLabel">Save Changes</span>
         </button>
       </div>
@@ -515,9 +536,10 @@ var selectedImpact = 'none';
 var heroOffsetX = 50, heroOffsetY = 50;
 var chartRange = '1M';
 var showInMonthly = false;
+var isEstimated = false;
 var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroDragStartOY;
 var currentHeroUrl = '';
-var isNewEvent = false; // NEW
+var isNewEvent = false;
 
 function supaFetch(path, opts) {
   var method = (opts && opts.method) || 'GET';
@@ -533,7 +555,7 @@ function supaFetch(path, opts) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,price_move_val,price_move_type,chart_ticker,chart_range,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,is_estimated,price_move_val,price_move_type,chart_ticker,chart_range,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
@@ -596,9 +618,10 @@ function renderTable() {
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
     var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
     var date = ev.date ? String(ev.date).substring(0,10) : '';
+    var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
     html += '<tr onclick="openEdit('+i+')">'
       + '<td class="td-date">'+date+'</td>'
-      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+'</div>'+(ev.display_time?'<div class="td-sub">&#9200; '+esc(ev.display_time)+'</div>':'')+'</td>'
+      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+'</div>'+(ev.display_time?'<div class="td-sub">&#9200; '+esc(ev.display_time)+'</div>':'')+'</td>'
       + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
       + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
       + '<td><div class="enr-chips">'+chips+'</div></td>'
@@ -608,22 +631,18 @@ function renderTable() {
   tb.innerHTML = html;
 }
 
-// ── NEW: open blank panel for creating an event ──────────────────────────
 function openNewEvent() {
   isNewEvent = true;
   currentEvent = null;
-  // Panel chrome
   document.getElementById('panelTitle').textContent = 'Add New Event';
   document.getElementById('saveBtnLabel').textContent = 'Add to Calendar';
   document.getElementById('createBanner').style.display = 'flex';
   document.getElementById('deleteBtn').style.display = 'none';
   document.getElementById('categoryField').style.display = 'block';
-  // Make title + name editable
   var ft = document.getElementById('f_title');
   ft.readOnly = false; ft.style.background = ''; ft.style.color = ''; ft.style.cursor = '';
   var fn = document.getElementById('f_name');
   fn.readOnly = false; fn.style.background = ''; fn.style.color = ''; fn.style.cursor = '';
-  // Clear everything
   setupHero('');
   document.getElementById('logoThumb').innerHTML = '<div class="logo-thumb-empty">No logo</div>';
   ['f_title','f_name','f_ticker','f_display_time','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
@@ -633,12 +652,12 @@ function openNewEvent() {
   document.getElementById('chartTicker').value = '';
   document.getElementById('chartFrame').style.display = 'none';
   document.getElementById('chartPlaceholder').style.display = 'flex';
-  // Default date = today
   document.getElementById('f_start_date').value = new Date().toISOString().substring(0,10);
   document.getElementById('f_end_date').value = '';
   document.getElementById('assetWrap').querySelectorAll('.achip').forEach(function(c){c.remove()});
   selectedImpact = 'none'; updateImpactUI();
   showInMonthly = false; updateToggleUI();
+  isEstimated = false; updateEstimatedUI();
   chartRange = '1M';
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === '1M'); });
   document.getElementById('epStatus').textContent = '';
@@ -648,7 +667,6 @@ function openNewEvent() {
   setTimeout(function(){ document.getElementById('f_title').focus(); }, 100);
 }
 
-// ── NEW: delete an existing event ────────────────────────────────────────
 function deleteEvent() {
   if (!currentEvent || isNewEvent) return;
   if (!confirm('Delete "' + (currentEvent.event || 'this event') + '"?\n\nThis cannot be undone.')) return;
@@ -670,13 +688,11 @@ function deleteEvent() {
 function openEdit(idx) {
   isNewEvent = false;
   currentEvent = filteredEvents[idx];
-  // Reset panel to edit mode
   document.getElementById('panelTitle').textContent = 'Edit Event Details';
   document.getElementById('saveBtnLabel').textContent = 'Save Changes';
   document.getElementById('createBanner').style.display = 'none';
   document.getElementById('deleteBtn').style.display = 'inline-flex';
   document.getElementById('categoryField').style.display = 'none';
-  // Title + name read-only
   var ft = document.getElementById('f_title');
   ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
   var fn = document.getElementById('f_name');
@@ -713,6 +729,8 @@ function openEdit(idx) {
   updateImpactUI();
   showInMonthly = ev.show_in_monthly !== false && ev.show_in_monthly !== 0;
   updateToggleUI();
+  isEstimated = !!ev.is_estimated;
+  updateEstimatedUI();
   var assetWrap = document.getElementById('assetWrap'), assetInp = document.getElementById('assetInp');
   assetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
   var assets = (ev.impacted_assets || ent.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean);
@@ -733,7 +751,6 @@ function closeEdit() {
   document.body.style.overflow = '';
   currentEvent = null;
   isNewEvent = false;
-  // Reset panel chrome back to edit defaults
   document.getElementById('panelTitle').textContent = 'Edit Event Details';
   document.getElementById('saveBtnLabel').textContent = 'Save Changes';
   document.getElementById('createBanner').style.display = 'none';
@@ -743,6 +760,9 @@ function closeEdit() {
   ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
   var fn = document.getElementById('f_name');
   fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
+  isEstimated = false;
+  document.getElementById('estimatedToggle').classList.remove('on');
+  document.getElementById('editPanel').classList.remove('is-estimated');
 }
 
 function overlayClick(e) { if (e.target === document.getElementById('editOverlay')) closeEdit(); }
@@ -780,6 +800,14 @@ function selectImpact(val) { selectedImpact = val; updateImpactUI(); }
 function updateImpactUI() { ['high','medium','low','none'].forEach(function(v) { document.getElementById('imp-' + v).className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : ''); }); }
 function toggleMonthly() { showInMonthly = !showInMonthly; updateToggleUI(); }
 function updateToggleUI() { document.getElementById('monthlyToggle').classList.toggle('on', showInMonthly); }
+function toggleEstimated() {
+  isEstimated = !isEstimated;
+  updateEstimatedUI();
+}
+function updateEstimatedUI() {
+  document.getElementById('estimatedToggle').classList.toggle('on', isEstimated);
+  document.getElementById('editPanel').classList.toggle('is-estimated', isEstimated);
+}
 function makeChip(val) {
   var s = document.createElement('span'); s.className = 'achip';
   s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>';
@@ -810,10 +838,8 @@ function setRange(btn, range) {
   btn.classList.add('active'); loadChart();
 }
 
-// ── saveChanges: handles both PATCH (edit) and POST (new) ────────────────
 function saveChanges() {
   var btn = document.getElementById('saveBtn'), statusEl = document.getElementById('epStatus');
-  // Validate required fields for new events
   if (isNewEvent) {
     var title = document.getElementById('f_title').value.trim();
     var date  = document.getElementById('f_start_date').value;
@@ -837,6 +863,7 @@ function saveChanges() {
     source_url: document.getElementById('f_source_url').value.trim() || null,
     impact: selectedImpact || null,
     show_in_monthly: showInMonthly,
+    is_estimated: isEstimated,
     end_date: document.getElementById('f_end_date').value || null,
     frequency: document.getElementById('f_frequency').value || null,
     measures: document.getElementById('f_measures').value.trim() || null,
@@ -850,7 +877,6 @@ function saveChanges() {
   };
 
   if (isNewEvent) {
-    // POST — create new row
     payload.event    = document.getElementById('f_title').value.trim();
     payload.date     = document.getElementById('f_start_date').value;
     payload.category = document.getElementById('f_category').value;
@@ -869,7 +895,6 @@ function saveChanges() {
         showToast('Could not add event: ' + err.message, 'error'); btn.disabled = false;
       });
   } else {
-    // PATCH — update existing row
     supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
       .then(function() {
         Object.assign(currentEvent, payload);
