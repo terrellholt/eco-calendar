@@ -60,6 +60,11 @@ tv-ticker-tape{display:block;width:100%}
 .week-controls{display:flex;gap:6px;align-items:center}
 .btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
 .btn:hover{background:#f5f5f0}
+.filter-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
+.filter-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
+.filter-pill:hover{color:#333}
+.filter-pill.active{background:#fff;color:#1a1a1a;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.filter-pill.active.pill-estimated{color:#b8820a}
 .tz-wrap{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;transition:background .12s}
 .tz-wrap:hover{background:#f5f5f0}
 .tz-globe{width:13px;height:13px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
@@ -205,6 +210,11 @@ tv-ticker-tape{display:block;width:100%}
           <div class="week-sub" id="weekSub">Loading events...</div>
         </div>
         <div class="week-controls">
+          <div class="filter-pills">
+            <button class="filter-pill active" id="pill-all" onclick="setFilter('all')">All</button>
+            <button class="filter-pill" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed</button>
+            <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated</button>
+          </div>
           <button class="btn" onclick="prevWeek()">&larr; Prev</button>
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next &rarr;</button>
@@ -331,6 +341,7 @@ var DAYS_SH   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 var MMAP      = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
 
 var weekStart   = getWeekStart(new Date());
+var filterMode  = 'all';
 var openMonths  = {};
 var allExpanded = true;
 var sidebarOpen = true;
@@ -455,6 +466,15 @@ document.addEventListener('click', function(e) {
 document.getElementById('tzLabel').textContent = tzShort(selectedTz);
 // ── END TIMEZONE SYSTEM ────────────────────────────────────────────────
 
+function setFilter(mode) {
+  filterMode = mode;
+  ['all','confirmed','estimated'].forEach(function(m) {
+    var el = document.getElementById('pill-' + m);
+    if (el) { el.classList.toggle('active', m === mode); }
+  });
+  renderWeek();
+}
+
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.rail-icon').forEach(function(r) { r.classList.remove('active'); });
@@ -576,7 +596,7 @@ function fetchEvents() {
         sourceTz:       r.source_tz || 'America/New_York',
         impact:         impact,
         showMini:       showMini,
-        isEstimated:    !!r.is_estimated,
+        isEstimated:    !!(r.is_estimated === true || r.is_estimated === 'TRUE' || r.is_estimated === 'true'),
         logo:           r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
         hero:           r.hero_url || ent.hero_url || '',
         heroPosition:   r.hero_position || 'center',
@@ -716,7 +736,12 @@ function renderWeek() {
   }
   var byDate = {};
   days.forEach(function(d) { byDate[ds(d)] = []; });
-  events.forEach(function(ev) { if (byDate[ev.date] !== undefined) { byDate[ev.date].push(ev); } });
+  events.forEach(function(ev) {
+    if (byDate[ev.date] === undefined) { return; }
+    if (filterMode === 'confirmed' && ev.isEstimated) { return; }
+    if (filterMode === 'estimated' && !ev.isEstimated) { return; }
+    byDate[ev.date].push(ev);
+  });
   var fmt = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); };
   document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' - Click any event to view details.';
   document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
