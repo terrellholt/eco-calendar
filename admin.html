@@ -84,7 +84,7 @@
   thead th:first-child { cursor: default; width: 32px; padding: 10px 8px; }
   thead th:hover { color: var(--text2); }
   thead th:first-child:hover { color: var(--text3); }
-  tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+  tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; position: relative; }
   tbody tr:hover { background: var(--surface); }
   tbody td { padding: 10px 12px; vertical-align: middle; }
 
@@ -101,7 +101,10 @@
   tbody tr.dragging { opacity: 0.35; background: var(--surface2) !important; }
   tbody tr.drag-over-top { box-shadow: inset 0 2px 0 var(--accent); }
   tbody tr.drag-over-bottom { box-shadow: inset 0 -2px 0 var(--accent); }
-  tbody tr.drag-blocked { background: rgba(224,85,85,0.06) !important; }
+  tbody tr.drag-blocked { background: rgba(224,85,85,0.25) !important; box-shadow: inset 0 0 0 2px var(--red), inset 4px 0 0 0 var(--red) !important; }
+  tbody tr.drag-blocked td { color: var(--red) !important; opacity: 0.7; }
+  tbody tr.drag-blocked .td-event { color: var(--red) !important; }
+  tbody tr.drag-blocked::after { content: '✕ date boundary'; position: absolute; right: 80px; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 0.08em; pointer-events: none; }
   tbody tr.reordered { background: rgba(232,197,71,0.04); }
 
   .td-date { font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; }
