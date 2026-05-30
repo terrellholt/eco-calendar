@@ -63,12 +63,12 @@ def extract_tickers_from_entity_library(spreadsheet):
     rows = ws.get_all_values()
     header = rows[ENTITY_HEADER_ROW - 1]
     try:
-        ticker_col  = header.index("Ticker")
+        ticker_col  = header.index("Ticker / Symbol")
         name_col    = header.index("Entity Name")
         type_col    = header.index("Entity Type")
-        sector_col  = header.index("Sector")
-        country_col = header.index("Country")
-        exchange_col= header.index("Exchange")
+        sector_col  = header.index("Sector / Category")
+        country_col = header.index("Country / Region")
+        exchange_col= header.index("Exchange / Venue")
     except ValueError as e:
         raise RuntimeError(f"Missing expected column in Entity Library: {e}")
 
