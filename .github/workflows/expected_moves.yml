@@ -1,0 +1,56 @@
+# .github/workflows/expected_moves.yml
+#
+# Runs the Expected Move pipeline every weekday at 5:00 PM ET (22:00 UTC).
+# Market closes at 4:00 PM ET, so end-of-day option premiums are captured.
+#
+# Can also be triggered manually from the GitHub Actions tab at any time.
+
+name: Fetch Expected Moves
+
+on:
+  schedule:
+    # 22:00 UTC = 5:00 PM ET (EST). During EDT (summer), UTC offset is -4,
+    # so 21:00 UTC = 5:00 PM EDT. Cron runs at 21:00 UTC to cover both.
+    - cron: "0 21 * * 1-5"   # Mon–Fri at 9 PM UTC (5 PM EDT / 4 PM EST)
+
+  # Allow manual trigger from GitHub Actions UI (useful for testing)
+  workflow_dispatch:
+
+jobs:
+  fetch-expected-moves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30        # Hard stop — don't let a hang eat free minutes
+
+    steps:
+      # ── 1. Checkout your repo ──────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Python ───────────────────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"          # Cache dependencies between runs
+
+      # ── 3. Install dependencies ────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── 4. Run the pipeline ────────────────────────────────────────────────
+      #    Secrets are set in: GitHub repo → Settings → Secrets and Variables
+      #    → Actions → New repository secret
+      - name: Fetch expected moves and update Google Sheet
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+        run: python fetch_expected_moves.py
+
+      # ── 5. Upload run log as artifact (optional but helpful for debugging) ─
+      - name: Upload log artifact on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-log-${{ github.run_id }}
+          path: "*.log"
+          retention-days: 7
