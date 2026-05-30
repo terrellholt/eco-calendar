@@ -3,25 +3,15 @@ fetch_expected_moves.py
 =======================
 Fetches the ATM straddle-based Expected Move (±%) for every optionable
 equity in your calendar via yfinance, then writes results to a dedicated
-"📈 Expected Moves" tab in your Google Sheet.
+"📈 Expected Moves" tab in your Google Sheet AND pushes the values
+directly into Supabase Master Calendar (price_move + price_move_type columns).
 
-Ticker source:
-    "🗂️ Entity Library" tab — filtered to Public Company + ETF rows only.
-    This is the single source of truth. Every other sheet (Earnings,
-    Corporate Events, Sector Conferences, etc.) links back to entities
-    already in this library, so pulling from here covers all event types:
-    earnings, product launches, developer conferences, sector events, etc.
+Ticker source: "🗂️ Entity Library" tab — filtered to Public Company + ETF rows only.
 
 Formula:
     Expected Move $ = (ATM Call Ask + ATM Put Ask) × 0.85
     Expected Move % = Expected Move $ / Current Price × 100
 
-Options contract used:
-    Nearest available expiry only (expirations[0] from yfinance).
-    This is the most liquid contract and the strongest signal for
-    near-term event-driven price moves.
-
-Data source: yfinance — Yahoo Finance options chains (free, unofficial).
 Schedule: Weekdays at 5 PM ET via GitHub Actions (post market close).
 """
 
@@ -29,410 +19,315 @@ import os
 import json
 import time
 import logging
+import urllib.request
+import urllib.error
 from datetime import datetime
-from zoneinfo import ZoneInfo
 
 import yfinance as yf
 import gspread
 from google.oauth2.service_account import Credentials
 
-# ── Logging ───────────────────────────────────────────────────────────────────
+# ── Logging ────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)-8s  %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    datefmt="%H:%M:%S",
 )
 log = logging.getLogger(__name__)
 
-# ── Config ────────────────────────────────────────────────────────────────────
-SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive",
-]
+# ── Constants ───────────────────────────────────────────────────────────────
+SCOPES             = ["https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive.readonly"]
+ENTITY_SHEET_NAME  = "🗂️ Entity Library"
+OUTPUT_SHEET_NAME  = "📈 Expected Moves"
+ENTITY_HEADER_ROW  = 4
+RATE_LIMIT_DELAY   = 2   # seconds between yfinance calls
 
-OUTPUT_SHEET_NAME       = "📈 Expected Moves"
-ENTITY_SHEET_NAME       = "🗂️ Entity Library"
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://pkzjgjtzljjjohiybnud.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 
-# Only these entity types have optionable equities worth fetching
-OPTIONABLE_ENTITY_TYPES = {"Public Company", "ETF"}
+ELIGIBLE_TYPES = {"Public Company", "ETF"}
 
-# ATM straddle multiplier (industry standard: straddle × 0.85 ≈ 1σ move)
-ATM_MULTIPLIER = 0.85
-
-# Polite delay between yfinance requests (seconds)
-RATE_LIMIT_DELAY = 1.2
-
-# Retry attempts per ticker before marking as failed
-MAX_RETRIES = 2
-
-
-# ── Google Sheets auth ────────────────────────────────────────────────────────
-
-def get_sheets_client() -> gspread.Client:
-    creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
-    if not creds_json:
-        raise EnvironmentError(
-            "GOOGLE_CREDENTIALS_JSON env var not set. See README.md."
-        )
-    creds = Credentials.from_service_account_info(
-        json.loads(creds_json), scopes=SCOPES
-    )
+# ── Google Sheets helpers ───────────────────────────────────────────────────
+def get_sheets_client():
+    raw = os.environ["GOOGLE_CREDENTIALS_JSON"]
+    info = json.loads(raw)
+    creds = Credentials.from_service_account_info(info, scopes=SCOPES)
     return gspread.authorize(creds)
 
+def get_spreadsheet(client):
+    return client.open_by_key(os.environ["SPREADSHEET_ID"])
 
-def get_spreadsheet(client: gspread.Client) -> gspread.Spreadsheet:
-    sheet_id = os.environ.get("SPREADSHEET_ID")
-    if not sheet_id:
-        raise EnvironmentError(
-            "SPREADSHEET_ID env var not set. See README.md."
-        )
-    return client.open_by_key(sheet_id)
+def extract_tickers_from_entity_library(spreadsheet):
+    ws = spreadsheet.worksheet(ENTITY_SHEET_NAME)
+    rows = ws.get_all_values()
+    header = rows[ENTITY_HEADER_ROW - 1]
+    try:
+        ticker_col  = header.index("Ticker")
+        name_col    = header.index("Entity Name")
+        type_col    = header.index("Entity Type")
+        sector_col  = header.index("Sector")
+        country_col = header.index("Country")
+        exchange_col= header.index("Exchange")
+    except ValueError as e:
+        raise RuntimeError(f"Missing expected column in Entity Library: {e}")
 
+    entries = []
+    for row in rows[ENTITY_HEADER_ROW:]:
+        if len(row) <= max(ticker_col, type_col):
+            continue
+        ticker      = row[ticker_col].strip()
+        entity_type = row[type_col].strip()
+        if not ticker or entity_type not in ELIGIBLE_TYPES:
+            continue
+        entries.append({
+            "ticker":   ticker,
+            "company":  row[name_col].strip()  if len(row) > name_col  else "",
+            "type":     entity_type,
+            "sector":   row[sector_col].strip()   if len(row) > sector_col   else "",
+            "country":  row[country_col].strip()  if len(row) > country_col  else "",
+            "exchange": row[exchange_col].strip()  if len(row) > exchange_col  else "",
+        })
+    return entries
 
-def get_or_create_output_sheet(spreadsheet: gspread.Spreadsheet) -> gspread.Worksheet:
+# ── Expected move calculation ───────────────────────────────────────────────
+def get_expected_move(ticker: str) -> dict:
+    base = {"ticker": ticker, "status": "error"}
+    try:
+        stock = yf.Ticker(ticker)
+        info  = stock.info
+        price = info.get("currentPrice") or info.get("regularMarketPrice")
+        if not price:
+            hist  = stock.history(period="1d")
+            price = float(hist["Close"].iloc[-1]) if not hist.empty else None
+        if not price:
+            return {**base, "error": "No price data returned"}
+
+        expirations = stock.options
+        if not expirations:
+            return {**base, "error": "No options chain available"}
+
+        expiry = expirations[0]
+        chain  = stock.option_chain(expiry)
+        calls  = chain.calls
+        puts   = chain.puts
+
+        atm_strike = min(calls["strike"].tolist(), key=lambda x: abs(x - price))
+
+        call_row = calls[calls["strike"] == atm_strike]
+        put_row  = puts[puts["strike"]  == atm_strike]
+
+        if call_row.empty or put_row.empty:
+            return {**base,
+                    "current_price": price,
+                    "atm_strike":    atm_strike,
+                    "nearest_expiry": expiry,
+                    "error": f"ATM strike ${atm_strike} not found on both call and put sides"}
+
+        call_ask = float(call_row["ask"].iloc[0])
+        put_ask  = float(put_row["ask"].iloc[0])
+        iv_call  = float(call_row["impliedVolatility"].iloc[0]) if "impliedVolatility" in call_row else None
+        iv_put   = float(put_row["impliedVolatility"].iloc[0])  if "impliedVolatility" in put_row  else None
+        avg_iv   = round((iv_call + iv_put) / 2 * 100, 2) if iv_call and iv_put else None
+
+        straddle        = call_ask + put_ask
+        em_usd          = round(straddle * 0.85, 4)
+        em_pct          = round(em_usd / price, 6)
+        em_pct_display  = round(em_pct * 100, 2)
+
+        return {
+            **base,
+            "status":             "ok",
+            "current_price":      round(price, 2),
+            "atm_strike":         atm_strike,
+            "atm_call_ask":       call_ask,
+            "atm_put_ask":        put_ask,
+            "straddle_price":     round(straddle, 4),
+            "expected_move_usd":  em_usd,
+            "expected_move_pct":  em_pct,
+            "expected_move_pct_display": em_pct_display,
+            "avg_iv_pct":         avg_iv,
+            "nearest_expiry":     expiry,
+        }
+    except Exception as exc:
+        return {**base, "error": str(exc)}
+
+# ── Write results to Google Sheet ──────────────────────────────────────────
+def get_or_create_output_sheet(spreadsheet):
     try:
         return spreadsheet.worksheet(OUTPUT_SHEET_NAME)
     except gspread.WorksheetNotFound:
-        log.info("Creating output tab: %s", OUTPUT_SHEET_NAME)
-        return spreadsheet.add_worksheet(title=OUTPUT_SHEET_NAME, rows=600, cols=14)
+        return spreadsheet.add_worksheet(title=OUTPUT_SHEET_NAME, rows=200, cols=20)
 
-
-# ── Ticker extraction from Entity Library ─────────────────────────────────────
-
-def extract_equity_tickers(spreadsheet: gspread.Spreadsheet) -> list[dict]:
-    """
-    Read the Entity Library and return all optionable equity rows.
-
-    Column layout (0-indexed):
-        0  Entity Name
-        1  Ticker / Symbol
-        2  Entity Type
-        3  Sector / Category
-        4  Sub-Sector
-        5  Country / Region
-        6  Exchange / Venue
-
-    Returns list of dicts: {ticker, name, entity_type, sector, country, exchange}
-    Only includes rows where Entity Type is in OPTIONABLE_ENTITY_TYPES and
-    the ticker is a real symbol (not "N/A", blank, or a footer note).
-    """
-    ws = spreadsheet.worksheet(ENTITY_SHEET_NAME)
-    rows = ws.get_all_values()
-
-    results = []
-    seen    = set()
-    header_found = False
-
-    for row in rows:
-        # Find the real header row (contains "Entity Name")
-        if not header_found:
-            if row and row[0].strip() == "Entity Name":
-                header_found = True
-            continue
-
-        if len(row) < 3:
-            continue
-
-        name        = row[0].strip()
-        ticker      = row[1].strip().upper()
-        entity_type = row[2].strip()
-        sector      = row[3].strip() if len(row) > 3 else ""
-        country     = row[5].strip() if len(row) > 5 else ""
-        exchange    = row[6].strip() if len(row) > 6 else ""
-
-        # Skip non-equity types (Central Bank, Gov't Agency, Commodity, etc.)
-        if entity_type not in OPTIONABLE_ENTITY_TYPES:
-            continue
-
-        # Skip placeholder / invalid tickers
-        if (not ticker
-                or ticker in ("N/A", "TICKER", "—")
-                or ticker.startswith("[")
-                or len(ticker) > 10):   # sanity guard against footer text
-            continue
-
-        if ticker not in seen:
-            seen.add(ticker)
-            results.append({
-                "ticker":      ticker,
-                "name":        name,
-                "entity_type": entity_type,
-                "sector":      sector,
-                "country":     country,
-                "exchange":    exchange,
-            })
-
-    log.info(
-        "Entity Library: %d optionable tickers found (%s)",
-        len(results),
-        ", ".join(r["ticker"] for r in results),
-    )
-    return results
-
-
-# ── Core expected move calculation ────────────────────────────────────────────
-
-def get_expected_move(ticker_str: str) -> dict:
-    """
-    Use yfinance to fetch the nearest-expiry ATM straddle for a ticker
-    and calculate the expected move.
-
-    Only the nearest expiry (expirations[0]) is used — this is the
-    most liquid contract and best reflects near-term event pricing.
-
-    Returns a result dict. On failure, status='error' with a reason string.
-    """
-    result = {
-        "ticker":            ticker_str,
-        "current_price":     None,
-        "atm_strike":        None,
-        "atm_call_ask":      None,
-        "atm_put_ask":       None,
-        "straddle_price":    None,
-        "expected_move_usd": None,
-        "expected_move_pct": None,
-        "nearest_expiry":    None,
-        "avg_iv_pct":        None,
-        "status":            "ok",
-        "error":             "",
-    }
-
-    for attempt in range(1, MAX_RETRIES + 2):
-        try:
-            stock = yf.Ticker(ticker_str)
-
-            # ── 1. Get current price ───────────────────────────────────────
-            current_price = getattr(stock.fast_info, "last_price", None)
-            if not current_price:
-                hist = stock.history(period="2d")
-                if hist.empty:
-                    result.update(status="error", error="No price data from yfinance")
-                    return result
-                current_price = float(hist["Close"].iloc[-1])
-
-            result["current_price"] = round(float(current_price), 4)
-
-            # ── 2. Get options expirations — nearest only ──────────────────
-            expirations = stock.options
-            if not expirations:
-                result.update(
-                    status="error",
-                    error="No options chain (non-optionable, delisted, or international)"
-                )
-                return result
-
-            nearest_expiry = expirations[0]   # ← nearest expiry, always
-            result["nearest_expiry"] = nearest_expiry
-
-            # ── 3. Pull the chain for that expiry ─────────────────────────
-            chain = stock.option_chain(nearest_expiry)
-            calls = chain.calls
-            puts  = chain.puts
-
-            if calls.empty or puts.empty:
-                result.update(
-                    status="error",
-                    error=f"Empty options chain for nearest expiry {nearest_expiry}"
-                )
-                return result
-
-            # ── 4. Find ATM strike ────────────────────────────────────────
-            strikes      = calls["strike"].values
-            atm_strike   = float(strikes[abs(strikes - current_price).argmin()])
-            result["atm_strike"] = atm_strike
-
-            call_row = calls[calls["strike"] == atm_strike]
-            put_row  = puts[puts["strike"]  == atm_strike]
-
-            if call_row.empty or put_row.empty:
-                result.update(
-                    status="error",
-                    error=f"ATM strike ${atm_strike} not found on both call and put sides"
-                )
-                return result
-
-            # ── 5. Get ask prices; fall back to mid if ask is zero ────────
-            call_ask = float(call_row["ask"].iloc[0])
-            put_ask  = float(put_row["ask"].iloc[0])
-
-            if call_ask == 0:
-                call_ask = (float(call_row["bid"].iloc[0]) + float(call_row["ask"].iloc[0])) / 2
-            if put_ask == 0:
-                put_ask  = (float(put_row["bid"].iloc[0]) + float(put_row["ask"].iloc[0])) / 2
-
-            result["atm_call_ask"] = round(call_ask, 4)
-            result["atm_put_ask"]  = round(put_ask,  4)
-
-            # ── 6. Average IV (informational, not used in EM calc) ────────
-            try:
-                call_iv = float(call_row["impliedVolatility"].iloc[0])
-                put_iv  = float(put_row["impliedVolatility"].iloc[0])
-                result["avg_iv_pct"] = round((call_iv + put_iv) / 2 * 100, 2)
-            except Exception:
-                pass  # IV is bonus data — don't fail the whole calc over it
-
-            # ── 7. Expected Move ──────────────────────────────────────────
-            straddle          = call_ask + put_ask
-            em_usd            = straddle * ATM_MULTIPLIER
-            em_pct            = (em_usd / current_price) * 100
-
-            result["straddle_price"]    = round(straddle, 4)
-            result["expected_move_usd"] = round(em_usd,   4)
-            result["expected_move_pct"] = round(em_pct,   4)
-
-            return result   # ← success path
-
-        except Exception as exc:
-            if attempt <= MAX_RETRIES:
-                wait = attempt * 2
-                log.warning(
-                    "%s — attempt %d/%d failed (%s). Retrying in %ds...",
-                    ticker_str, attempt, MAX_RETRIES + 1, exc, wait
-                )
-                time.sleep(wait)
-            else:
-                result.update(status="error", error=str(exc))
-                return result
-
-    return result
-
-
-# ── Sheet writer ──────────────────────────────────────────────────────────────
-
-def write_results(
-    ws: gspread.Worksheet,
-    results: list[dict],
-    meta: dict[str, dict],
-) -> None:
-    """Write all results to the output sheet, wiping the previous run."""
-
-    now_et = datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d %H:%M ET")
+def write_results_to_sheet(ws, results, ticker_meta):
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M ET")
     ok_count  = sum(1 for r in results if r["status"] == "ok")
     err_count = len(results) - ok_count
 
-    header_block = [
-        ["EXPECTED MOVES — AUTO-CALCULATED VIA YFINANCE"],
-        [
-            f"Source: Yahoo Finance options chains via yfinance  |  "
-            f"Formula: (ATM Call Ask + ATM Put Ask) × 0.85  |  "
-            f"Expiry: nearest available  |  "
-            f"Last run: {now_et}  |  "
-            f"✓ {ok_count} succeeded   ⚠ {err_count} failed"
-        ],
-        [""],  # spacer
-        [
-            "Ticker",
-            "Entity Name",
-            "Entity Type",
-            "Sector",
-            "Country",
-            "Exchange",
-            "Current Price",
-            "ATM Strike",
-            "ATM Call Ask",
-            "ATM Put Ask",
-            "Straddle Price",
-            "Expected Move $",
-            "Expected Move ±%",
-            "Avg IV %",
-            "Nearest Expiry",
-            "Status",
-        ],
+    header_rows = [
+        [f"EXPECTED MOVES — AUTO-CALCULATED VIA YFINANCE"
+         f"          Source: Yahoo Finance options chains via yfinance"
+         f"  |  Formula: (ATM Call Ask + ATM Put Ask) × 0.85"
+         f"  |  Expiry: nearest available"
+         f"  |  Last run: {now_str}"
+         f"  |  ✓ {ok_count} succeeded   ⚠ {err_count} failed"],
+        [],
+        ["Ticker","Entity Name","Entity Type","Sector","Country","Exchange",
+         "Current Price","ATM Strike","ATM Call Ask","ATM Put Ask",
+         "Straddle Price","Expected Move $","Expected Move ±%",
+         "Avg IV %","Nearest Expiry","Status"],
     ]
 
     data_rows = []
     for r in results:
-        m = meta.get(r["ticker"], {})
-        status_cell = "✓" if r["status"] == "ok" else f"⚠ {r['error']}"
-
-        def fmt(val):
-            return val if val is not None else "—"
-
-        data_rows.append([
-            r["ticker"],
-            m.get("name",        ""),
-            m.get("entity_type", ""),
-            m.get("sector",      ""),
-            m.get("country",     ""),
-            m.get("exchange",    ""),
-            fmt(r["current_price"]),
-            fmt(r["atm_strike"]),
-            fmt(r["atm_call_ask"]),
-            fmt(r["atm_put_ask"]),
-            fmt(r["straddle_price"]),
-            fmt(r["expected_move_usd"]),
-            f"{r['expected_move_pct']}%" if r["expected_move_pct"] is not None else "—",
-            fmt(r["avg_iv_pct"]),
-            fmt(r["nearest_expiry"]),
-            status_cell,
-        ])
+        meta = ticker_meta.get(r["ticker"], {})
+        if r["status"] == "ok":
+            row = [
+                r["ticker"],
+                meta.get("company",""),
+                meta.get("type",""),
+                meta.get("sector",""),
+                meta.get("country",""),
+                meta.get("exchange",""),
+                r["current_price"],
+                r["atm_strike"],
+                r["atm_call_ask"],
+                r["atm_put_ask"],
+                r["straddle_price"],
+                r["expected_move_usd"],
+                r["expected_move_pct"],
+                r.get("avg_iv_pct",""),
+                r["nearest_expiry"],
+                "✓",
+            ]
+        else:
+            row = [
+                r["ticker"],
+                meta.get("company",""),
+                meta.get("type",""),
+                meta.get("sector",""),
+                meta.get("country",""),
+                meta.get("exchange",""),
+                r.get("current_price","—"),
+                r.get("atm_strike","—"),
+                "—","—","—","—","—","—",
+                r.get("nearest_expiry","—"),
+                f"⚠ {r.get('error','unknown error')}",
+            ]
+        data_rows.append(row)
 
     ws.clear()
-    ws.update(header_block + data_rows, value_input_option="USER_ENTERED")
-    log.info("Sheet written: %d rows  (%d OK, %d errors)", len(data_rows), ok_count, err_count)
+    all_rows = header_rows + data_rows
+    ws.update(range_name="A1", values=all_rows)
+    log.info("Google Sheet updated — %d rows written.", len(data_rows))
 
+# ── Push to Supabase ────────────────────────────────────────────────────────
+def push_to_supabase(results):
+    if not SUPABASE_KEY:
+        log.warning("SUPABASE_KEY not set — skipping Supabase update.")
+        return
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+    ok_results = [r for r in results if r["status"] == "ok"]
+    log.info("Pushing %d tickers to Supabase...", len(ok_results))
 
-def main() -> None:
-    log.info("═" * 60)
-    log.info("Expected Move Pipeline — starting")
-    log.info("═" * 60)
+    updated = 0
+    skipped = 0
 
-    # 1. Auth + connect
+    for r in ok_results:
+        ticker   = r["ticker"]
+        em_value = str(r["expected_move_pct_display"])  # e.g. "1.03"
+
+        # Build the PATCH request — update all rows where ticker matches
+        url = (
+            f"{SUPABASE_URL}/rest/v1/Master%20Calendar"
+            f"?ticker=eq.{urllib.parse.quote(ticker)}"
+        )
+        payload = json.dumps({
+            "price_move":      em_value,
+            "price_move_type": "%"
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            method="PATCH",
+            headers={
+                "apikey":        SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type":  "application/json",
+                "Prefer":        "return=minimal",
+            }
+        )
+        try:
+            with urllib.request.urlopen(req) as resp:
+                if resp.status in (200, 204):
+                    log.info("  ✓  %s → ±%s%%", ticker, em_value)
+                    updated += 1
+                else:
+                    log.warning("  ⚠  %s → HTTP %s", ticker, resp.status)
+                    skipped += 1
+        except urllib.error.HTTPError as e:
+            log.warning("  ⚠  %s → HTTP error %s: %s", ticker, e.code, e.reason)
+            skipped += 1
+        except Exception as e:
+            log.warning("  ⚠  %s → %s", ticker, e)
+            skipped += 1
+
+    log.info("Supabase update complete — %d updated, %d skipped.", updated, skipped)
+
+# ── Main ────────────────────────────────────────────────────────────────────
+def main():
+    import urllib.parse  # needed inside push_to_supabase
+
+    log.info("Connecting to Google Sheets...")
     client      = get_sheets_client()
     spreadsheet = get_spreadsheet(client)
     log.info("Connected: %s", spreadsheet.title)
 
-    # 2. Pull optionable tickers from Entity Library
-    entities = extract_equity_tickers(spreadsheet)
-    if not entities:
-        log.warning("No optionable tickers found in Entity Library. Exiting.")
+    ticker_entries = extract_tickers_from_entity_library(spreadsheet)
+    if not ticker_entries:
+        log.warning("No tickers found — nothing to do.")
         return
 
-    meta = {e["ticker"]: e for e in entities}
+    ticker_meta = {e["ticker"]: e for e in ticker_entries}
 
-    # 3. Fetch expected move for each ticker
     results = []
-    total   = len(entities)
+    total   = len(ticker_entries)
 
-    for i, entity in enumerate(entities, 1):
-        ticker = entity["ticker"]
-        log.info("[%d/%d]  %s — %s", i, total, ticker, entity["name"])
-
+    for i, entry in enumerate(ticker_entries, 1):
+        ticker = entry["ticker"]
+        log.info("[%d/%d]  Fetching: %s (%s)", i, total, ticker, entry["company"])
         result = get_expected_move(ticker)
-
         if result["status"] == "ok":
             log.info(
-                "         ✓  $%.2f  |  ATM $%.2f  |  Straddle $%.2f  |  EM ±$%.2f (±%.2f%%)",
+                "  ✓  Price: $%.2f  |  ATM: $%.2f  |  EM: ±$%.2f (±%.2f%%)",
                 result["current_price"],
                 result["atm_strike"],
-                result["straddle_price"],
                 result["expected_move_usd"],
-                result["expected_move_pct"],
+                result["expected_move_pct_display"],
             )
         else:
-            log.warning("         ⚠  %s", result["error"])
-
+            log.warning("  ⚠  %s: %s", ticker, result["error"])
         results.append(result)
-
         if i < total:
             time.sleep(RATE_LIMIT_DELAY)
 
-    # 4. Write to Google Sheet
+    log.info("Writing results to Google Sheet...")
     output_ws = get_or_create_output_sheet(spreadsheet)
-    write_results(output_ws, results, meta)
+    write_results_to_sheet(output_ws, results, ticker_meta)
 
-    # 5. Final summary
-    ok  = sum(1 for r in results if r["status"] == "ok")
-    err = len(results) - ok
+    log.info("Pushing results to Supabase...")
+    push_to_supabase(results)
+
+    ok_count  = sum(1 for r in results if r["status"] == "ok")
+    err_count = len(results) - ok_count
     log.info("═" * 60)
-    log.info("Done — %d succeeded, %d failed out of %d tickers", ok, err, total)
+    log.info("Done.  %d succeeded  |  %d failed", ok_count, err_count)
     log.info("═" * 60)
 
-    if ok == 0:
+    if ok_count == 0:
         raise RuntimeError("All tickers failed — check yfinance / Yahoo Finance status.")
 
-
 if __name__ == "__main__":
+    import urllib.parse
     main()
