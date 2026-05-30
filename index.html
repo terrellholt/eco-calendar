@@ -100,7 +100,7 @@ tv-ticker-tape{display:block;width:100%}
 .day-header{padding:6px 10px 5px;border-bottom:1px solid #f0f0ec;flex-shrink:0;background:#fff;position:sticky;top:0;z-index:2}
 .day-name{font-size:9px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.04em;line-height:1}
 .day-date-row{display:flex;align-items:baseline;gap:3px;margin-top:2px}
-.day-month{font-size:18px;font-weight:300;color:#bbb;line-height:1}
+.day-month{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1}
 .day-num{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1}
 .day-header.today .day-name{color:#2563eb;font-weight:700}
 .day-header.today .day-num{color:#2563eb;font-weight:600}
@@ -111,7 +111,7 @@ tv-ticker-tape{display:block;width:100%}
 .day-col.past-week-day .day-header{background:#f0f0ed}
 .day-col.past-week-day .day-name{color:#bbb}
 .day-col.past-week-day .day-num{color:#bbb;font-weight:300}
-.day-col.past-week-day .day-month{color:#ccc}
+.day-col.past-week-day .day-month{color:#bbb}
 .day-col.past-week-day .ecard{opacity:0.55;pointer-events:none}
 
 .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
@@ -241,9 +241,9 @@ tv-ticker-tape{display:block;width:100%}
         <!-- RIGHT: filter pills + timezone -->
         <div class="week-nav-right">
           <div class="filter-pills">
-            <button class="filter-pill active" id="pill-all" onclick="setFilter('all')">All Events</button>
-            <button class="filter-pill" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed</button>
-            <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated &#x7e;</button>
+            <button class="filter-pill active" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed Events</button>
+            <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated ~</button>
+            <button class="filter-pill" id="pill-all" onclick="setFilter('all')">All</button>
           </div>
           <div class="tz-container" id="tzContainer">
             <div class="tz-wrap" onclick="toggleTzDropdown(event)" title="Change timezone">
@@ -364,7 +364,7 @@ var DAYS_SH   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 var MMAP      = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
 
 var weekStart   = getWeekStart(new Date());
-var filterMode  = 'all';
+var filterMode  = 'confirmed';
 var openMonths  = {};
 var allExpanded = false;
 var sidebarOpen = true;
@@ -497,9 +497,12 @@ document.getElementById('tzLabel').textContent = tzShort(selectedTz);
 
 function setFilter(mode) {
   filterMode = mode;
-  ['all','confirmed','estimated'].forEach(function(m) {
+  var labels = { confirmed: 'Confirmed', estimated: 'Estimated \u007e', all: 'All' };
+  ['confirmed','estimated','all'].forEach(function(m) {
     var el = document.getElementById('pill-' + m);
-    if (el) { el.classList.toggle('active', m === mode); }
+    if (!el) { return; }
+    el.classList.toggle('active', m === mode);
+    el.textContent = m === mode ? labels[m] + ' Events' : labels[m];
   });
   renderWeek();
 }
