@@ -61,17 +61,26 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-evt+.mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
 .mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.week-nav{padding:12px 20px 10px 36px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
-.week-title{font-size:16px;font-weight:600}
+
+/* ── WEEK NAV: single row ── */
+.week-nav{padding:12px 20px 10px 46px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0;gap:10px}
+.week-nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.week-title-block{margin-right:2px}
+.week-title{font-size:16px;font-weight:600;line-height:1.2}
 .week-sub{font-size:11px;color:#999;margin-top:2px}
-.week-controls{display:flex;gap:6px;align-items:center}
+.week-nav-divider{width:1px;height:24px;background:#e0e0db;flex-shrink:0}
+.week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+
 .btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
 .btn:hover{background:#f5f5f0}
+
+/* ── filter pills — moved to bottom row, right side ── */
 .filter-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .filter-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .filter-pill:hover{color:#333}
 .filter-pill.active{background:#fff;color:#1a1a1a;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .filter-pill.active.pill-estimated{color:#b8820a}
+
 .tz-wrap{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;transition:background .12s}
 .tz-wrap:hover{background:#f5f5f0}
 .tz-globe{width:13px;height:13px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
@@ -218,19 +227,24 @@ tv-ticker-tape{display:block;width:100%}
     </button>
     <div class="main">
       <div class="week-nav">
-        <div>
-          <div class="week-title">What to Watch for the Week</div>
-          <div class="week-sub" id="weekSub">Loading events...</div>
-        </div>
-        <div class="week-controls">
-          <div class="filter-pills">
-            <button class="filter-pill active" id="pill-all" onclick="setFilter('all')">All</button>
-            <button class="filter-pill" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed</button>
-            <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated</button>
+        <!-- LEFT: title + divider + nav buttons -->
+        <div class="week-nav-left">
+          <div class="week-title-block">
+            <div class="week-title">What to Watch for the Week</div>
+            <div class="week-sub" id="weekSub">Loading events...</div>
           </div>
+          <div class="week-nav-divider"></div>
           <button class="btn" onclick="prevWeek()">&larr; Prev</button>
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next &rarr;</button>
+        </div>
+        <!-- RIGHT: filter pills + timezone -->
+        <div class="week-nav-right">
+          <div class="filter-pills">
+            <button class="filter-pill active" id="pill-all" onclick="setFilter('all')">All Events</button>
+            <button class="filter-pill" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed</button>
+            <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated &#x7e;</button>
+          </div>
           <div class="tz-container" id="tzContainer">
             <div class="tz-wrap" onclick="toggleTzDropdown(event)" title="Change timezone">
               <svg class="tz-globe" viewBox="0 0 24 24">
@@ -665,14 +679,14 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
     var dateStr = ds(date);
     var isTod = date.getTime() === today.getTime();
     var inWk = date >= wStart && date <= wEnd;
-    var isPast = date < today;  // strictly before today — today itself is NOT grayed
+    var isPast = date < today;
     var cls = 'mgrid-cell';
     if (isTod) {
       cls += ' today-cell';
     } else if (isPast) {
-      cls += ' past-day';        // past days get the gray treatment
+      cls += ' past-day';
     } else if (inWk) {
-      cls += ' in-current-week'; // future days in current week get the blue tint
+      cls += ' in-current-week';
     }
     var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
     var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.title + '</div>'; }).join('');
@@ -759,14 +773,13 @@ function renderWeek() {
     byDate[ev.date].push(ev);
   });
   var fmt = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); };
-  document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' - Click any event to view details.';
+  document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' — Click any event to view details.';
   document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
     var isToday = d.getTime() === today.getTime();
-    var isPastDay = d < today;  // strictly before today
+    var isPastDay = d < today;
     var evs = byDate[ds(d)] || [];
     var cards = evs.map(function(ev) { return cardHtml(ev); }).join('');
     var hdrCls = 'day-header' + (isToday ? ' today' : '');
-    // past columns get a muted background; today and future stay normal
     var colCls = 'day-col' + (isPastDay ? ' past-week-day' : '');
     return '<div class="' + colCls + '"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + MONTHS_SH[d.getMonth()] + '</div></div><div class="day-events">' + cards + '</div></div>';
   }).join('');
