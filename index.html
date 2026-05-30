@@ -68,7 +68,6 @@ tv-ticker-tape{display:block;width:100%}
 .week-title-block{margin-right:2px}
 .week-title{font-size:16px;font-weight:600;line-height:1.2}
 .week-sub{font-size:11px;color:#999;margin-top:2px}
-.week-nav-divider{width:1px;height:24px;background:#e0e0db;flex-shrink:0}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 
 .btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
@@ -98,10 +97,11 @@ tv-ticker-tape{display:block;width:100%}
 .week-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);overflow-y:auto}
 .day-col{border-right:1px solid #e5e5e0;display:flex;flex-direction:column}
 .day-col:last-child{border-right:none}
-.day-header{padding:8px 10px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0;background:#fff;position:sticky;top:0;z-index:2}
+.day-header{padding:7px 10px 6px;border-bottom:1px solid #f0f0ec;flex-shrink:0;background:#fff;position:sticky;top:0;z-index:2}
 .day-name{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.04em;line-height:1}
-.day-num{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1.15;margin-top:2px}
-.day-month{font-size:10px;color:#bbb;font-weight:500;margin-top:1px;text-transform:uppercase;letter-spacing:.03em}
+.day-date-row{display:flex;align-items:baseline;gap:4px;margin-top:2px}
+.day-num{font-size:18px;font-weight:300;color:#1a1a1a;line-height:1}
+.day-month{font-size:11px;color:#bbb;font-weight:500;text-transform:uppercase;letter-spacing:.03em}
 .day-header.today .day-name{color:#2563eb;font-weight:700}
 .day-header.today .day-num{color:#2563eb;font-weight:600}
 .day-header.today .day-month{color:#2563eb;font-weight:600}
@@ -233,7 +233,6 @@ tv-ticker-tape{display:block;width:100%}
             <div class="week-title">What to Watch for the Week</div>
             <div class="week-sub" id="weekSub">Loading events...</div>
           </div>
-          <div class="week-nav-divider"></div>
           <button class="btn" onclick="prevWeek()">&larr; Prev</button>
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next &rarr;</button>
@@ -781,7 +780,7 @@ function renderWeek() {
     var cards = evs.map(function(ev) { return cardHtml(ev); }).join('');
     var hdrCls = 'day-header' + (isToday ? ' today' : '');
     var colCls = 'day-col' + (isPastDay ? ' past-week-day' : '');
-    return '<div class="' + colCls + '"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + MONTHS_SH[d.getMonth()] + '</div></div><div class="day-events">' + cards + '</div></div>';
+    return '<div class="' + colCls + '"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-date-row"><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + MONTHS_SH[d.getMonth()] + '</div></div></div><div class="day-events">' + cards + '</div></div>';
   }).join('');
 }
 
