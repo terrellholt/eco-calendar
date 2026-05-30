@@ -704,6 +704,7 @@ function setFilter(mode) {
     el.classList.toggle('active', m === mode);
     el.textContent = m === mode ? labels[m] + ' Events' : labels[m];
   });
+  buildSidebar();
   renderWeek();
 }
 
@@ -893,7 +894,12 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
     var isPast = date < today;
     var cls = 'mgrid-cell';
     if (isTod) { cls += ' today-cell'; } else if (isPast) { cls += ' past-day'; } else if (inWk) { cls += ' in-current-week'; }
-    var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
+    var dayEvts = events.filter(function(e) {
+      if (e.date !== dateStr || !e.showMini) { return false; }
+      if (filterMode === 'confirmed' && e.isEstimated) { return false; }
+      if (filterMode === 'estimated' && !e.isEstimated) { return false; }
+      return true;
+    }).slice(0, 3);
     var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.shortName + '</div>'; }).join('');
     html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
   }
