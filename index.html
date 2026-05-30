@@ -47,13 +47,10 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-cell.other-month .mgrid-date{color:#ddd}
 .mgrid-cell.in-current-week{background:#eff6ff}
 .mgrid-cell.today-cell{background:#eff6ff}
-
-/* ── past days: warm gray overlay, content legible but muted ── */
 .mgrid-cell.past-day{background:#e4e4e1 !important}
 .mgrid-cell.past-day:hover{background:#deded9 !important}
 .mgrid-cell.past-day .mgrid-date{color:#999}
 .mgrid-cell.past-day .mgrid-evt{opacity:0.55}
-
 .mgrid-date{font-size:9px;font-weight:600;color:#888;margin-bottom:2px;line-height:1}
 .mgrid-cell.today-cell .mgrid-date{color:#2563eb;font-weight:700}
 .mgrid-events{display:flex;flex-direction:column;gap:0;flex:1;overflow:hidden}
@@ -62,24 +59,24 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-/* ── WEEK NAV: single row ── */
+/* ── WEEK NAV ── */
 .week-nav{padding:7px 20px 7px 46px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0;gap:10px}
 .week-nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .week-title-block{margin-right:2px}
 .week-title{font-size:14px;font-weight:600;line-height:1.2}
 .week-sub{font-size:10px;color:#999;margin-top:1px}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
-
 .btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
 .btn:hover{background:#f5f5f0}
 
-/* ── filter pills — moved to bottom row, right side ── */
+/* ── FILTER PILLS ── */
 .filter-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .filter-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .filter-pill:hover{color:#333}
 .filter-pill.active{background:#fff;color:#1a1a1a;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .filter-pill.active.pill-estimated{color:#b8820a}
 
+/* ── TIMEZONE ── */
 .tz-wrap{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;transition:background .12s}
 .tz-wrap:hover{background:#f5f5f0}
 .tz-globe{width:13px;height:13px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
@@ -94,6 +91,69 @@ tv-ticker-tape{display:block;width:100%}
 .tz-opt-time{font-size:11px;color:#aaa;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tz-opt-check{font-size:12px;color:#2563eb;width:14px;text-align:right}
 .tz-container{position:relative}
+
+/* ── FILTER BUTTON ── */
+.filter-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;font-size:12px;color:#333;transition:all .12s;white-space:nowrap;position:relative}
+.filter-btn:hover{background:#f5f5f0}
+.filter-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.filter-btn.active{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
+.filter-btn.active svg{stroke:#1d4ed8}
+.filter-badge{position:absolute;top:-4px;right:-4px;background:#2563eb;color:#fff;font-size:9px;font-weight:700;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+
+/* ── FILTER PANEL OVERLAY ── */
+.filter-panel-overlay{position:fixed;inset:0;z-index:300;display:none}
+.filter-panel-overlay.open{display:block}
+.filter-panel{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:0.5px solid #e0e0db;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:440px;overflow:hidden;animation:fpIn .15s ease}
+@keyframes fpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+.fp-header{padding:10px 14px;border-bottom:0.5px solid #e5e5e0;display:flex;justify-content:space-between;align-items:center}
+.fp-title{font-size:13px;font-weight:600;color:#1a1a1a}
+.fp-close{background:none;border:none;cursor:pointer;color:#aaa;font-size:16px;line-height:1;padding:0 2px;transition:color .1s}
+.fp-close:hover{color:#333}
+
+.fp-sec{padding:12px 14px;border-bottom:0.5px solid #e5e5e0}
+.fp-sec:last-of-type{border-bottom:none}
+.sec-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.sec-lbl{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.07em}
+.sec-links{font-size:11px;color:#aaa}
+.sec-links a{color:#2563eb;text-decoration:none;cursor:pointer}
+.sec-links a:hover{text-decoration:underline}
+
+/* Impact chips */
+.impact-row{display:flex;gap:7px}
+.ichip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:0.5px solid #e0e0db;cursor:pointer;font-size:12px;color:#aaa;background:transparent;transition:all .1s;user-select:none}
+.ichip.on{border-color:transparent}
+.ichip.high.on{background:#FEF2F2;color:#dc2626;border-color:#FECACA}
+.ichip.med.on{background:#FFF7ED;color:#ea7000;border-color:#FED7AA}
+.ichip.low.on{background:#FEFCE8;color:#d4a000;border-color:#FEF08A}
+.idot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.idot-h{background:#dc2626}.idot-m{background:#ea7000}.idot-l{background:#d4a000}
+
+/* Tab checkboxes */
+.tab-list{display:flex;flex-direction:column;gap:1px}
+.citem{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .08s}
+.citem:hover{background:#f5f5f0}
+.cbox{width:13px;height:13px;border-radius:3px;border:0.5px solid #d0d0cc;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .1s}
+.cbox.on{background:#2563eb;border-color:#2563eb}
+.cbox.on::after{content:'';width:6px;height:4px;border-left:1.5px solid white;border-bottom:1.5px solid white;transform:rotate(-45deg) translateY(-1px);display:block}
+.clabel{font-size:12px;color:#1a1a1a}
+
+/* Zone chips */
+.zone-row{display:flex;flex-wrap:wrap;gap:6px}
+.zchip{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:0.5px solid #e0e0db;cursor:pointer;font-size:12px;color:#aaa;background:transparent;transition:all .1s;user-select:none}
+.zchip:hover{background:#f5f5f0}
+.zchip.on{background:#E6F1FB;border-color:#85B7EB;color:#185FA5}
+
+/* Footer */
+.fp-footer{padding:10px 14px;border-top:0.5px solid #e5e5e0;display:flex;justify-content:space-between;align-items:center}
+.btn-reset{font-size:12px;color:#aaa;text-decoration:underline;background:none;border:none;cursor:pointer;padding:0;transition:color .1s}
+.btn-reset:hover{color:#333}
+.btn-apply{padding:5px 16px;border-radius:6px;background:#2563eb;color:white;font-size:12px;border:none;cursor:pointer;font-weight:500;transition:background .1s}
+.btn-apply:hover{background:#1d4ed8}
+.btn-cancel-fp{padding:5px 14px;border-radius:6px;background:#fff;color:#555;font-size:12px;border:0.5px solid #e0e0db;cursor:pointer;transition:background .1s}
+.btn-cancel-fp:hover{background:#f5f5f0}
+
+/* ── WEEK GRID ── */
 .week-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);overflow-y:auto}
 .day-col{border-right:1px solid #e5e5e0;display:flex;flex-direction:column}
 .day-col:last-child{border-right:none}
@@ -105,16 +165,15 @@ tv-ticker-tape{display:block;width:100%}
 .day-header.today .day-name{color:#2563eb;font-weight:700}
 .day-header.today .day-num{color:#2563eb;font-weight:600}
 .day-header.today .day-month{color:#2563eb;font-weight:600}
-
-/* ── past day column in weekly view ── */
 .day-col.past-week-day{background:#f0f0ed}
 .day-col.past-week-day .day-header{background:#f0f0ed}
 .day-col.past-week-day .day-name{color:#bbb}
 .day-col.past-week-day .day-num{color:#bbb;font-weight:300}
 .day-col.past-week-day .day-month{color:#bbb}
 .day-col.past-week-day .ecard{opacity:0.55;pointer-events:none}
-
 .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
+
+/* ── EVENT CARDS ── */
 .ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center;position:relative}
 .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
 .ecard.high{background:#FEF2F2;border-color:#FECACA}
@@ -130,6 +189,12 @@ tv-ticker-tape{display:block;width:100%}
 .card-impact.high{color:#dc2626}.card-impact.medium{color:#ea7000}.card-impact.low{color:#d4a000}.card-impact.none{color:#999}
 .card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
 .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
+
+/* ── NO RESULTS ── */
+.no-results{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:8px;color:#bbb;font-size:13px}
+.no-results svg{width:28px;height:28px;stroke:#ddd;fill:none;stroke-width:1.5;stroke-linecap:round}
+
+/* ── MARKETS PAGE ── */
 .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
 .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:0;display:flex;align-items:stretch;overflow:hidden;flex-shrink:0}
 .clock-city{flex:1;display:flex;align-items:center;justify-content:center;gap:var(--clk-gap,4px);border-left:1px solid #e5e5e0;padding:8px var(--clk-pad,4px);min-width:0}
@@ -147,6 +212,8 @@ tv-ticker-tape{display:block;width:100%}
 .markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
 .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
 .markets-sidebar-body{flex:1;overflow-y:auto}
+
+/* ── CONTACT PAGE ── */
 .contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
 .contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
 .contact-field{display:flex;flex-direction:column;gap:8px}
@@ -157,6 +224,8 @@ tv-ticker-tape{display:block;width:100%}
 .contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
 .contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
 .contact-submit:hover{background:#eff6ff}
+
+/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
@@ -228,7 +297,6 @@ tv-ticker-tape{display:block;width:100%}
     </button>
     <div class="main">
       <div class="week-nav">
-        <!-- LEFT: title + divider + nav buttons -->
         <div class="week-nav-left">
           <div class="week-title-block">
             <div class="week-title">What to Watch for the Week</div>
@@ -238,13 +306,88 @@ tv-ticker-tape{display:block;width:100%}
           <button class="btn" onclick="goToday()">Today</button>
           <button class="btn" onclick="nextWeek()">Next &rarr;</button>
         </div>
-        <!-- RIGHT: filter pills + timezone -->
         <div class="week-nav-right">
           <div class="filter-pills">
             <button class="filter-pill active" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed Events</button>
             <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated ~</button>
             <button class="filter-pill" id="pill-all" onclick="setFilter('all')">All</button>
           </div>
+
+          <!-- FILTER BUTTON -->
+          <div style="position:relative" id="filterContainer">
+            <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel(event)" title="Filter events">
+              <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              Filters
+              <span class="filter-badge" id="filterBadge" style="display:none">0</span>
+            </button>
+
+            <!-- FILTER PANEL -->
+            <div class="filter-panel" id="filterPanel" style="display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:400">
+              <div class="fp-header">
+                <span class="fp-title">Filter events</span>
+                <button class="fp-close" onclick="closeFilterPanel()">&times;</button>
+              </div>
+
+              <!-- Impact -->
+              <div class="fp-sec">
+                <div class="sec-hd">
+                  <span class="sec-lbl">Expected impact</span>
+                  <span class="sec-links"><a onclick="fpSetAll('impact',1)">all</a> &middot; <a onclick="fpSetAll('impact',0)">none</a></span>
+                </div>
+                <div class="impact-row">
+                  <div class="ichip high on" id="fchip-high" onclick="fpTogChip(this,'high')"><span class="idot idot-h"></span>High</div>
+                  <div class="ichip med on" id="fchip-med" onclick="fpTogChip(this,'med')"><span class="idot idot-m"></span>Medium</div>
+                  <div class="ichip low on" id="fchip-low" onclick="fpTogChip(this,'low')"><span class="idot idot-l"></span>Low</div>
+                </div>
+              </div>
+
+              <!-- Calendar Tabs -->
+              <div class="fp-sec">
+                <div class="sec-hd">
+                  <span class="sec-lbl">Calendar tab</span>
+                  <span class="sec-links"><a onclick="fpSetAll('tab',1)">all</a> &middot; <a onclick="fpSetAll('tab',0)">none</a></span>
+                </div>
+                <div class="tab-list" id="fp-tab-list">
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Economic Releases"><div class="cbox on"></div><span class="clabel">Economic Releases</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Central Bank"><div class="cbox on"></div><span class="clabel">Central Bank</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Treasuries"><div class="cbox on"></div><span class="clabel">Treasuries</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Earnings"><div class="cbox on"></div><span class="clabel">Earnings</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Corporate Events"><div class="cbox on"></div><span class="clabel">Corporate Events</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Market Structure Events"><div class="cbox on"></div><span class="clabel">Market Structure Events</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="M&A"><div class="cbox on"></div><span class="clabel">M&amp;A</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="IPO"><div class="cbox on"></div><span class="clabel">IPO</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Sector & Industry Conferences"><div class="cbox on"></div><span class="clabel">Sector &amp; Industry Conferences</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Political Seasonality"><div class="cbox on"></div><span class="clabel">Political Seasonality</span></div>
+                  <div class="citem" onclick="fpTogCheck(this)" data-tab="Stock Splits"><div class="cbox on"></div><span class="clabel">Stock Splits</span></div>
+                </div>
+              </div>
+
+              <!-- Geographic Zones -->
+              <div class="fp-sec">
+                <div class="sec-hd">
+                  <span class="sec-lbl">Geographic zone</span>
+                  <span class="sec-links"><a onclick="fpSetAll('zone',1)">all</a> &middot; <a onclick="fpSetAll('zone',0)">none</a></span>
+                </div>
+                <div class="zone-row" id="fp-zone-row">
+                  <div class="zchip on" onclick="fpTogZone(this)" data-zone="Americas">Americas</div>
+                  <div class="zchip" onclick="fpTogZone(this)" data-zone="Europe">Europe</div>
+                  <div class="zchip" onclick="fpTogZone(this)" data-zone="Middle East &amp; Africa">Middle East &amp; Africa</div>
+                  <div class="zchip" onclick="fpTogZone(this)" data-zone="Asia Pacific">Asia Pacific</div>
+                  <div class="zchip on" onclick="fpTogZone(this)" data-zone="Global">Global</div>
+                </div>
+              </div>
+
+              <div class="fp-footer">
+                <button class="btn-reset" onclick="fpReset()">Remove filters</button>
+                <div style="display:flex;gap:8px">
+                  <button class="btn-cancel-fp" onclick="closeFilterPanel()">Cancel</button>
+                  <button class="btn-apply" onclick="fpApply()">Apply filters</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TIMEZONE -->
           <div class="tz-container" id="tzContainer">
             <div class="tz-wrap" onclick="toggleTzDropdown(event)" title="Change timezone">
               <svg class="tz-globe" viewBox="0 0 24 24">
@@ -370,7 +513,28 @@ var allExpanded = false;
 var sidebarOpen = true;
 var events      = [];
 
-// seed only the current month open by default
+// ── FILTER PANEL STATE ─────────────────────────────────────────────────
+var fpState = {
+  impact: { high: true, med: true, low: true },
+  tabs: {
+    'Economic Releases': true,
+    'Central Bank': true,
+    'Treasuries': true,
+    'Earnings': true,
+    'Corporate Events': true,
+    'Market Structure Events': true,
+    'M&A': true,
+    'IPO': true,
+    'Sector & Industry Conferences': true,
+    'Political Seasonality': true,
+    'Stock Splits': true
+  },
+  zones: { 'Americas': true, 'Europe': false, 'Middle East & Africa': false, 'Asia Pacific': false, 'Global': true }
+};
+// Pending state (what's in the panel before Apply)
+var fpPending = JSON.parse(JSON.stringify(fpState));
+var fpActive = false; // whether any non-default filters are active
+
 (function() {
   var t = new Date();
   openMonths[t.getFullYear() + '-' + t.getMonth()] = true;
@@ -413,11 +577,8 @@ function tzShort(iana) {
     if (TZ_LIST[i].iana === iana) { return TZ_LIST[i].short; }
   }
   try {
-    var parts = new Intl.DateTimeFormat('en', { timeZone: iana, timeZoneName: 'short' })
-      .formatToParts(new Date());
-    for (var j = 0; j < parts.length; j++) {
-      if (parts[j].type === 'timeZoneName') { return parts[j].value; }
-    }
+    var parts = new Intl.DateTimeFormat('en', { timeZone: iana, timeZoneName: 'short' }).formatToParts(new Date());
+    for (var j = 0; j < parts.length; j++) { if (parts[j].type === 'timeZoneName') { return parts[j].value; } }
   } catch(e) {}
   return iana.split('/').pop();
 }
@@ -428,12 +589,7 @@ function utcToLocalTime(isoUtc, tzIana) {
   try {
     var d = new Date(isoUtc);
     if (isNaN(d.getTime())) { return ''; }
-    var timeStr = d.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: tzIana
-    });
+    var timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tzIana });
     return timeStr + ' ' + tzShort(tzIana);
   } catch(e) { return ''; }
 }
@@ -450,18 +606,12 @@ function buildTzDropdown() {
   var html = '';
   var now = new Date();
   TZ_LIST.forEach(function(item) {
-    if (item.group) {
-      html += '<div class="tz-section-label">' + item.group + '</div>';
-      return;
-    }
+    if (item.group) { html += '<div class="tz-section-label">' + item.group + '</div>'; return; }
     var isSel = item.iana === selectedTz;
     var localTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: item.iana });
     html += '<div class="tz-opt' + (isSel ? ' selected' : '') + '" onclick="selectTz(\'' + item.iana + '\')">';
     html += '<span>' + item.label + '</span>';
-    html += '<span style="display:flex;align-items:center;gap:6px">';
-    html += '<span class="tz-opt-time">' + localTime + '</span>';
-    html += '<span class="tz-opt-check">' + (isSel ? '&#10003;' : '') + '</span>';
-    html += '</span></div>';
+    html += '<span style="display:flex;align-items:center;gap:6px"><span class="tz-opt-time">' + localTime + '</span><span class="tz-opt-check">' + (isSel ? '&#10003;' : '') + '</span></span></div>';
   });
   document.getElementById('tzDropdown').innerHTML = html;
 }
@@ -471,10 +621,7 @@ function toggleTzDropdown(e) {
   var dd = document.getElementById('tzDropdown');
   var isOpen = dd.classList.contains('open');
   document.querySelectorAll('.tz-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
-  if (!isOpen) {
-    buildTzDropdown();
-    dd.classList.add('open');
-  }
+  if (!isOpen) { buildTzDropdown(); dd.classList.add('open'); }
 }
 
 function selectTz(iana) {
@@ -485,15 +632,185 @@ function selectTz(iana) {
 }
 
 document.addEventListener('click', function(e) {
-  var container = document.getElementById('tzContainer');
-  if (container && !container.contains(e.target)) {
+  // Close TZ dropdown
+  var tzCont = document.getElementById('tzContainer');
+  if (tzCont && !tzCont.contains(e.target)) {
     var dd = document.getElementById('tzDropdown');
     if (dd) { dd.classList.remove('open'); }
+  }
+  // Close filter panel
+  var fpCont = document.getElementById('filterContainer');
+  if (fpCont && !fpCont.contains(e.target)) {
+    var fp = document.getElementById('filterPanel');
+    if (fp) { fp.style.display = 'none'; }
   }
 });
 
 document.getElementById('tzLabel').textContent = tzShort(selectedTz);
-// ── END TIMEZONE SYSTEM ────────────────────────────────────────────────
+
+// ── FILTER PANEL FUNCTIONS ─────────────────────────────────────────────
+function toggleFilterPanel(e) {
+  e.stopPropagation();
+  var fp = document.getElementById('filterPanel');
+  var isOpen = fp.style.display !== 'none';
+  if (isOpen) {
+    fp.style.display = 'none';
+  } else {
+    // Sync pending state to current applied state
+    fpPending = JSON.parse(JSON.stringify(fpState));
+    syncPanelUI();
+    fp.style.display = 'block';
+  }
+}
+
+function closeFilterPanel() {
+  document.getElementById('filterPanel').style.display = 'none';
+}
+
+function syncPanelUI() {
+  // Impact chips
+  ['high','med','low'].forEach(function(k) {
+    var el = document.getElementById('fchip-' + k);
+    if (el) { el.classList.toggle('on', !!fpPending.impact[k]); }
+  });
+  // Tab checkboxes
+  document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) {
+    var tab = el.getAttribute('data-tab');
+    var box = el.querySelector('.cbox');
+    if (box && tab !== null) { box.classList.toggle('on', fpPending.tabs[tab] !== false); }
+  });
+  // Zone chips
+  document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) {
+    var zone = el.getAttribute('data-zone');
+    if (zone !== null) { el.classList.toggle('on', !!fpPending.zones[zone]); }
+  });
+}
+
+function fpTogChip(el, key) {
+  fpPending.impact[key] = !fpPending.impact[key];
+  el.classList.toggle('on', fpPending.impact[key]);
+}
+
+function fpTogCheck(el) {
+  var tab = el.getAttribute('data-tab');
+  var box = el.querySelector('.cbox');
+  fpPending.tabs[tab] = !fpPending.tabs[tab];
+  if (box) { box.classList.toggle('on', fpPending.tabs[tab]); }
+}
+
+function fpTogZone(el) {
+  var zone = el.getAttribute('data-zone');
+  fpPending.zones[zone] = !fpPending.zones[zone];
+  el.classList.toggle('on', fpPending.zones[zone]);
+}
+
+function fpSetAll(group, on) {
+  if (group === 'impact') {
+    ['high','med','low'].forEach(function(k) {
+      fpPending.impact[k] = !!on;
+      var el = document.getElementById('fchip-' + k);
+      if (el) { el.classList.toggle('on', !!on); }
+    });
+  } else if (group === 'tab') {
+    document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) {
+      var tab = el.getAttribute('data-tab');
+      fpPending.tabs[tab] = !!on;
+      var box = el.querySelector('.cbox');
+      if (box) { box.classList.toggle('on', !!on); }
+    });
+  } else if (group === 'zone') {
+    document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) {
+      var zone = el.getAttribute('data-zone');
+      fpPending.zones[zone] = !!on;
+      el.classList.toggle('on', !!on);
+    });
+  }
+}
+
+function fpApply() {
+  fpState = JSON.parse(JSON.stringify(fpPending));
+  updateFilterBadge();
+  closeFilterPanel();
+  renderWeek();
+}
+
+function fpReset() {
+  // Reset to all-on for impact/tabs, Americas+Global for zones
+  fpPending.impact = { high: true, med: true, low: true };
+  Object.keys(fpPending.tabs).forEach(function(k) { fpPending.tabs[k] = true; });
+  fpPending.zones = { 'Americas': true, 'Europe': false, 'Middle East & Africa': false, 'Asia Pacific': false, 'Global': true };
+  syncPanelUI();
+  fpState = JSON.parse(JSON.stringify(fpPending));
+  updateFilterBadge();
+  renderWeek();
+}
+
+function updateFilterBadge() {
+  var count = 0;
+  // Count deactivated impact chips
+  ['high','med','low'].forEach(function(k) { if (!fpState.impact[k]) count++; });
+  // Count deactivated tabs
+  Object.keys(fpState.tabs).forEach(function(k) { if (!fpState.tabs[k]) count++; });
+  // Count active non-default zones (Europe, MEA, APAC)
+  ['Europe','Middle East & Africa','Asia Pacific'].forEach(function(z) { if (fpState.zones[z]) count++; });
+
+  var badge = document.getElementById('filterBadge');
+  var btn = document.getElementById('filterBtn');
+  if (count > 0) {
+    badge.style.display = 'flex';
+    badge.textContent = count;
+    btn.classList.add('active');
+  } else {
+    badge.style.display = 'none';
+    btn.classList.remove('active');
+  }
+}
+
+function eventPassesFilter(ev) {
+  // Impact filter
+  var imp = ev.impact || 'none';
+  if (imp === 'high' && !fpState.impact.high) { return false; }
+  if (imp === 'medium' && !fpState.impact.med) { return false; }
+  if (imp === 'low' && !fpState.impact.low) { return false; }
+
+  // Tab filter — uses category to infer tab
+  // Only filter if at least one tab is deactivated
+  var anyTabOff = Object.keys(fpState.tabs).some(function(k) { return !fpState.tabs[k]; });
+  if (anyTabOff) {
+    var cat = ev.category || '';
+    var tabKey = categoryToTab(cat, ev.title);
+    if (tabKey && fpState.tabs[tabKey] === false) { return false; }
+  }
+
+  // Zone filter — only filter if source_tab/region data exists
+  // For now, US events pass when Americas is on; Global events pass when Global is on
+  // This will be more precise once region column is populated in Supabase
+  var allZonesOff = !Object.keys(fpState.zones).some(function(k) { return fpState.zones[k]; });
+  if (!allZonesOff) {
+    var evZone = ev.region || 'Americas'; // default to Americas until region column is populated
+    if (!fpState.zones[evZone]) { return false; }
+  }
+
+  return true;
+}
+
+function categoryToTab(cat, title) {
+  if (!cat) { return null; }
+  var c = cat.toLowerCase();
+  if (c.indexOf('economic release') > -1) { return 'Economic Releases'; }
+  if (c.indexOf('fed') > -1 || c.indexOf('fomc') > -1 || c.indexOf('central bank') > -1) { return 'Central Bank'; }
+  if (c.indexOf('treasur') > -1 || c.indexOf('auction') > -1) { return 'Treasuries'; }
+  if (c.indexOf('earning') > -1) { return 'Earnings'; }
+  if (c.indexOf('corporate') > -1 || c.indexOf('product launch') > -1 || c.indexOf('shareholder') > -1) { return 'Corporate Events'; }
+  if (c.indexOf('market structure') > -1 || c.indexOf('triple witching') > -1 || c.indexOf('quad witching') > -1 || c.indexOf('market holiday') > -1 || c.indexOf('early close') > -1) { return 'Market Structure Events'; }
+  if (c.indexOf('m&a') > -1 || c.indexOf('merger') > -1 || c.indexOf('acquisition') > -1) { return 'M&A'; }
+  if (c.indexOf('ipo') > -1 || c.indexOf('listing') > -1) { return 'IPO'; }
+  if (c.indexOf('conference') > -1 || c.indexOf('sector') > -1 || c.indexOf('industry') > -1) { return 'Sector & Industry Conferences'; }
+  if (c.indexOf('political') > -1 || c.indexOf('seasonal') > -1 || c.indexOf('election') > -1) { return 'Political Seasonality'; }
+  if (c.indexOf('stock split') > -1 || c.indexOf('split') > -1) { return 'Stock Splits'; }
+  return null;
+}
+// ── END FILTER PANEL ───────────────────────────────────────────────────
 
 function setFilter(mode) {
   filterMode = mode;
@@ -586,9 +903,7 @@ function parseDate(dateStr, monthStr) {
   dateStr = String(dateStr).trim();
   if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
   if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
-  if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
-    return { start: dateStr.substring(0, 10), end: '' };
-  }
+  if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) { return { start: dateStr.substring(0, 10), end: '' }; }
   var m = MMAP[monthStr] || '01';
   var parts = dateStr.split(' ');
   var num = parts[parts.length - 1];
@@ -641,7 +956,8 @@ function fetchEvents() {
         source:         r.source_url || deriveSource(r.category),
         ticker:         r.ticker || '',
         aka:            r.aka || '',
-        category:       r.category || ''
+        category:       r.category || '',
+        region:         r.region || 'Americas'
       });
     });
   });
@@ -688,13 +1004,7 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
     var inWk = date >= wStart && date <= wEnd;
     var isPast = date < today;
     var cls = 'mgrid-cell';
-    if (isTod) {
-      cls += ' today-cell';
-    } else if (isPast) {
-      cls += ' past-day';
-    } else if (inWk) {
-      cls += ' in-current-week';
-    }
+    if (isTod) { cls += ' today-cell'; } else if (isPast) { cls += ' past-day'; } else if (inWk) { cls += ' in-current-week'; }
     var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
     var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.shortName + '</div>'; }).join('');
     html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
@@ -704,9 +1014,7 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
   return html + '</div>';
 }
 
-function handleMonthClick(el) {
-  toggleMonth(el.getAttribute('data-key'), parseInt(el.getAttribute('data-y')), parseInt(el.getAttribute('data-mi')));
-}
+function handleMonthClick(el) { toggleMonth(el.getAttribute('data-key'), parseInt(el.getAttribute('data-y')), parseInt(el.getAttribute('data-mi'))); }
 function handleDateClick(el) { jumpToDate(el.getAttribute('data-date')); }
 function handleCardClick(el) { openModal(parseInt(el.getAttribute('data-id'))); }
 
@@ -737,13 +1045,8 @@ function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
   var sb = document.getElementById('sidebar');
   var poly = document.getElementById('arrowPoly');
-  if (sidebarOpen) {
-    sb.classList.remove('collapsed');
-    if (poly) { poly.setAttribute('points','15 18 9 12 15 6'); }
-  } else {
-    sb.classList.add('collapsed');
-    if (poly) { poly.setAttribute('points','9 18 15 12 9 6'); }
-  }
+  if (sidebarOpen) { sb.classList.remove('collapsed'); if (poly) { poly.setAttribute('points','15 18 9 12 15 6'); } }
+  else { sb.classList.add('collapsed'); if (poly) { poly.setAttribute('points','9 18 15 12 9 6'); } }
   setTimeout(positionArrow, 220);
   positionArrow();
 }
@@ -777,9 +1080,11 @@ function renderWeek() {
     if (byDate[ev.date] === undefined) { return; }
     if (filterMode === 'confirmed' && ev.isEstimated) { return; }
     if (filterMode === 'estimated' && !ev.isEstimated) { return; }
+    if (!eventPassesFilter(ev)) { return; }
     byDate[ev.date].push(ev);
   });
   var fmt = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); };
+  var totalVisible = Object.keys(byDate).reduce(function(acc, k) { return acc + byDate[k].length; }, 0);
   document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' — Click any event to view details.';
   document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
     var isToday = d.getTime() === today.getTime();
@@ -813,13 +1118,8 @@ function openModal(id) {
   if (ev.isEstimated) { overlay.classList.add('est-modal'); } else { overlay.classList.remove('est-modal'); }
   var heroImg = document.getElementById('modalHeroImg');
   var modalHero = document.getElementById('modalHero');
-  if (ev.hero) {
-    heroImg.src = ev.hero;
-    heroImg.style.display = 'block';
-    modalHero.style.setProperty('--hero-pos', ev.heroPosition || 'center');
-  } else {
-    heroImg.style.display = 'none';
-  }
+  if (ev.hero) { heroImg.src = ev.hero; heroImg.style.display = 'block'; modalHero.style.setProperty('--hero-pos', ev.heroPosition || 'center'); }
+  else { heroImg.style.display = 'none'; }
   var logoEl = document.getElementById('modalLogo');
   if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
   document.getElementById('modalTitle').textContent = ev.title;
@@ -890,9 +1190,7 @@ updateClocks();
     clock.style.setProperty('--clk-gap',  (2  + t * 4).toFixed(1) + 'px');
     clock.style.setProperty('--clk-pad',  (2  + t * 7).toFixed(1) + 'px');
   }
-  var ro = new ResizeObserver(function(entries) {
-    applyScale(entries[0].contentRect.width);
-  });
+  var ro = new ResizeObserver(function(entries) { applyScale(entries[0].contentRect.width); });
   ro.observe(clock);
   applyScale(clock.offsetWidth);
 }());
