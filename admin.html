@@ -64,13 +64,46 @@
 
   .create-banner { background: linear-gradient(135deg,rgba(232,197,71,0.08),rgba(232,197,71,0.03)); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
 
+  /* SAVE ORDER BAR */
+  .order-bar { position: sticky; top: 50px; z-index: 90; background: rgba(20,20,23,0.97); backdrop-filter: blur(12px); border-bottom: 2px solid var(--accent); padding: 10px 24px; display: none; align-items: center; gap: 12px; }
+  .order-bar.visible { display: flex; animation: slideDown 0.2s ease; }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+  .order-bar-icon { color: var(--accent); flex-shrink: 0; }
+  .order-bar-msg { font-size: 12px; font-family: var(--mono); color: var(--text2); letter-spacing: 0.04em; flex: 1; }
+  .order-bar-msg strong { color: var(--accent); }
+  .btn-save-order { padding: 7px 16px; border-radius: var(--r); font-size: 12px; font-weight: 700; font-family: var(--sans); cursor: pointer; border: none; background: var(--accent); color: #0c0c0e; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; }
+  .btn-save-order:hover { opacity: 0.88; }
+  .btn-save-order:active { transform: scale(0.97); }
+  .btn-save-order:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-discard-order { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 500; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border2); background: transparent; color: var(--text3); transition: all 0.15s; white-space: nowrap; }
+  .btn-discard-order:hover { border-color: var(--red); color: var(--red); }
+
   .table-wrap { overflow-x: auto; padding: 0 24px 100px; }
   table { width: 100%; border-collapse: collapse; min-width: 800px; }
   thead th { text-align: left; font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+  thead th:first-child { cursor: default; width: 32px; padding: 10px 8px; }
   thead th:hover { color: var(--text2); }
+  thead th:first-child:hover { color: var(--text3); }
   tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
   tbody tr:hover { background: var(--surface); }
   tbody td { padding: 10px 12px; vertical-align: middle; }
+
+  /* DRAG HANDLE COLUMN */
+  .td-drag { width: 32px; padding: 10px 8px !important; }
+  .drag-handle { display: flex; align-items: center; justify-content: center; width: 22px; height: 28px; border-radius: 4px; cursor: grab; color: var(--text3); opacity: 0; transition: opacity 0.15s, color 0.15s, background 0.15s; user-select: none; font-size: 14px; letter-spacing: 1px; }
+  .drag-handle:hover { color: var(--accent); background: rgba(232,197,71,0.08); }
+  .drag-handle:active { cursor: grabbing; }
+  .drag-handle.active { opacity: 1 !important; }
+  tbody tr:hover .drag-handle { opacity: 0.5; }
+  tbody tr:hover .drag-handle.active { opacity: 1; }
+
+  /* DRAG STATES */
+  tbody tr.dragging { opacity: 0.35; background: var(--surface2) !important; }
+  tbody tr.drag-over-top { box-shadow: inset 0 2px 0 var(--accent); }
+  tbody tr.drag-over-bottom { box-shadow: inset 0 -2px 0 var(--accent); }
+  tbody tr.drag-blocked { background: rgba(224,85,85,0.06) !important; }
+  tbody tr.reordered { background: rgba(232,197,71,0.04); }
+
   .td-date { font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; }
   .td-event { font-weight: 500; color: var(--text); }
   .td-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
@@ -88,6 +121,8 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn-edit { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); transition: all 0.15s; }
   .btn-edit:hover { border-color: var(--border2); color: var(--text); }
+
+  /* EDIT OVERLAY */
   #editOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
   #editOverlay.open { display: flex; }
   .edit-panel { background: #fff; border-radius: 16px; width: 560px; max-width: 96vw; max-height: 96vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 32px 100px rgba(0,0,0,0.7); color: #1a1a1a; }
@@ -152,8 +187,6 @@
   .toggle-track.on .toggle-thumb { left: 19px; }
   .toggle-label { font-size: 13px; color: #333; }
   .toggle-sub { font-size: 11px; color: #aaa; margin-top: 1px; }
-
-  /* ── ESTIMATED EVENT toggle & preview styles ── */
   #estimatedToggle.on { background: #b8820a !important; }
   .est-preview-banner { display: none; align-items: center; gap: 8px; padding: 9px 13px; background: rgba(184,130,10,0.10); border: 1px dashed #b8820a; border-radius: 6px; margin-bottom: 14px; font-size: 12px; color: #b8820a; font-weight: 600; letter-spacing: 0.01em; }
   .est-preview-banner svg { flex-shrink: 0; }
@@ -162,7 +195,6 @@
   .edit-panel.is-estimated .ep-header { background: linear-gradient(135deg, #2e2000, #161000) !important; }
   .edit-panel.is-estimated .ep-header .ep-header-title { color: #e8c070; }
   .edit-panel.is-estimated .ep-header .ep-close { background: rgba(255,255,255,0.1); color: #e8c070; }
-
   .price-move-wrap { display: flex; align-items: center; gap: 8px; }
   .pm-sym { font-size: 16px; color: #999; font-weight: 500; }
   .pm-input { width: 80px; }
@@ -240,6 +272,21 @@
     <span class="status-text" id="statusText">connecting…</span>
   </div>
 </div>
+
+<!-- SAVE ORDER BAR -->
+<div class="order-bar" id="orderBar">
+  <svg class="order-bar-icon" width="15" height="15" viewBox="0 0 15 15" fill="none">
+    <path d="M3 5h9M3 7.5h6M3 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M11 9l2 2-2 2" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="order-bar-msg"><strong id="orderChangeCount">0 changes</strong> — reorder pending. Save to apply or discard to revert.</span>
+  <button class="btn-discard-order" onclick="discardOrder()">Discard</button>
+  <button class="btn-save-order" id="saveOrderBtn" onclick="saveOrder()">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Save Order
+  </button>
+</div>
+
 <div class="toolbar">
   <div class="search-wrap">
     <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9 9L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -262,12 +309,15 @@
   <div id="tableState" class="state-msg"><span class="spinner"></span></div>
   <table id="eventsTable" style="display:none">
     <thead><tr>
+      <th></th>
       <th onclick="sortBy('date')">DATE</th><th onclick="sortBy('event')">EVENT</th><th>CATEGORY</th>
       <th onclick="sortBy('impact')">IMPACT</th><th>ENRICHMENT</th><th style="width:60px"></th>
     </tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
 </div>
+
+<!-- EDIT OVERLAY (unchanged) -->
 <div id="editOverlay" onclick="overlayClick(event)">
   <div class="edit-panel" id="editPanel">
     <div class="ep-header">
@@ -359,7 +409,6 @@
         </div>
       </div>
       <div class="ep-section">
-        <!-- ESTIMATED EVENT banner (visible when toggle is on) -->
         <div class="est-preview-banner">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path d="M8 1.5L14.5 14H1.5L8 1.5Z" stroke="#b8820a" stroke-width="1.3" stroke-linejoin="round"/>
@@ -368,7 +417,6 @@
           </svg>
           Estimated / Unconfirmed — amber dashed style active on calendar
         </div>
-        <!-- ESTIMATED EVENT toggle -->
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleEstimated()">
             <div class="toggle-track" id="estimatedToggle"><div class="toggle-thumb"></div></div>
@@ -378,7 +426,6 @@
             </div>
           </div>
         </div>
-        <!-- MONTHLY TOGGLE (unchanged) -->
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleMonthly()">
             <div class="toggle-track" id="monthlyToggle"><div class="toggle-thumb"></div></div>
@@ -541,6 +588,10 @@ var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroD
 var currentHeroUrl = '';
 var isNewEvent = false;
 
+// ── ORDER MANAGEMENT ──────────────────────────────────────
+var orderChanges = {}; // { eventId: newDisplayOrder }
+var originalOrder = []; // snapshot of filteredEvents ids before any drag
+
 function supaFetch(path, opts) {
   var method = (opts && opts.method) || 'GET';
   var headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
@@ -555,7 +606,7 @@ function supaFetch(path, opts) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,is_estimated,price_move_val,price_move_type,chart_ticker,chart_range,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,is_estimated,price_move_val,price_move_type,chart_ticker,chart_range,display_order,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
@@ -597,6 +648,12 @@ function filterTable() {
   });
   filteredEvents.sort(function(a,b) {
     var av = (a[sortCol]||'').toString().toLowerCase(), bv = (b[sortCol]||'').toString().toLowerCase();
+    if (av === bv && sortCol === 'date') {
+      // secondary sort by display_order within same date
+      var ao = (a.display_order != null ? a.display_order : 9999);
+      var bo = (b.display_order != null ? b.display_order : 9999);
+      return ao - bo;
+    }
     return sortDir * (av < bv ? -1 : av > bv ? 1 : 0);
   });
   document.getElementById('countBadge').textContent = filteredEvents.length + ' / ' + allEvents.length + ' events';
@@ -605,9 +662,25 @@ function filterTable() {
 
 function sortBy(col) { if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; } filterTable(); }
 
+// ── DATE GROUP ANALYSIS ────────────────────────────────────
+// Build a map of which dates have more than 1 event (drag is only useful then)
+function getDateGroups() {
+  var groups = {};
+  filteredEvents.forEach(function(ev, i) {
+    var d = (ev.date || '').toString().substring(0, 10);
+    if (!groups[d]) groups[d] = [];
+    groups[d].push(i);
+  });
+  return groups;
+}
+
 function renderTable() {
   var tb = document.getElementById('tableBody');
-  if (!filteredEvents.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>'; return; }
+  if (!filteredEvents.length) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>';
+    return;
+  }
+  var dateGroups = getDateGroups();
   var html = '';
   filteredEvents.forEach(function(ev, i) {
     var ent = ev.entity || {};
@@ -619,7 +692,14 @@ function renderTable() {
     var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
     var date = ev.date ? String(ev.date).substring(0,10) : '';
     var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
-    html += '<tr onclick="openEdit('+i+')">'
+    var d = (ev.date||'').toString().substring(0,10);
+    var draggable = dateGroups[d] && dateGroups[d].length > 1;
+    var handleHtml = draggable
+      ? '<td class="td-drag"><div class="drag-handle active" title="Drag to reorder within this date">&#8801;</div></td>'
+      : '<td class="td-drag"><div class="drag-handle"></div></td>';
+    var reorderedClass = orderChanges[ev.id] != null ? ' reordered' : '';
+    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+'">'
+      + handleHtml
       + '<td class="td-date">'+date+'</td>'
       + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+'</div>'+(ev.display_time?'<div class="td-sub">&#9200; '+esc(ev.display_time)+'</div>':'')+'</td>'
       + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
@@ -629,6 +709,162 @@ function renderTable() {
       + '</tr>';
   });
   tb.innerHTML = html;
+  attachDragHandlers();
+}
+
+// ── DRAG & DROP LOGIC ──────────────────────────────────────
+var dragSrcIdx = null;
+var dragSrcDate = null;
+
+function attachDragHandlers() {
+  var rows = document.querySelectorAll('#tableBody tr[draggable="true"]');
+  rows.forEach(function(row) {
+    row.addEventListener('dragstart', onDragStart);
+    row.addEventListener('dragover', onDragOver);
+    row.addEventListener('dragleave', onDragLeave);
+    row.addEventListener('drop', onDrop);
+    row.addEventListener('dragend', onDragEnd);
+  });
+}
+
+function onDragStart(e) {
+  dragSrcIdx = parseInt(this.getAttribute('data-idx'));
+  dragSrcDate = this.getAttribute('data-date');
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(dragSrcIdx));
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  var targetDate = this.getAttribute('data-date');
+  if (targetDate !== dragSrcDate) {
+    // Different date — blocked
+    e.dataTransfer.dropEffect = 'none';
+    this.classList.add('drag-blocked');
+    this.classList.remove('drag-over-top', 'drag-over-bottom');
+    return;
+  }
+  e.dataTransfer.dropEffect = 'move';
+  this.classList.remove('drag-blocked');
+  var rect = this.getBoundingClientRect();
+  var mid = rect.top + rect.height / 2;
+  if (e.clientY < mid) {
+    this.classList.add('drag-over-top');
+    this.classList.remove('drag-over-bottom');
+  } else {
+    this.classList.add('drag-over-bottom');
+    this.classList.remove('drag-over-top');
+  }
+}
+
+function onDragLeave(e) {
+  this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-blocked');
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-blocked');
+  var targetDate = this.getAttribute('data-date');
+  if (targetDate !== dragSrcDate) return; // blocked — different date
+  var targetIdx = parseInt(this.getAttribute('data-idx'));
+  if (targetIdx === dragSrcIdx) return;
+
+  // Determine insert position
+  var rect = this.getBoundingClientRect();
+  var insertAfter = e.clientY >= rect.top + rect.height / 2;
+  var insertIdx = insertAfter ? targetIdx + 1 : targetIdx;
+  if (insertIdx > dragSrcIdx) insertIdx--; // account for removal
+
+  // Reorder filteredEvents array
+  var moved = filteredEvents.splice(dragSrcIdx, 1)[0];
+  filteredEvents.splice(insertIdx, 0, moved);
+
+  // Assign new display_order values within this date group
+  var dateGroup = filteredEvents.filter(function(ev) {
+    return (ev.date||'').toString().substring(0,10) === dragSrcDate;
+  });
+  dateGroup.forEach(function(ev, pos) {
+    var newOrder = pos + 1;
+    if (ev.display_order !== newOrder) {
+      orderChanges[ev.id] = newOrder;
+      ev.display_order = newOrder; // update in-memory too
+    }
+  });
+
+  updateOrderBar();
+  renderTable();
+}
+
+function onDragEnd(e) {
+  document.querySelectorAll('#tableBody tr').forEach(function(r) {
+    r.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom', 'drag-blocked');
+  });
+  dragSrcIdx = null;
+  dragSrcDate = null;
+}
+
+// ── ORDER BAR ──────────────────────────────────────────────
+function updateOrderBar() {
+  var count = Object.keys(orderChanges).length;
+  var bar = document.getElementById('orderBar');
+  if (count === 0) {
+    bar.classList.remove('visible');
+    return;
+  }
+  bar.classList.add('visible');
+  document.getElementById('orderChangeCount').textContent = count + (count === 1 ? ' change' : ' changes');
+}
+
+function discardOrder() {
+  orderChanges = {};
+  // Reload from server to restore original order
+  loadEvents();
+  document.getElementById('orderBar').classList.remove('visible');
+}
+
+function saveOrder() {
+  var ids = Object.keys(orderChanges);
+  if (!ids.length) return;
+  var btn = document.getElementById('saveOrderBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving…';
+
+  // Fire all updates in parallel — one PATCH per changed row
+  var promises = ids.map(function(id) {
+    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, {
+      method: 'PATCH',
+      body: JSON.stringify({ display_order: orderChanges[id] })
+    });
+  });
+
+  Promise.all(promises)
+    .then(function() {
+      // Update allEvents in memory too
+      ids.forEach(function(id) {
+        var ev = allEvents.find(function(e) { return String(e.id) === String(id); });
+        if (ev) ev.display_order = orderChanges[id];
+      });
+      orderChanges = {};
+      updateOrderBar();
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Order';
+      showToast('Order saved — ' + ids.length + ' event' + (ids.length === 1 ? '' : 's') + ' updated', 'success');
+      // Re-render to clear the gold highlight
+      renderTable();
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Order';
+      showToast('Save failed: ' + err.message, 'error');
+    });
+}
+
+// ── ROW CLICK (prevent drag handle from opening edit) ──────
+function rowClick(e, idx) {
+  // Don't open edit if click was on the drag handle
+  if (e.target.classList.contains('drag-handle') || e.target.closest('.drag-handle')) return;
+  openEdit(idx);
 }
 
 function openNewEvent() {
