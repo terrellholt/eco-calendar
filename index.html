@@ -47,6 +47,13 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-cell.other-month .mgrid-date{color:#ddd}
 .mgrid-cell.in-current-week{background:#eff6ff}
 .mgrid-cell.today-cell{background:#eff6ff}
+
+/* ── past days: warm gray overlay, content legible but muted ── */
+.mgrid-cell.past-day{background:#e4e4e1 !important}
+.mgrid-cell.past-day:hover{background:#deded9 !important}
+.mgrid-cell.past-day .mgrid-date{color:#999}
+.mgrid-cell.past-day .mgrid-evt{opacity:0.55}
+
 .mgrid-date{font-size:9px;font-weight:600;color:#888;margin-bottom:2px;line-height:1}
 .mgrid-cell.today-cell .mgrid-date{color:#2563eb;font-weight:700}
 .mgrid-events{display:flex;flex-direction:column;gap:0;flex:1;overflow:hidden}
@@ -54,7 +61,7 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-evt+.mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
 .mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.week-nav{padding:12px 20px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
+.week-nav{padding:12px 20px 10px 36px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0}
 .week-title{font-size:16px;font-weight:600}
 .week-sub{font-size:11px;color:#999;margin-top:2px}
 .week-controls{display:flex;gap:6px;align-items:center}
@@ -89,6 +96,15 @@ tv-ticker-tape{display:block;width:100%}
 .day-header.today .day-name{color:#2563eb;font-weight:700}
 .day-header.today .day-num{color:#2563eb;font-weight:600}
 .day-header.today .day-month{color:#2563eb;font-weight:600}
+
+/* ── past day column in weekly view ── */
+.day-col.past-week-day{background:#f0f0ed}
+.day-col.past-week-day .day-header{background:#f0f0ed}
+.day-col.past-week-day .day-name{color:#bbb}
+.day-col.past-week-day .day-num{color:#bbb;font-weight:300}
+.day-col.past-week-day .day-month{color:#ccc}
+.day-col.past-week-day .ecard{opacity:0.55;pointer-events:none}
+
 .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
 .ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center;position:relative}
 .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
@@ -649,8 +665,15 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
     var dateStr = ds(date);
     var isTod = date.getTime() === today.getTime();
     var inWk = date >= wStart && date <= wEnd;
+    var isPast = date < today;  // strictly before today — today itself is NOT grayed
     var cls = 'mgrid-cell';
-    if (isTod) { cls += ' today-cell'; } else if (inWk) { cls += ' in-current-week'; }
+    if (isTod) {
+      cls += ' today-cell';
+    } else if (isPast) {
+      cls += ' past-day';        // past days get the gray treatment
+    } else if (inWk) {
+      cls += ' in-current-week'; // future days in current week get the blue tint
+    }
     var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
     var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.title + '</div>'; }).join('');
     html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
@@ -739,10 +762,13 @@ function renderWeek() {
   document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' - Click any event to view details.';
   document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
     var isToday = d.getTime() === today.getTime();
+    var isPastDay = d < today;  // strictly before today
     var evs = byDate[ds(d)] || [];
     var cards = evs.map(function(ev) { return cardHtml(ev); }).join('');
     var hdrCls = 'day-header' + (isToday ? ' today' : '');
-    return '<div class="day-col"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + MONTHS_SH[d.getMonth()] + '</div></div><div class="day-events">' + cards + '</div></div>';
+    // past columns get a muted background; today and future stay normal
+    var colCls = 'day-col' + (isPastDay ? ' past-week-day' : '');
+    return '<div class="' + colCls + '"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-num">' + d.getDate() + '</div><div class="day-month">' + MONTHS_SH[d.getMonth()] + '</div></div><div class="day-events">' + cards + '</div></div>';
   }).join('');
 }
 
