@@ -601,7 +601,7 @@ function parseDate(dateStr, monthStr) {
 }
 
 function fetchEvents() {
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
   return fetch(url, {
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
   })
@@ -620,6 +620,7 @@ function fetchEvents() {
       events.push({
         id:             r.id,
         title:          r.event || '',
+        shortName:      r.short_name || r.event || '',
         name:           deriveName(r.category, r.event),
         date:           parsed.start,
         endDate:        parsed.end || '',
@@ -695,7 +696,7 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
       cls += ' in-current-week';
     }
     var dayEvts = events.filter(function(e) { return e.date === dateStr && e.showMini; }).slice(0, 3);
-    var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.title + '</div>'; }).join('');
+    var evtHtml = dayEvts.map(function(ev) { return '<div class="mgrid-evt ' + impCls(ev.impact) + '">' + ev.shortName + '</div>'; }).join('');
     html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleDateClick(this)"><div class="mgrid-date">' + d + '</div><div class="mgrid-events">' + evtHtml + '</div></div>';
   }
   var rem = (startDow + lastDay.getDate()) % 7;
