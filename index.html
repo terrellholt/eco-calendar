@@ -67,7 +67,7 @@ tv-ticker-tape{display:block;width:100%}
 .week-sub{font-size:10px;color:#999;margin-top:1px}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 
-/* NAV PILLS (Prev / Today / Next) - same design as filter-pills */
+/* NAV PILLS (Prev / Today / Next) */
 .nav-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .nav-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .nav-pill:hover{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
@@ -489,7 +489,15 @@ var MONTHS    = ['January','February','March','April','May','June','July','Augus
 var MONTHS_SH = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 var DAYS      = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var DAYS_SH   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-var MMAP      = {January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12'};
+
+// ── UPDATED: includes 3-letter abbreviations so estimated date strings like
+// "Apr 13, 2027 (est.)" and "Nov/Dec 2027 (est.)" parse correctly ──
+var MMAP = {
+  January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',
+  July:'07',August:'08',September:'09',October:'10',November:'11',December:'12',
+  Jan:'01',Feb:'02',Mar:'03',Apr:'04',Jun:'06',Jul:'07',
+  Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'
+};
 
 var weekStart   = getWeekStart(new Date());
 var filterMode  = 'confirmed';
@@ -766,12 +774,40 @@ function deriveTime(notes) {
   return '';
 }
 
+// ── UPDATED parseDate: now handles estimated date formats like
+// "Apr 13, 2027 (est.)", "Apr 2027 (est.)", "Nov/Dec 2027 (est.)"
+// in addition to all the original formats ──
 function parseDate(dateStr, monthStr) {
   if (!dateStr) { return { start: '', end: '' }; }
   dateStr = String(dateStr).trim();
   if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
   if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
+
+  // ISO date: "2027-04-13"
   if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) { return { start: dateStr.substring(0, 10), end: '' }; }
+
+  // "Mon DD, YYYY" or "Mon DD, YYYY (est.)" — e.g. "Apr 13, 2027 (est.)"
+  var fullDate = dateStr.match(/^([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
+  if (fullDate) {
+    var mNum = MMAP[fullDate[1]];
+    if (mNum) { return { start: fullDate[3] + '-' + mNum + '-' + fullDate[2].padStart(2,'0'), end: '' }; }
+  }
+
+  // "Mon/Mon YYYY" — e.g. "Nov/Dec 2027 (est.)" — use first month, 1st of month
+  var slashMonth = dateStr.match(/^([A-Za-z]+)\/[A-Za-z]+\s+(\d{4})/);
+  if (slashMonth) {
+    var mNum2 = MMAP[slashMonth[1]];
+    if (mNum2) { return { start: slashMonth[2] + '-' + mNum2 + '-01', end: '' }; }
+  }
+
+  // "Mon YYYY" — e.g. "Apr 2027 (est.)" — use 1st of that month
+  var monthYear = dateStr.match(/^([A-Za-z]+)\s+(\d{4})/);
+  if (monthYear) {
+    var mNum3 = MMAP[monthYear[1]];
+    if (mNum3) { return { start: monthYear[2] + '-' + mNum3 + '-01', end: '' }; }
+  }
+
+  // Original short formats: "Apr 13", "13", "13-15"
   var m = MMAP[monthStr] || '01';
   var parts = dateStr.split(' ');
   var num = parts[parts.length - 1];
