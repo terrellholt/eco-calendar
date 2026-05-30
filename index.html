@@ -59,24 +59,29 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-/* ── WEEK NAV ── */
+/* WEEK NAV */
 .week-nav{padding:7px 20px 7px 46px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0;gap:10px}
 .week-nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .week-title-block{margin-right:2px;min-width:260px}
 .week-title{font-size:14px;font-weight:600;line-height:1.2}
 .week-sub{font-size:10px;color:#999;margin-top:1px}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;color:#333;transition:all .12s}
-.btn:hover{background:#f5f5f0}
 
-/* ── FILTER PILLS ── */
+/* NAV PILLS (Prev / Today / Next) - same design as filter-pills */
+.nav-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
+.nav-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
+.nav-pill:hover{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.nav-pill.today-pill{color:#2563eb;font-weight:600}
+.nav-pill.today-pill:hover{background:#fff;color:#1d4ed8;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* FILTER PILLS */
 .filter-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .filter-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .filter-pill:hover{color:#333}
 .filter-pill.active{background:#fff;color:#1a1a1a;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .filter-pill.active.pill-estimated{color:#b8820a}
 
-/* ── TIMEZONE ── */
+/* TIMEZONE */
 .tz-wrap{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;transition:background .12s}
 .tz-wrap:hover{background:#f5f5f0}
 .tz-globe{width:13px;height:13px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
@@ -92,7 +97,7 @@ tv-ticker-tape{display:block;width:100%}
 .tz-opt-check{font-size:12px;color:#2563eb;width:14px;text-align:right}
 .tz-container{position:relative}
 
-/* ── FILTER BUTTON ── */
+/* FILTER BUTTON */
 .filter-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;font-size:12px;color:#333;transition:all .12s;white-space:nowrap;position:relative}
 .filter-btn:hover{background:#f5f5f0}
 .filter-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -100,17 +105,13 @@ tv-ticker-tape{display:block;width:100%}
 .filter-btn.active svg{stroke:#1d4ed8}
 .filter-badge{position:absolute;top:-4px;right:-4px;background:#2563eb;color:#fff;font-size:9px;font-weight:700;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
 
-/* ── FILTER PANEL OVERLAY ── */
-.filter-panel-overlay{position:fixed;inset:0;z-index:300;display:none}
-.filter-panel-overlay.open{display:block}
+/* FILTER PANEL */
 .filter-panel{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:0.5px solid #e0e0db;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:440px;overflow:hidden;animation:fpIn .15s ease}
 @keyframes fpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-
 .fp-header{padding:10px 14px;border-bottom:0.5px solid #e5e5e0;display:flex;justify-content:space-between;align-items:center}
 .fp-title{font-size:13px;font-weight:600;color:#1a1a1a}
 .fp-close{background:none;border:none;cursor:pointer;color:#aaa;font-size:16px;line-height:1;padding:0 2px;transition:color .1s}
 .fp-close:hover{color:#333}
-
 .fp-sec{padding:12px 14px;border-bottom:0.5px solid #e5e5e0}
 .fp-sec:last-of-type{border-bottom:none}
 .sec-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
@@ -118,8 +119,6 @@ tv-ticker-tape{display:block;width:100%}
 .sec-links{font-size:11px;color:#aaa}
 .sec-links a{color:#2563eb;text-decoration:none;cursor:pointer}
 .sec-links a:hover{text-decoration:underline}
-
-/* Impact chips */
 .impact-row{display:flex;gap:7px}
 .ichip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:0.5px solid #e0e0db;cursor:pointer;font-size:12px;color:#aaa;background:transparent;transition:all .1s;user-select:none}
 .ichip.on{border-color:transparent}
@@ -128,8 +127,6 @@ tv-ticker-tape{display:block;width:100%}
 .ichip.low.on{background:#FEFCE8;color:#d4a000;border-color:#FEF08A}
 .idot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .idot-h{background:#dc2626}.idot-m{background:#ea7000}.idot-l{background:#d4a000}
-
-/* Tab checkboxes */
 .tab-list{display:flex;flex-direction:column;gap:1px}
 .citem{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .08s}
 .citem:hover{background:#f5f5f0}
@@ -137,14 +134,10 @@ tv-ticker-tape{display:block;width:100%}
 .cbox.on{background:#2563eb;border-color:#2563eb}
 .cbox.on::after{content:'';width:6px;height:4px;border-left:1.5px solid white;border-bottom:1.5px solid white;transform:rotate(-45deg) translateY(-1px);display:block}
 .clabel{font-size:12px;color:#1a1a1a}
-
-/* Zone chips */
 .zone-row{display:flex;flex-wrap:wrap;gap:6px}
 .zchip{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:0.5px solid #e0e0db;cursor:pointer;font-size:12px;color:#aaa;background:transparent;transition:all .1s;user-select:none}
 .zchip:hover{background:#f5f5f0}
 .zchip.on{background:#E6F1FB;border-color:#85B7EB;color:#185FA5}
-
-/* Footer */
 .fp-footer{padding:10px 14px;border-top:0.5px solid #e5e5e0;display:flex;justify-content:space-between;align-items:center}
 .btn-reset{font-size:12px;color:#aaa;text-decoration:underline;background:none;border:none;cursor:pointer;padding:0;transition:color .1s}
 .btn-reset:hover{color:#333}
@@ -153,7 +146,7 @@ tv-ticker-tape{display:block;width:100%}
 .btn-cancel-fp{padding:5px 14px;border-radius:6px;background:#fff;color:#555;font-size:12px;border:0.5px solid #e0e0db;cursor:pointer;transition:background .1s}
 .btn-cancel-fp:hover{background:#f5f5f0}
 
-/* ── WEEK GRID ── */
+/* WEEK GRID */
 .week-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);overflow-y:auto}
 .day-col{border-right:1px solid #e5e5e0;display:flex;flex-direction:column}
 .day-col:last-child{border-right:none}
@@ -173,7 +166,7 @@ tv-ticker-tape{display:block;width:100%}
 .day-col.past-week-day .ecard{opacity:0.55;pointer-events:none}
 .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
 
-/* ── EVENT CARDS ── */
+/* EVENT CARDS */
 .ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center;position:relative}
 .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
 .ecard.high{background:#FEF2F2;border-color:#FECACA}
@@ -190,11 +183,11 @@ tv-ticker-tape{display:block;width:100%}
 .card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
 .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
 
-/* ── NO RESULTS ── */
+/* NO RESULTS */
 .no-results{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:8px;color:#bbb;font-size:13px}
 .no-results svg{width:28px;height:28px;stroke:#ddd;fill:none;stroke-width:1.5;stroke-linecap:round}
 
-/* ── MARKETS PAGE ── */
+/* MARKETS PAGE */
 .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
 .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:0;display:flex;align-items:stretch;overflow:hidden;flex-shrink:0}
 .clock-city{flex:1;display:flex;align-items:center;justify-content:center;gap:var(--clk-gap,4px);border-left:1px solid #e5e5e0;padding:8px var(--clk-pad,4px);min-width:0}
@@ -213,7 +206,7 @@ tv-ticker-tape{display:block;width:100%}
 .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
 .markets-sidebar-body{flex:1;overflow-y:auto}
 
-/* ── CONTACT PAGE ── */
+/* CONTACT PAGE */
 .contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
 .contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
 .contact-field{display:flex;flex-direction:column;gap:8px}
@@ -225,7 +218,7 @@ tv-ticker-tape{display:block;width:100%}
 .contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
 .contact-submit:hover{background:#eff6ff}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
@@ -302,9 +295,11 @@ tv-ticker-tape{display:block;width:100%}
             <div class="week-title">What to Watch for the Week</div>
             <div class="week-sub" id="weekSub">Loading events...</div>
           </div>
-          <button class="btn" onclick="prevWeek()">&larr; Prev</button>
-          <button class="btn" onclick="goToday()">Today</button>
-          <button class="btn" onclick="nextWeek()">Next &rarr;</button>
+          <div class="nav-pills">
+            <button class="nav-pill" onclick="prevWeek()">&larr; Prev</button>
+            <button class="nav-pill today-pill" onclick="goToday()">Today</button>
+            <button class="nav-pill" onclick="nextWeek()">Next &rarr;</button>
+          </div>
         </div>
         <div class="week-nav-right">
           <div class="filter-pills">
@@ -313,7 +308,6 @@ tv-ticker-tape{display:block;width:100%}
             <button class="filter-pill" id="pill-all" onclick="setFilter('all')">All</button>
           </div>
 
-          <!-- FILTER BUTTON -->
           <div style="position:relative" id="filterContainer">
             <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel(event)" title="Filter events">
               <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
@@ -321,14 +315,11 @@ tv-ticker-tape{display:block;width:100%}
               <span class="filter-badge" id="filterBadge" style="display:none">0</span>
             </button>
 
-            <!-- FILTER PANEL -->
             <div class="filter-panel" id="filterPanel" style="display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:400">
               <div class="fp-header">
                 <span class="fp-title">Filter events</span>
                 <button class="fp-close" onclick="closeFilterPanel()">&times;</button>
               </div>
-
-              <!-- Impact -->
               <div class="fp-sec">
                 <div class="sec-hd">
                   <span class="sec-lbl">Expected impact</span>
@@ -340,8 +331,6 @@ tv-ticker-tape{display:block;width:100%}
                   <div class="ichip low on" id="fchip-low" onclick="fpTogChip(this,'low')"><span class="idot idot-l"></span>Low</div>
                 </div>
               </div>
-
-              <!-- Calendar Tabs -->
               <div class="fp-sec">
                 <div class="sec-hd">
                   <span class="sec-lbl">Calendar tab</span>
@@ -361,8 +350,6 @@ tv-ticker-tape{display:block;width:100%}
                   <div class="citem" onclick="fpTogCheck(this)" data-tab="Stock Splits"><div class="cbox on"></div><span class="clabel">Stock Splits</span></div>
                 </div>
               </div>
-
-              <!-- Geographic Zones -->
               <div class="fp-sec">
                 <div class="sec-hd">
                   <span class="sec-lbl">Geographic zone</span>
@@ -376,7 +363,6 @@ tv-ticker-tape{display:block;width:100%}
                   <div class="zchip on" onclick="fpTogZone(this)" data-zone="Global">Global</div>
                 </div>
               </div>
-
               <div class="fp-footer">
                 <button class="btn-reset" onclick="fpReset()">Remove filters</button>
                 <div style="display:flex;gap:8px">
@@ -387,7 +373,6 @@ tv-ticker-tape{display:block;width:100%}
             </div>
           </div>
 
-          <!-- TIMEZONE -->
           <div class="tz-container" id="tzContainer">
             <div class="tz-wrap" onclick="toggleTzDropdown(event)" title="Change timezone">
               <svg class="tz-globe" viewBox="0 0 24 24">
@@ -513,69 +498,54 @@ var allExpanded = false;
 var sidebarOpen = true;
 var events      = [];
 
-// ── FILTER PANEL STATE ─────────────────────────────────────────────────
 var fpState = {
   impact: { high: true, med: true, low: true },
   tabs: {
-    'Economic Releases': true,
-    'Central Bank': true,
-    'Treasuries': true,
-    'Earnings': true,
-    'Corporate Events': true,
-    'Market Structure Events': true,
-    'M&A': true,
-    'IPO': true,
-    'Sector & Industry Conferences': true,
-    'Political Seasonality': true,
-    'Stock Splits': true
+    'Economic Releases': true,'Central Bank': true,'Treasuries': true,'Earnings': true,
+    'Corporate Events': true,'Market Structure Events': true,'M&A': true,'IPO': true,
+    'Sector & Industry Conferences': true,'Political Seasonality': true,'Stock Splits': true
   },
   zones: { 'Americas': true, 'Europe': false, 'Middle East & Africa': false, 'Asia Pacific': false, 'Global': true }
 };
-// Pending state (what's in the panel before Apply)
 var fpPending = JSON.parse(JSON.stringify(fpState));
-var fpActive = false; // whether any non-default filters are active
 
 (function() {
   var t = new Date();
   openMonths[t.getFullYear() + '-' + t.getMonth()] = true;
 }());
 
-// ── TIMEZONE SYSTEM ────────────────────────────────────────────────────
 var TZ_LIST = [
   { group: 'Americas' },
-  { iana: 'America/New_York',    label: 'New York (ET)',        short: 'ET'  },
-  { iana: 'America/Chicago',     label: 'Chicago (CT)',         short: 'CT'  },
-  { iana: 'America/Denver',      label: 'Denver (MT)',          short: 'MT'  },
-  { iana: 'America/Los_Angeles', label: 'Los Angeles (PT)',     short: 'PT'  },
-  { iana: 'America/Sao_Paulo',   label: 'Sao Paulo (BRT)',      short: 'BRT' },
+  { iana: 'America/New_York',    label: 'New York (ET)',              short: 'ET'  },
+  { iana: 'America/Chicago',     label: 'Chicago (CT)',               short: 'CT'  },
+  { iana: 'America/Denver',      label: 'Denver (MT)',                short: 'MT'  },
+  { iana: 'America/Los_Angeles', label: 'Los Angeles (PT)',           short: 'PT'  },
+  { iana: 'America/Sao_Paulo',   label: 'Sao Paulo (BRT)',            short: 'BRT' },
   { group: 'Europe' },
-  { iana: 'Europe/London',       label: 'London (GMT/BST)',     short: 'LON' },
+  { iana: 'Europe/London',       label: 'London (GMT/BST)',           short: 'LON' },
   { iana: 'Europe/Paris',        label: 'Paris / Frankfurt (CET/CEST)', short: 'CET' },
-  { iana: 'Europe/Zurich',       label: 'Zurich (CET/CEST)',   short: 'ZRH' },
+  { iana: 'Europe/Zurich',       label: 'Zurich (CET/CEST)',         short: 'ZRH' },
   { group: 'Middle East & Africa' },
-  { iana: 'Asia/Riyadh',         label: 'Riyadh (AST)',         short: 'AST' },
-  { iana: 'Asia/Dubai',          label: 'Dubai (GST)',          short: 'GST' },
+  { iana: 'Asia/Riyadh',         label: 'Riyadh (AST)',               short: 'AST' },
+  { iana: 'Asia/Dubai',          label: 'Dubai (GST)',                short: 'GST' },
   { group: 'Asia Pacific' },
-  { iana: 'Asia/Kolkata',        label: 'Mumbai (IST)',         short: 'IST' },
-  { iana: 'Asia/Singapore',      label: 'Singapore (SGT)',      short: 'SGT' },
-  { iana: 'Asia/Shanghai',       label: 'Shanghai (CST)',       short: 'CST' },
-  { iana: 'Asia/Tokyo',          label: 'Tokyo (JST)',          short: 'JST' },
-  { iana: 'Australia/Sydney',    label: 'Sydney (AEST/AEDT)',   short: 'SYD' },
+  { iana: 'Asia/Kolkata',        label: 'Mumbai (IST)',               short: 'IST' },
+  { iana: 'Asia/Singapore',      label: 'Singapore (SGT)',            short: 'SGT' },
+  { iana: 'Asia/Shanghai',       label: 'Shanghai (CST)',             short: 'CST' },
+  { iana: 'Asia/Tokyo',          label: 'Tokyo (JST)',                short: 'JST' },
+  { iana: 'Australia/Sydney',    label: 'Sydney (AEST/AEDT)',         short: 'SYD' },
   { group: 'Universal' },
-  { iana: 'UTC',                 label: 'UTC',                  short: 'UTC' },
+  { iana: 'UTC',                 label: 'UTC',                        short: 'UTC' },
 ];
 
 var userLocalTz = (function() {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'; }
   catch(e) { return 'America/New_York'; }
 })();
-
 var selectedTz = userLocalTz;
 
 function tzShort(iana) {
-  for (var i = 0; i < TZ_LIST.length; i++) {
-    if (TZ_LIST[i].iana === iana) { return TZ_LIST[i].short; }
-  }
+  for (var i = 0; i < TZ_LIST.length; i++) { if (TZ_LIST[i].iana === iana) { return TZ_LIST[i].short; } }
   try {
     var parts = new Intl.DateTimeFormat('en', { timeZone: iana, timeZoneName: 'short' }).formatToParts(new Date());
     for (var j = 0; j < parts.length; j++) { if (parts[j].type === 'timeZoneName') { return parts[j].value; } }
@@ -595,10 +565,7 @@ function utcToLocalTime(isoUtc, tzIana) {
 }
 
 function eventTimeDisplay(ev) {
-  if (ev.utcDatetime) {
-    var converted = utcToLocalTime(ev.utcDatetime, selectedTz);
-    if (converted) { return converted; }
-  }
+  if (ev.utcDatetime) { var converted = utcToLocalTime(ev.utcDatetime, selectedTz); if (converted) { return converted; } }
   return ev.time || '';
 }
 
@@ -632,110 +599,45 @@ function selectTz(iana) {
 }
 
 document.addEventListener('click', function(e) {
-  // Close TZ dropdown
   var tzCont = document.getElementById('tzContainer');
-  if (tzCont && !tzCont.contains(e.target)) {
-    var dd = document.getElementById('tzDropdown');
-    if (dd) { dd.classList.remove('open'); }
-  }
-  // Close filter panel
+  if (tzCont && !tzCont.contains(e.target)) { var dd = document.getElementById('tzDropdown'); if (dd) { dd.classList.remove('open'); } }
   var fpCont = document.getElementById('filterContainer');
-  if (fpCont && !fpCont.contains(e.target)) {
-    var fp = document.getElementById('filterPanel');
-    if (fp) { fp.style.display = 'none'; }
-  }
+  if (fpCont && !fpCont.contains(e.target)) { var fp = document.getElementById('filterPanel'); if (fp) { fp.style.display = 'none'; } }
 });
 
 document.getElementById('tzLabel').textContent = tzShort(selectedTz);
 
-// ── FILTER PANEL FUNCTIONS ─────────────────────────────────────────────
 function toggleFilterPanel(e) {
   e.stopPropagation();
   var fp = document.getElementById('filterPanel');
-  var isOpen = fp.style.display !== 'none';
-  if (isOpen) {
-    fp.style.display = 'none';
-  } else {
-    // Sync pending state to current applied state
-    fpPending = JSON.parse(JSON.stringify(fpState));
-    syncPanelUI();
-    fp.style.display = 'block';
-  }
+  if (fp.style.display !== 'none') { fp.style.display = 'none'; }
+  else { fpPending = JSON.parse(JSON.stringify(fpState)); syncPanelUI(); fp.style.display = 'block'; }
 }
-
-function closeFilterPanel() {
-  document.getElementById('filterPanel').style.display = 'none';
-}
+function closeFilterPanel() { document.getElementById('filterPanel').style.display = 'none'; }
 
 function syncPanelUI() {
-  // Impact chips
-  ['high','med','low'].forEach(function(k) {
-    var el = document.getElementById('fchip-' + k);
-    if (el) { el.classList.toggle('on', !!fpPending.impact[k]); }
-  });
-  // Tab checkboxes
-  document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) {
-    var tab = el.getAttribute('data-tab');
-    var box = el.querySelector('.cbox');
-    if (box && tab !== null) { box.classList.toggle('on', fpPending.tabs[tab] !== false); }
-  });
-  // Zone chips
-  document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) {
-    var zone = el.getAttribute('data-zone');
-    if (zone !== null) { el.classList.toggle('on', !!fpPending.zones[zone]); }
-  });
+  ['high','med','low'].forEach(function(k) { var el = document.getElementById('fchip-' + k); if (el) { el.classList.toggle('on', !!fpPending.impact[k]); } });
+  document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) { var tab = el.getAttribute('data-tab'); var box = el.querySelector('.cbox'); if (box && tab !== null) { box.classList.toggle('on', fpPending.tabs[tab] !== false); } });
+  document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) { var zone = el.getAttribute('data-zone'); if (zone !== null) { el.classList.toggle('on', !!fpPending.zones[zone]); } });
 }
 
-function fpTogChip(el, key) {
-  fpPending.impact[key] = !fpPending.impact[key];
-  el.classList.toggle('on', fpPending.impact[key]);
-}
-
-function fpTogCheck(el) {
-  var tab = el.getAttribute('data-tab');
-  var box = el.querySelector('.cbox');
-  fpPending.tabs[tab] = !fpPending.tabs[tab];
-  if (box) { box.classList.toggle('on', fpPending.tabs[tab]); }
-}
-
-function fpTogZone(el) {
-  var zone = el.getAttribute('data-zone');
-  fpPending.zones[zone] = !fpPending.zones[zone];
-  el.classList.toggle('on', fpPending.zones[zone]);
-}
+function fpTogChip(el, key) { fpPending.impact[key] = !fpPending.impact[key]; el.classList.toggle('on', fpPending.impact[key]); }
+function fpTogCheck(el) { var tab = el.getAttribute('data-tab'); var box = el.querySelector('.cbox'); fpPending.tabs[tab] = !fpPending.tabs[tab]; if (box) { box.classList.toggle('on', fpPending.tabs[tab]); } }
+function fpTogZone(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !fpPending.zones[zone]; el.classList.toggle('on', fpPending.zones[zone]); }
 
 function fpSetAll(group, on) {
   if (group === 'impact') {
-    ['high','med','low'].forEach(function(k) {
-      fpPending.impact[k] = !!on;
-      var el = document.getElementById('fchip-' + k);
-      if (el) { el.classList.toggle('on', !!on); }
-    });
+    ['high','med','low'].forEach(function(k) { fpPending.impact[k] = !!on; var el = document.getElementById('fchip-' + k); if (el) { el.classList.toggle('on', !!on); } });
   } else if (group === 'tab') {
-    document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) {
-      var tab = el.getAttribute('data-tab');
-      fpPending.tabs[tab] = !!on;
-      var box = el.querySelector('.cbox');
-      if (box) { box.classList.toggle('on', !!on); }
-    });
+    document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) { var tab = el.getAttribute('data-tab'); fpPending.tabs[tab] = !!on; var box = el.querySelector('.cbox'); if (box) { box.classList.toggle('on', !!on); } });
   } else if (group === 'zone') {
-    document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) {
-      var zone = el.getAttribute('data-zone');
-      fpPending.zones[zone] = !!on;
-      el.classList.toggle('on', !!on);
-    });
+    document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !!on; el.classList.toggle('on', !!on); });
   }
 }
 
-function fpApply() {
-  fpState = JSON.parse(JSON.stringify(fpPending));
-  updateFilterBadge();
-  closeFilterPanel();
-  renderWeek();
-}
+function fpApply() { fpState = JSON.parse(JSON.stringify(fpPending)); updateFilterBadge(); closeFilterPanel(); renderWeek(); }
 
 function fpReset() {
-  // Reset to all-on for impact/tabs, Americas+Global for zones
   fpPending.impact = { high: true, med: true, low: true };
   Object.keys(fpPending.tabs).forEach(function(k) { fpPending.tabs[k] = true; });
   fpPending.zones = { 'Americas': true, 'Europe': false, 'Middle East & Africa': false, 'Asia Pacific': false, 'Global': true };
@@ -747,50 +649,24 @@ function fpReset() {
 
 function updateFilterBadge() {
   var count = 0;
-  // Count deactivated impact chips
   ['high','med','low'].forEach(function(k) { if (!fpState.impact[k]) count++; });
-  // Count deactivated tabs
   Object.keys(fpState.tabs).forEach(function(k) { if (!fpState.tabs[k]) count++; });
-  // Count active non-default zones (Europe, MEA, APAC)
   ['Europe','Middle East & Africa','Asia Pacific'].forEach(function(z) { if (fpState.zones[z]) count++; });
-
   var badge = document.getElementById('filterBadge');
   var btn = document.getElementById('filterBtn');
-  if (count > 0) {
-    badge.style.display = 'flex';
-    badge.textContent = count;
-    btn.classList.add('active');
-  } else {
-    badge.style.display = 'none';
-    btn.classList.remove('active');
-  }
+  if (count > 0) { badge.style.display = 'flex'; badge.textContent = count; btn.classList.add('active'); }
+  else { badge.style.display = 'none'; btn.classList.remove('active'); }
 }
 
 function eventPassesFilter(ev) {
-  // Impact filter
   var imp = ev.impact || 'none';
   if (imp === 'high' && !fpState.impact.high) { return false; }
   if (imp === 'medium' && !fpState.impact.med) { return false; }
   if (imp === 'low' && !fpState.impact.low) { return false; }
-
-  // Tab filter — uses category to infer tab
-  // Only filter if at least one tab is deactivated
   var anyTabOff = Object.keys(fpState.tabs).some(function(k) { return !fpState.tabs[k]; });
-  if (anyTabOff) {
-    var cat = ev.category || '';
-    var tabKey = categoryToTab(cat, ev.title);
-    if (tabKey && fpState.tabs[tabKey] === false) { return false; }
-  }
-
-  // Zone filter — only filter if source_tab/region data exists
-  // For now, US events pass when Americas is on; Global events pass when Global is on
-  // This will be more precise once region column is populated in Supabase
+  if (anyTabOff) { var cat = ev.category || ''; var tabKey = categoryToTab(cat, ev.title); if (tabKey && fpState.tabs[tabKey] === false) { return false; } }
   var allZonesOff = !Object.keys(fpState.zones).some(function(k) { return fpState.zones[k]; });
-  if (!allZonesOff) {
-    var evZone = ev.region || 'Americas'; // default to Americas until region column is populated
-    if (!fpState.zones[evZone]) { return false; }
-  }
-
+  if (!allZonesOff) { var evZone = ev.region || 'Americas'; if (!fpState.zones[evZone]) { return false; } }
   return true;
 }
 
@@ -810,7 +686,6 @@ function categoryToTab(cat, title) {
   if (c.indexOf('stock split') > -1 || c.indexOf('split') > -1) { return 'Stock Splits'; }
   return null;
 }
-// ── END FILTER PANEL ───────────────────────────────────────────────────
 
 function setFilter(mode) {
   filterMode = mode;
@@ -836,22 +711,15 @@ function getWeekStart(d) { var dt = new Date(d); dt.setHours(0,0,0,0); dt.setDat
 
 function impCls(v) {
   v = (v || 'none').toLowerCase();
-  if (v === 'high') { return 'high'; }
-  if (v === 'medium') { return 'medium'; }
-  if (v === 'low') { return 'low'; }
+  if (v === 'high') { return 'high'; } if (v === 'medium') { return 'medium'; } if (v === 'low') { return 'low'; }
   return 'none';
 }
 function impLabel(v) {
   v = (v || 'none').toLowerCase();
-  if (v === 'high') { return 'High Impact'; }
-  if (v === 'medium') { return 'Medium Impact'; }
-  if (v === 'low') { return 'Low Impact'; }
+  if (v === 'high') { return 'High Impact'; } if (v === 'medium') { return 'Medium Impact'; } if (v === 'low') { return 'Low Impact'; }
   return '';
 }
-function mkLogo(domain) {
-  if (!domain) { return ''; }
-  return 'https://img.logo.dev/' + domain + '?token=' + LOGO_KEY + '&size=64';
-}
+function mkLogo(domain) { if (!domain) { return ''; } return 'https://img.logo.dev/' + domain + '?token=' + LOGO_KEY + '&size=64'; }
 
 function deriveName(cat, evt) {
   if (!cat) { return ''; }
@@ -917,9 +785,7 @@ function parseDate(dateStr, monthStr) {
 
 function fetchEvents() {
   var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
-  return fetch(url, {
-    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
-  })
+  return fetch(url, { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } })
   .then(function(r) { return r.json(); })
   .then(function(rows) {
     events = [];
@@ -933,31 +799,17 @@ function fetchEvents() {
       if (r.show_in_monthly === false) { showMini = false; }
       var ent = r.entity || {};
       events.push({
-        id:             r.id,
-        title:          r.event || '',
-        shortName:      r.short_name || r.event || '',
-        name:           deriveName(r.category, r.event),
-        date:           parsed.start,
-        endDate:        parsed.end || '',
-        time:           r.display_time || deriveTime(r.notes || ''),
-        utcDatetime:    r.event_datetime_utc || '',
-        sourceTz:       r.source_tz || 'America/New_York',
-        impact:         impact,
-        showMini:       showMini,
-        isEstimated:    !!(r.is_estimated === true || r.is_estimated === 'TRUE' || r.is_estimated === 'true'),
-        logo:           r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
-        hero:           r.hero_url || ent.hero_url || '',
-        heroPosition:   r.hero_position || 'center',
-        whyMatters:     r.why_it_matters || ent.why_it_matters || '',
-        measures:       r.measures || ent.measures || '',
-        impactedAssets: ent.impacted_assets || '',
-        frequency:      r.frequency || ent.frequency || '',
-        details:        r.details || '',
-        source:         r.source_url || deriveSource(r.category),
-        ticker:         r.ticker || '',
-        aka:            r.aka || '',
-        category:       r.category || '',
-        region:         r.region || 'Americas'
+        id: r.id, title: r.event || '', shortName: r.short_name || r.event || '',
+        name: deriveName(r.category, r.event), date: parsed.start, endDate: parsed.end || '',
+        time: r.display_time || deriveTime(r.notes || ''), utcDatetime: r.event_datetime_utc || '',
+        sourceTz: r.source_tz || 'America/New_York', impact: impact, showMini: showMini,
+        isEstimated: !!(r.is_estimated === true || r.is_estimated === 'TRUE' || r.is_estimated === 'true'),
+        logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
+        hero: r.hero_url || ent.hero_url || '', heroPosition: r.hero_position || 'center',
+        whyMatters: r.why_it_matters || ent.why_it_matters || '', measures: r.measures || ent.measures || '',
+        impactedAssets: ent.impacted_assets || '', frequency: r.frequency || ent.frequency || '',
+        details: r.details || '', source: r.source_url || deriveSource(r.category),
+        ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas'
       });
     });
   });
@@ -1022,23 +874,13 @@ function toggleMonth(key, y, mi) {
   if (openMonths[key]) { delete openMonths[key]; } else { openMonths[key] = true; }
   allExpanded = Object.keys(openMonths).length >= 24;
   weekStart = getWeekStart(new Date(y, mi, 1));
-  buildSidebar();
-  renderWeek();
+  buildSidebar(); renderWeek();
 }
-function jumpToDate(dateStr) {
-  weekStart = getWeekStart(new Date(dateStr + 'T12:00:00'));
-  buildSidebar();
-  renderWeek();
-}
+function jumpToDate(dateStr) { weekStart = getWeekStart(new Date(dateStr + 'T12:00:00')); buildSidebar(); renderWeek(); }
 function toggleAllMonths() {
   allExpanded = !allExpanded;
-  if (allExpanded) {
-    [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openMonths[y+'-'+mi] = true; } });
-  } else {
-    openMonths = {};
-    var t = new Date();
-    openMonths[t.getFullYear() + '-' + t.getMonth()] = true;
-  }
+  if (allExpanded) { [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openMonths[y+'-'+mi] = true; } }); }
+  else { openMonths = {}; var t = new Date(); openMonths[t.getFullYear() + '-' + t.getMonth()] = true; }
   buildSidebar();
 }
 function toggleSidebar() {
@@ -1069,11 +911,7 @@ function positionArrow() {
 function renderWeek() {
   var today = new Date(); today.setHours(0,0,0,0);
   var days = [];
-  for (var i = 0; i < 7; i++) {
-    var d = new Date(weekStart);
-    d.setDate(d.getDate() + i);
-    days.push(d);
-  }
+  for (var i = 0; i < 7; i++) { var d = new Date(weekStart); d.setDate(d.getDate() + i); days.push(d); }
   var byDate = {};
   days.forEach(function(d) { byDate[ds(d)] = []; });
   events.forEach(function(ev) {
@@ -1084,7 +922,6 @@ function renderWeek() {
     byDate[ev.date].push(ev);
   });
   var fmt = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); };
-  var totalVisible = Object.keys(byDate).reduce(function(acc, k) { return acc + byDate[k].length; }, 0);
   document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' — Click any event to view details.';
   document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
     var isToday = d.getTime() === today.getTime();
@@ -1146,11 +983,7 @@ function openModal(id) {
   if (ev.source) { srcEl.href = ev.source; srcEl.style.display = 'inline'; div2.style.display = 'block'; } else { srcEl.style.display = 'none'; div2.style.display = 'none'; }
   overlay.classList.add('open');
 }
-function closeModal() {
-  var overlay = document.getElementById('overlay');
-  overlay.classList.remove('open');
-  overlay.classList.remove('est-modal');
-}
+function closeModal() { var overlay = document.getElementById('overlay'); overlay.classList.remove('open'); overlay.classList.remove('est-modal'); }
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
 
 function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar(); renderWeek(); }
@@ -1159,20 +992,8 @@ function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); rende
 
 function updateClocks() {
   var opt = {hour:'2-digit', minute:'2-digit', hour12:true};
-  var zones = {
-    'time-ny' :'America/New_York',
-    'time-lon':'Europe/London',
-    'time-fra':'Europe/Berlin',
-    'time-riy':'Asia/Riyadh',
-    'time-mum':'Asia/Kolkata',
-    'time-sha':'Asia/Shanghai',
-    'time-tok':'Asia/Tokyo',
-    'time-syd':'Australia/Sydney'
-  };
-  Object.keys(zones).forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) { el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({}, opt, {timeZone: zones[id]})); }
-  });
+  var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-mum':'Asia/Kolkata','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
+  Object.keys(zones).forEach(function(id) { var el = document.getElementById(id); if (el) { el.textContent = new Date().toLocaleTimeString('en-US', Object.assign({}, opt, {timeZone: zones[id]})); } });
 }
 setInterval(updateClocks, 1000);
 updateClocks();
@@ -1196,9 +1017,7 @@ updateClocks();
 }());
 
 fetchEvents().then(function() {
-  buildSidebar();
-  renderWeek();
-  setTimeout(positionArrow, 50);
+  buildSidebar(); renderWeek(); setTimeout(positionArrow, 50);
 }).catch(function(err) {
   console.error('Supabase fetch failed:', err);
   document.getElementById('weekGrid').innerHTML = '<div class="load-error">Could not load events. Please refresh.</div>';
