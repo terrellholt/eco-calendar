@@ -497,7 +497,6 @@ var MMAP = {
 
 var weekStart   = getWeekStart(new Date());
 var filterMode  = 'confirmed';
-  // Ticker -> domain lookup for logo fallback on estimated events
 var TICKER_DOMAIN = {
   'AAPL':'apple.com','MSFT':'microsoft.com','GOOGL':'google.com','GOOG':'google.com',
   'AMZN':'amazon.com','META':'meta.com','NVDA':'nvidia.com','TSLA':'tesla.com',
@@ -794,19 +793,16 @@ function parseDate(dateStr, monthStr) {
   if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
   if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
   if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) { return { start: dateStr.substring(0, 10), end: '' }; }
-  // "Mon DD, YYYY" or "Mon DD, YYYY (est.)"
   var fullDate = dateStr.match(/^([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
   if (fullDate) {
     var mNum = MMAP[fullDate[1]];
     if (mNum) { return { start: fullDate[3] + '-' + mNum + '-' + fullDate[2].padStart(2,'0'), end: '' }; }
   }
-  // "Mon/Mon YYYY" e.g. "Nov/Dec 2027 (est.)"
   var slashMonth = dateStr.match(/^([A-Za-z]+)\/[A-Za-z]+\s+(\d{4})/);
   if (slashMonth) {
     var mNum2 = MMAP[slashMonth[1]];
     if (mNum2) { return { start: slashMonth[2] + '-' + mNum2 + '-01', end: '' }; }
   }
-  // "Mon YYYY" e.g. "Apr 2027 (est.)"
   var monthYear = dateStr.match(/^([A-Za-z]+)\s+(\d{4})/);
   if (monthYear) {
     var mNum3 = MMAP[monthYear[1]];
@@ -824,7 +820,8 @@ function parseDate(dateStr, monthStr) {
 }
 
 function fetchEvents() {
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc&limit=2000';
+  // visible=eq.true ensures hidden events never appear on the public calendar
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&visible=eq.true&order=date.asc&limit=2000';
   return fetch(url, { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } })
   .then(function(r) { return r.json(); })
   .then(function(rows) {
