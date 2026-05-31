@@ -57,11 +57,9 @@
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
   select.fsel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); padding: 7px 28px 7px 10px; font-size: 13px; outline: none; cursor: pointer; font-family: var(--sans); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a4a5a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
   .count-badge { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-left: auto; }
-
   .btn-new-event { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 600; font-family: var(--sans); cursor: pointer; border: none; background: var(--accent); color: #0c0c0e; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; }
   .btn-new-event:hover { opacity: 0.88; }
   .btn-new-event:active { transform: scale(0.97); }
-
   .create-banner { background: linear-gradient(135deg,rgba(232,197,71,0.08),rgba(232,197,71,0.03)); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
 
   /* SAVE ORDER BAR */
@@ -107,6 +105,13 @@
   tbody tr.drag-blocked::after { content: '✕ date boundary'; position: absolute; right: 80px; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 0.08em; pointer-events: none; }
   tbody tr.reordered { background: rgba(232,197,71,0.04); }
 
+  /* VISIBILITY */
+  .td-vis { width: 36px; padding: 10px 8px !important; }
+  .vis-btn { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: var(--text3); transition: all 0.15s; padding: 0; }
+  .vis-btn:hover { background: var(--surface2); }
+  .vis-btn.hidden-event { color: var(--red); opacity: 0.7; }
+  .vis-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+
   .td-date { font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; }
   .td-event { font-weight: 500; color: var(--text); }
   .td-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
@@ -124,6 +129,10 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn-edit { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); transition: all 0.15s; }
   .btn-edit:hover { border-color: var(--border2); color: var(--text); }
+
+  /* hidden row style */
+  tbody tr.row-hidden { opacity: 0.4; }
+  tbody tr.row-hidden .td-event { text-decoration: line-through; text-decoration-color: var(--red); }
 
   /* EDIT OVERLAY */
   #editOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
@@ -173,10 +182,7 @@
   .impact-opt.sel-low { background: #FEFCE8; border-color: #FEF08A; color: #d4a000; }
   .impact-opt.sel-none { background: #f5f5f0; border-color: #d0d0cc; color: #555; }
   .impact-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
-  .dot-high { background: #dc2626; }
-  .dot-medium { background: #ea7000; }
-  .dot-low { background: #d4a000; }
-  .dot-none { background: #aaa; }
+  .dot-high { background: #dc2626; } .dot-medium { background: #ea7000; } .dot-low { background: #d4a000; } .dot-none { background: #aaa; }
   .asset-wrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border: 1.5px solid #e5e5e0; border-radius: 8px; padding: 7px 10px; min-height: 42px; cursor: text; }
   .asset-wrap:focus-within { border-color: #1a1a1a; }
   .achip { background: #f5f5f0; border: 1px solid #e5e5e0; border-radius: 5px; padding: 3px 8px; font-size: 12px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 4px; }
@@ -191,6 +197,7 @@
   .toggle-label { font-size: 13px; color: #333; }
   .toggle-sub { font-size: 11px; color: #aaa; margin-top: 1px; }
   #estimatedToggle.on { background: #b8820a !important; }
+  #visibleToggle.on { background: #2563eb !important; }
   .est-preview-banner { display: none; align-items: center; gap: 8px; padding: 9px 13px; background: rgba(184,130,10,0.10); border: 1px dashed #b8820a; border-radius: 6px; margin-bottom: 14px; font-size: 12px; color: #b8820a; font-weight: 600; letter-spacing: 0.01em; }
   .est-preview-banner svg { flex-shrink: 0; }
   .edit-panel.is-estimated .est-preview-banner { display: flex; }
@@ -302,6 +309,9 @@
   <select class="fsel" id="enrichFilter" onchange="filterTable()">
     <option value="">All Enrichment</option><option value="missing">Missing enrichment</option><option value="has-hero">Has hero image</option><option value="has-why">Has why it matters</option>
   </select>
+  <select class="fsel" id="visFilter" onchange="filterTable()">
+    <option value="">All Visibility</option><option value="visible">Visible only</option><option value="hidden">Hidden only</option>
+  </select>
   <span class="count-badge" id="countBadge"></span>
   <button class="btn-new-event" onclick="openNewEvent()">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -313,6 +323,7 @@
   <table id="eventsTable" style="display:none">
     <thead><tr>
       <th></th>
+      <th title="Visible on website">👁</th>
       <th onclick="sortBy('date')">DATE</th><th onclick="sortBy('event')">EVENT</th><th>CATEGORY</th>
       <th onclick="sortBy('impact')">IMPACT</th><th>ENRICHMENT</th><th style="width:60px"></th>
     </tr></thead>
@@ -320,7 +331,7 @@
   </table>
 </div>
 
-<!-- EDIT OVERLAY (unchanged) -->
+<!-- EDIT OVERLAY -->
 <div id="editOverlay" onclick="overlayClick(event)">
   <div class="edit-panel" id="editPanel">
     <div class="ep-header">
@@ -366,16 +377,11 @@
               <label class="ep-label">Category <span style="color:#dc2626">*</span></label>
               <select class="ep-input" id="f_category">
                 <option value="">— select a category —</option>
-                <option value="Central Bank">Central Bank</option>
-                <option value="Economic Release">Economic Release</option>
-                <option value="Earnings">Earnings</option>
-                <option value="IPO">IPO</option>
-                <option value="Corporate Event">Corporate Event</option>
-                <option value="Market Structure">Market Structure</option>
-                <option value="Political / Macro">Political / Macro</option>
-                <option value="Sector Conference">Sector Conference</option>
-                <option value="Market Holiday">Market Holiday</option>
-                <option value="Other">Other</option>
+                <option value="Central Bank">Central Bank</option><option value="Economic Release">Economic Release</option>
+                <option value="Earnings">Earnings</option><option value="IPO">IPO</option>
+                <option value="Corporate Event">Corporate Event</option><option value="Market Structure">Market Structure</option>
+                <option value="Political / Macro">Political / Macro</option><option value="Sector Conference">Sector Conference</option>
+                <option value="Market Holiday">Market Holiday</option><option value="Other">Other</option>
               </select>
             </div>
           </div>
@@ -433,6 +439,12 @@
           <div class="toggle-row" onclick="toggleMonthly()">
             <div class="toggle-track" id="monthlyToggle"><div class="toggle-thumb"></div></div>
             <div><div class="toggle-label">Show in monthly calendar view</div><div class="toggle-sub">Multi-day banner — only top events should be enabled</div></div>
+          </div>
+        </div>
+        <div style="margin-bottom:14px">
+          <div class="toggle-row" onclick="toggleVisible()">
+            <div class="toggle-track" id="visibleToggle"><div class="toggle-thumb"></div></div>
+            <div><div class="toggle-label">Visible on website</div><div class="toggle-sub">Turn off to hide this event from public calendar view</div></div>
           </div>
         </div>
         <div class="ep-row c2">
@@ -508,6 +520,7 @@
 
 <script>
 var ADMIN_PASSWORD = 'Nnahoj1986!';
+var SHEETS_WRITEBACK_URL = 'https://script.google.com/macros/s/AKfycbzBaEnmi9ZCGG-Kqcr0W-yv0LXgbraTxDo9Fi3b7OA-_e5ZcqhAmijEJIpwpFdqH6bN/exec';
 
 function checkPassword() {
   var input = document.getElementById('pwInput');
@@ -587,13 +600,13 @@ var heroOffsetX = 50, heroOffsetY = 50;
 var chartRange = '1M';
 var showInMonthly = false;
 var isEstimated = false;
+var isVisible = true;
 var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroDragStartOY;
 var currentHeroUrl = '';
 var isNewEvent = false;
 
 // ── ORDER MANAGEMENT ──────────────────────────────────────
-var orderChanges = {}; // { eventId: newDisplayOrder }
-var originalOrder = []; // snapshot of filteredEvents ids before any drag
+var orderChanges = {};
 
 function supaFetch(path, opts) {
   var method = (opts && opts.method) || 'GET';
@@ -606,10 +619,23 @@ function supaFetch(path, opts) {
     });
 }
 
+// ── GOOGLE SHEETS WRITE-BACK ──────────────────────────────
+function writebackToSheet(syncId, fields) {
+  if (!syncId) return; // new events don't have a sync_id yet
+  fetch(SHEETS_WRITEBACK_URL, {
+    method: 'POST',
+    body: JSON.stringify({ sync_id: syncId, fields: fields }),
+    // no-cors because Apps Script web apps need this from external origins
+    mode: 'no-cors'
+  }).catch(function(err) {
+    console.warn('Sheet writeback error (non-critical):', err.message);
+  });
+}
+
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,is_estimated,price_move_val,price_move_type,chart_ticker,chart_range,display_order,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
@@ -637,6 +663,7 @@ function filterTable() {
   var imp = document.getElementById('impactFilter').value;
   var cat = document.getElementById('catFilter').value;
   var enr = document.getElementById('enrichFilter').value;
+  var vis = document.getElementById('visFilter').value;
   filteredEvents = allEvents.filter(function(e) {
     if (q && (e.event||'').toLowerCase().indexOf(q) === -1 && (e.category||'').toLowerCase().indexOf(q) === -1) return false;
     if (imp && (e.impact||'none').toLowerCase() !== imp) return false;
@@ -647,12 +674,14 @@ function filterTable() {
     if (enr === 'missing' && hero && why) return false;
     if (enr === 'has-hero' && !hero) return false;
     if (enr === 'has-why' && !why) return false;
+    var evVisible = e.visible !== false && e.visible !== 'FALSE';
+    if (vis === 'visible' && !evVisible) return false;
+    if (vis === 'hidden' && evVisible) return false;
     return true;
   });
   filteredEvents.sort(function(a,b) {
     var av = (a[sortCol]||'').toString().toLowerCase(), bv = (b[sortCol]||'').toString().toLowerCase();
     if (av === bv && sortCol === 'date') {
-      // secondary sort by display_order within same date
       var ao = (a.display_order != null ? a.display_order : 9999);
       var bo = (b.display_order != null ? b.display_order : 9999);
       return ao - bo;
@@ -665,8 +694,6 @@ function filterTable() {
 
 function sortBy(col) { if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; } filterTable(); }
 
-// ── DATE GROUP ANALYSIS ────────────────────────────────────
-// Build a map of which dates have more than 1 event (drag is only useful then)
 function getDateGroups() {
   var groups = {};
   filteredEvents.forEach(function(ev, i) {
@@ -677,10 +704,14 @@ function getDateGroups() {
   return groups;
 }
 
+// SVG icons for visibility button
+var EYE_OPEN = '<svg viewBox="0 0 16 16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>';
+var EYE_CLOSED = '<svg viewBox="0 0 16 16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><line x1="2" y1="2" x2="14" y2="14"/></svg>';
+
 function renderTable() {
   var tb = document.getElementById('tableBody');
   if (!filteredEvents.length) {
-    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>';
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>';
     return;
   }
   var dateGroups = getDateGroups();
@@ -701,8 +732,14 @@ function renderTable() {
       ? '<td class="td-drag"><div class="drag-handle active" title="Drag to reorder within this date">&#8801;</div></td>'
       : '<td class="td-drag"><div class="drag-handle"></div></td>';
     var reorderedClass = orderChanges[ev.id] != null ? ' reordered' : '';
-    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+'">'
+    var evVisible = ev.visible !== false && ev.visible !== 'FALSE';
+    var hiddenClass = !evVisible ? ' row-hidden' : '';
+    var visBtnClass = !evVisible ? ' hidden-event' : '';
+    var visTitle = evVisible ? 'Click to hide from website' : 'Click to show on website';
+    var visIcon = evVisible ? EYE_OPEN : EYE_CLOSED;
+    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+hiddenClass+'">'
       + handleHtml
+      + '<td class="td-vis"><button class="vis-btn'+visBtnClass+'" title="'+visTitle+'" onclick="event.stopPropagation();toggleRowVisibility('+i+')">'+visIcon+'</button></td>'
       + '<td class="td-date">'+date+'</td>'
       + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+'</div>'+(ev.display_time?'<div class="td-sub">&#9200; '+esc(ev.display_time)+'</div>':'')+'</td>'
       + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
@@ -713,6 +750,33 @@ function renderTable() {
   });
   tb.innerHTML = html;
   attachDragHandlers();
+}
+
+// ── QUICK VISIBILITY TOGGLE (eye icon in table row) ────────
+function toggleRowVisibility(idx) {
+  var ev = filteredEvents[idx];
+  var newVisible = !(ev.visible !== false && ev.visible !== 'FALSE');
+  ev.visible = newVisible;
+  // Update allEvents too
+  var master = allEvents.find(function(e) { return e.id === ev.id; });
+  if (master) master.visible = newVisible;
+
+  // Save to Supabase
+  supaFetch('/rest/v1/Master%20Calendar?id=eq.' + ev.id, {
+    method: 'PATCH',
+    body: JSON.stringify({ visible: newVisible })
+  }).then(function() {
+    showToast(newVisible ? 'Event visible on website' : 'Event hidden from website', 'success');
+    // Write back to Google Sheet
+    writebackToSheet(ev.sync_id, { visible: newVisible ? 'TRUE' : 'FALSE' });
+  }).catch(function(err) {
+    showToast('Save failed: ' + err.message, 'error');
+    // Revert
+    ev.visible = !newVisible;
+    if (master) master.visible = !newVisible;
+  });
+
+  renderTable();
 }
 
 // ── DRAG & DROP LOGIC ──────────────────────────────────────
@@ -742,7 +806,6 @@ function onDragOver(e) {
   e.preventDefault();
   var targetDate = this.getAttribute('data-date');
   if (targetDate !== dragSrcDate) {
-    // Different date — blocked
     e.dataTransfer.dropEffect = 'none';
     this.classList.add('drag-blocked');
     this.classList.remove('drag-over-top', 'drag-over-bottom');
@@ -752,79 +815,48 @@ function onDragOver(e) {
   this.classList.remove('drag-blocked');
   var rect = this.getBoundingClientRect();
   var mid = rect.top + rect.height / 2;
-  if (e.clientY < mid) {
-    this.classList.add('drag-over-top');
-    this.classList.remove('drag-over-bottom');
-  } else {
-    this.classList.add('drag-over-bottom');
-    this.classList.remove('drag-over-top');
-  }
+  if (e.clientY < mid) { this.classList.add('drag-over-top'); this.classList.remove('drag-over-bottom'); }
+  else { this.classList.add('drag-over-bottom'); this.classList.remove('drag-over-top'); }
 }
 
-function onDragLeave(e) {
-  this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-blocked');
-}
+function onDragLeave(e) { this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-blocked'); }
 
 function onDrop(e) {
   e.preventDefault();
   this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-blocked');
   var targetDate = this.getAttribute('data-date');
-  if (targetDate !== dragSrcDate) return; // blocked — different date
+  if (targetDate !== dragSrcDate) return;
   var targetIdx = parseInt(this.getAttribute('data-idx'));
   if (targetIdx === dragSrcIdx) return;
-
-  // Determine insert position
   var rect = this.getBoundingClientRect();
   var insertAfter = e.clientY >= rect.top + rect.height / 2;
   var insertIdx = insertAfter ? targetIdx + 1 : targetIdx;
-  if (insertIdx > dragSrcIdx) insertIdx--; // account for removal
-
-  // Reorder filteredEvents array
+  if (insertIdx > dragSrcIdx) insertIdx--;
   var moved = filteredEvents.splice(dragSrcIdx, 1)[0];
   filteredEvents.splice(insertIdx, 0, moved);
-
-  // Assign new display_order values within this date group
-  var dateGroup = filteredEvents.filter(function(ev) {
-    return (ev.date||'').toString().substring(0,10) === dragSrcDate;
-  });
+  var dateGroup = filteredEvents.filter(function(ev) { return (ev.date||'').toString().substring(0,10) === dragSrcDate; });
   dateGroup.forEach(function(ev, pos) {
     var newOrder = pos + 1;
-    if (ev.display_order !== newOrder) {
-      orderChanges[ev.id] = newOrder;
-      ev.display_order = newOrder; // update in-memory too
-    }
+    if (ev.display_order !== newOrder) { orderChanges[ev.id] = newOrder; ev.display_order = newOrder; }
   });
-
   updateOrderBar();
   renderTable();
 }
 
 function onDragEnd(e) {
-  document.querySelectorAll('#tableBody tr').forEach(function(r) {
-    r.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom', 'drag-blocked');
-  });
-  dragSrcIdx = null;
-  dragSrcDate = null;
+  document.querySelectorAll('#tableBody tr').forEach(function(r) { r.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom', 'drag-blocked'); });
+  dragSrcIdx = null; dragSrcDate = null;
 }
 
-// ── ORDER BAR ──────────────────────────────────────────────
 function updateOrderBar() {
   var count = Object.keys(orderChanges).length;
   var bar = document.getElementById('orderBar');
-  if (count === 0) {
-    bar.classList.remove('visible');
-    return;
-  }
+  if (count === 0) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
   document.getElementById('orderChangeCount').textContent = count + (count === 1 ? ' change' : ' changes');
 }
 
-function discardOrder() {
-  orderChanges = {};
-  // Reload from server to restore original order
-  loadEvents();
-  document.getElementById('orderBar').classList.remove('visible');
-}
+function discardOrder() { orderChanges = {}; loadEvents(); document.getElementById('orderBar').classList.remove('visible'); }
 
 function saveOrder() {
   var ids = Object.keys(orderChanges);
@@ -832,28 +864,15 @@ function saveOrder() {
   var btn = document.getElementById('saveOrderBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving…';
-
-  // Fire all updates in parallel — one PATCH per changed row
   var promises = ids.map(function(id) {
-    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, {
-      method: 'PATCH',
-      body: JSON.stringify({ display_order: orderChanges[id] })
-    });
+    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ display_order: orderChanges[id] }) });
   });
-
   Promise.all(promises)
     .then(function() {
-      // Update allEvents in memory too
-      ids.forEach(function(id) {
-        var ev = allEvents.find(function(e) { return String(e.id) === String(id); });
-        if (ev) ev.display_order = orderChanges[id];
-      });
-      orderChanges = {};
-      updateOrderBar();
-      btn.disabled = false;
+      ids.forEach(function(id) { var ev = allEvents.find(function(e) { return String(e.id) === String(id); }); if (ev) ev.display_order = orderChanges[id]; });
+      orderChanges = {}; updateOrderBar(); btn.disabled = false;
       btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Order';
       showToast('Order saved — ' + ids.length + ' event' + (ids.length === 1 ? '' : 's') + ' updated', 'success');
-      // Re-render to clear the gold highlight
       renderTable();
     })
     .catch(function(err) {
@@ -863,25 +882,21 @@ function saveOrder() {
     });
 }
 
-// ── ROW CLICK (prevent drag handle from opening edit) ──────
 function rowClick(e, idx) {
-  // Don't open edit if click was on the drag handle
   if (e.target.classList.contains('drag-handle') || e.target.closest('.drag-handle')) return;
+  if (e.target.classList.contains('vis-btn') || e.target.closest('.vis-btn')) return;
   openEdit(idx);
 }
 
 function openNewEvent() {
-  isNewEvent = true;
-  currentEvent = null;
+  isNewEvent = true; currentEvent = null;
   document.getElementById('panelTitle').textContent = 'Add New Event';
   document.getElementById('saveBtnLabel').textContent = 'Add to Calendar';
   document.getElementById('createBanner').style.display = 'flex';
   document.getElementById('deleteBtn').style.display = 'none';
   document.getElementById('categoryField').style.display = 'block';
-  var ft = document.getElementById('f_title');
-  ft.readOnly = false; ft.style.background = ''; ft.style.color = ''; ft.style.cursor = '';
-  var fn = document.getElementById('f_name');
-  fn.readOnly = false; fn.style.background = ''; fn.style.color = ''; fn.style.cursor = '';
+  var ft = document.getElementById('f_title'); ft.readOnly = false; ft.style.background = ''; ft.style.color = ''; ft.style.cursor = '';
+  var fn = document.getElementById('f_name'); fn.readOnly = false; fn.style.background = ''; fn.style.color = ''; fn.style.cursor = '';
   setupHero('');
   document.getElementById('logoThumb').innerHTML = '<div class="logo-thumb-empty">No logo</div>';
   ['f_title','f_name','f_ticker','f_display_time','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
@@ -897,6 +912,7 @@ function openNewEvent() {
   selectedImpact = 'none'; updateImpactUI();
   showInMonthly = false; updateToggleUI();
   isEstimated = false; updateEstimatedUI();
+  isVisible = true; updateVisibleUI();
   chartRange = '1M';
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === '1M'); });
   document.getElementById('epStatus').textContent = '';
@@ -909,19 +925,13 @@ function openNewEvent() {
 function deleteEvent() {
   if (!currentEvent || isNewEvent) return;
   if (!confirm('Delete "' + (currentEvent.event || 'this event') + '"?\n\nThis cannot be undone.')) return;
-  var btn = document.getElementById('saveBtn');
-  btn.disabled = true;
+  var btn = document.getElementById('saveBtn'); btn.disabled = true;
   supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'DELETE' })
     .then(function() {
       allEvents = allEvents.filter(function(e){ return e.id !== currentEvent.id; });
-      filterTable();
-      closeEdit();
-      showToast('Event deleted', 'success');
+      filterTable(); closeEdit(); showToast('Event deleted', 'success');
     })
-    .catch(function(err) {
-      showToast('Delete failed: ' + err.message, 'error');
-      btn.disabled = false;
-    });
+    .catch(function(err) { showToast('Delete failed: ' + err.message, 'error'); btn.disabled = false; });
 }
 
 function openEdit(idx) {
@@ -932,10 +942,8 @@ function openEdit(idx) {
   document.getElementById('createBanner').style.display = 'none';
   document.getElementById('deleteBtn').style.display = 'inline-flex';
   document.getElementById('categoryField').style.display = 'none';
-  var ft = document.getElementById('f_title');
-  ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
-  var fn = document.getElementById('f_name');
-  fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
+  var ft = document.getElementById('f_title'); ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
+  var fn = document.getElementById('f_name'); fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
 
   var ev = currentEvent, ent = ev.entity || {};
   var heroUrl = ev.hero_url || ent.hero_url || '';
@@ -970,6 +978,8 @@ function openEdit(idx) {
   updateToggleUI();
   isEstimated = !!ev.is_estimated;
   updateEstimatedUI();
+  isVisible = ev.visible !== false && ev.visible !== 'FALSE';
+  updateVisibleUI();
   var assetWrap = document.getElementById('assetWrap'), assetInp = document.getElementById('assetInp');
   assetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
   var assets = (ev.impacted_assets || ent.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean);
@@ -988,17 +998,14 @@ function openEdit(idx) {
 function closeEdit() {
   document.getElementById('editOverlay').classList.remove('open');
   document.body.style.overflow = '';
-  currentEvent = null;
-  isNewEvent = false;
+  currentEvent = null; isNewEvent = false;
   document.getElementById('panelTitle').textContent = 'Edit Event Details';
   document.getElementById('saveBtnLabel').textContent = 'Save Changes';
   document.getElementById('createBanner').style.display = 'none';
   document.getElementById('deleteBtn').style.display = 'none';
   document.getElementById('categoryField').style.display = 'none';
-  var ft = document.getElementById('f_title');
-  ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
-  var fn = document.getElementById('f_name');
-  fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
+  var ft = document.getElementById('f_title'); ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
+  var fn = document.getElementById('f_name'); fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
   isEstimated = false;
   document.getElementById('estimatedToggle').classList.remove('on');
   document.getElementById('editPanel').classList.remove('is-estimated');
@@ -1039,14 +1046,14 @@ function selectImpact(val) { selectedImpact = val; updateImpactUI(); }
 function updateImpactUI() { ['high','medium','low','none'].forEach(function(v) { document.getElementById('imp-' + v).className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : ''); }); }
 function toggleMonthly() { showInMonthly = !showInMonthly; updateToggleUI(); }
 function updateToggleUI() { document.getElementById('monthlyToggle').classList.toggle('on', showInMonthly); }
-function toggleEstimated() {
-  isEstimated = !isEstimated;
-  updateEstimatedUI();
-}
+function toggleEstimated() { isEstimated = !isEstimated; updateEstimatedUI(); }
 function updateEstimatedUI() {
   document.getElementById('estimatedToggle').classList.toggle('on', isEstimated);
   document.getElementById('editPanel').classList.toggle('is-estimated', isEstimated);
 }
+function toggleVisible() { isVisible = !isVisible; updateVisibleUI(); }
+function updateVisibleUI() { document.getElementById('visibleToggle').classList.toggle('on', isVisible); }
+
 function makeChip(val) {
   var s = document.createElement('span'); s.className = 'achip';
   s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>';
@@ -1103,6 +1110,7 @@ function saveChanges() {
     impact: selectedImpact || null,
     show_in_monthly: showInMonthly,
     is_estimated: isEstimated,
+    visible: isVisible,
     end_date: document.getElementById('f_end_date').value || null,
     frequency: document.getElementById('f_frequency').value || null,
     measures: document.getElementById('f_measures').value.trim() || null,
@@ -1137,6 +1145,29 @@ function saveChanges() {
     supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
       .then(function() {
         Object.assign(currentEvent, payload);
+        // Write back to Google Sheet
+        writebackToSheet(currentEvent.sync_id, {
+          hero_url: payload.hero_url || '',
+          logo_url: payload.logo_url || '',
+          display_time: payload.display_time || '',
+          ticker: payload.ticker || '',
+          aka: payload.aka || '',
+          source_url: payload.source_url || '',
+          impact: payload.impact || '',
+          show_mini: payload.show_in_monthly ? 'TRUE' : 'FALSE',
+          is_estimated: payload.is_estimated ? 'TRUE' : 'FALSE',
+          visible: payload.visible ? 'TRUE' : 'FALSE',
+          end_date: payload.end_date || '',
+          frequency: payload.frequency || '',
+          measures: payload.measures || '',
+          why_it_matters: payload.why_it_matters || '',
+          details: payload.details || '',
+          impacted_assets: payload.impacted_assets || '',
+          price_move: payload.price_move_val || '',
+          price_move_type: payload.price_move_type || '',
+          chart_ticker: payload.chart_ticker || '',
+          chart_range: payload.chart_range || '',
+        });
         statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved';
         showToast('Changes saved', 'success');
         renderTable(); btn.disabled = false;
