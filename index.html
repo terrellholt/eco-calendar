@@ -67,12 +67,12 @@ tv-ticker-tape{display:block;width:100%}
 .week-sub{font-size:10px;color:#999;margin-top:1px}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 
-/* NAV PILLS (Prev / Today / Next) */
+/* NAV PILLS (Prev / Today / Next) - same design as filter-pills */
 .nav-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .nav-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .nav-pill:hover{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.nav-pill.today-pill{color:#2563eb;font-weight:600}
-.nav-pill.today-pill:hover{background:#fff;color:#1d4ed8;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.nav-pill.today-pill.active{color:#2563eb;font-weight:600}
+.nav-pill.today-pill.active:hover{background:#fff;color:#1d4ed8;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
 /* FILTER PILLS */
 .filter-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
@@ -173,10 +173,9 @@ tv-ticker-tape{display:block;width:100%}
 .ecard.medium{background:#FFF7ED;border-color:#FED7AA}
 .ecard.low{background:#FEFCE8;border-color:#FEF08A}
 .ecard.none{background:#fff;border-color:#e5e5e0}
-
-/* ── Estimated event visual treatment ── */
-.ecard.est-event{border:2px dashed #c8930a !important}
-
+.ecard.est-event{opacity:0.82;border:1.5px dashed #b8820a !important;background:linear-gradient(145deg,#1c1400,#111) !important}
+.ecard.est-event .card-logo{filter:brightness(0.85) sepia(0.12)}
+.ecard.est-event::after{content:'EST';position:absolute;top:4px;right:5px;font-size:8px;font-weight:700;letter-spacing:.07em;color:#b8820a;background:rgba(184,130,10,0.15);border:1px solid rgba(184,130,10,0.35);border-radius:3px;padding:1px 4px;line-height:1.4}
 .card-top-row{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:5px}
 .card-time{font-size:10px;color:#999;font-weight:500}
 .card-impact{font-size:10px;font-weight:500}
@@ -490,9 +489,6 @@ var MONTHS    = ['January','February','March','April','May','June','July','Augus
 var MONTHS_SH = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 var DAYS      = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var DAYS_SH   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-// ── UPDATED: includes 3-letter abbreviations so estimated date strings like
-// "Apr 13, 2027 (est.)" and "Nov/Dec 2027 (est.)" parse correctly ──
 var MMAP = {
   January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',
   July:'07',August:'08',September:'09',October:'10',November:'11',December:'12',
@@ -502,7 +498,7 @@ var MMAP = {
 
 var weekStart   = getWeekStart(new Date());
 var filterMode  = 'confirmed';
-  // Ticker → domain lookup for logo fallback on estimated events
+  // Ticker -> domain lookup for logo fallback on estimated events
 var TICKER_DOMAIN = {
   'AAPL':'apple.com','MSFT':'microsoft.com','GOOGL':'google.com','GOOG':'google.com',
   'AMZN':'amazon.com','META':'meta.com','NVDA':'nvidia.com','TSLA':'tesla.com',
@@ -793,40 +789,30 @@ function deriveTime(notes) {
   return '';
 }
 
-// ── UPDATED parseDate: now handles estimated date formats like
-// "Apr 13, 2027 (est.)", "Apr 2027 (est.)", "Nov/Dec 2027 (est.)"
-// in addition to all the original formats ──
 function parseDate(dateStr, monthStr) {
   if (!dateStr) { return { start: '', end: '' }; }
   dateStr = String(dateStr).trim();
   if (!dateStr || dateStr.length < 2) { return { start: '', end: '' }; }
   if (dateStr.indexOf('--') > -1) { return { start: '', end: '' }; }
-
-  // ISO date: "2027-04-13"
   if (dateStr.match(/^\d{4}-\d{2}-\d{2}/)) { return { start: dateStr.substring(0, 10), end: '' }; }
-
-  // "Mon DD, YYYY" or "Mon DD, YYYY (est.)" — e.g. "Apr 13, 2027 (est.)"
+  // "Mon DD, YYYY" or "Mon DD, YYYY (est.)"
   var fullDate = dateStr.match(/^([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
   if (fullDate) {
     var mNum = MMAP[fullDate[1]];
     if (mNum) { return { start: fullDate[3] + '-' + mNum + '-' + fullDate[2].padStart(2,'0'), end: '' }; }
   }
-
-  // "Mon/Mon YYYY" — e.g. "Nov/Dec 2027 (est.)" — use first month, 1st of month
+  // "Mon/Mon YYYY" e.g. "Nov/Dec 2027 (est.)"
   var slashMonth = dateStr.match(/^([A-Za-z]+)\/[A-Za-z]+\s+(\d{4})/);
   if (slashMonth) {
     var mNum2 = MMAP[slashMonth[1]];
     if (mNum2) { return { start: slashMonth[2] + '-' + mNum2 + '-01', end: '' }; }
   }
-
-  // "Mon YYYY" — e.g. "Apr 2027 (est.)" — use 1st of that month
+  // "Mon YYYY" e.g. "Apr 2027 (est.)"
   var monthYear = dateStr.match(/^([A-Za-z]+)\s+(\d{4})/);
   if (monthYear) {
     var mNum3 = MMAP[monthYear[1]];
     if (mNum3) { return { start: monthYear[2] + '-' + mNum3 + '-01', end: '' }; }
   }
-
-  // Original short formats: "Apr 13", "13", "13-15"
   var m = MMAP[monthStr] || '01';
   var parts = dateStr.split(' ');
   var num = parts[parts.length - 1];
@@ -983,6 +969,11 @@ function renderWeek() {
   });
   var fmt = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); };
   document.getElementById('weekSub').textContent = fmt(days[0]) + ' to ' + fmt(days[6]) + ' — Click any event to view details.';
+  var todayPill = document.querySelector('.today-pill');
+  if (todayPill) {
+    var isCurrentWeek = days.some(function(d) { return d.getTime() === today.getTime(); });
+    todayPill.classList.toggle('active', isCurrentWeek);
+  }
   document.getElementById('weekGrid').innerHTML = days.map(function(d, i) {
     var isToday = d.getTime() === today.getTime();
     var isPastDay = d < today;
