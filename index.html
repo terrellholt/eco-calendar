@@ -502,6 +502,23 @@ var MMAP = {
 
 var weekStart   = getWeekStart(new Date());
 var filterMode  = 'confirmed';
+  // Ticker → domain lookup for logo fallback on estimated events
+var TICKER_DOMAIN = {
+  'AAPL':'apple.com','MSFT':'microsoft.com','GOOGL':'google.com','GOOG':'google.com',
+  'AMZN':'amazon.com','META':'meta.com','NVDA':'nvidia.com','TSLA':'tesla.com',
+  'NFLX':'netflix.com','ADBE':'adobe.com','CRM':'salesforce.com','CSCO':'cisco.com',
+  'INTC':'intel.com','AMD':'amd.com','MU':'micron.com','AVGO':'broadcom.com',
+  'KLAC':'kla.com','QCOM':'qualcomm.com','JPM':'jpmorganchase.com',
+  'BAC':'bankofamerica.com','WFC':'wellsfargo.com','GS':'goldmansachs.com',
+  'MS':'morganstanley.com','C':'citi.com','BLK':'blackrock.com','V':'visa.com',
+  'MA':'mastercard.com','PYPL':'paypal.com','AXP':'americanexpress.com',
+  'UNH':'unitedhealthgroup.com','LLY':'lilly.com','JNJ':'jnj.com','MRK':'merck.com',
+  'ABBV':'abbvie.com','XOM':'exxonmobil.com','CVX':'chevron.com',
+  'CAT':'caterpillar.com','BA':'boeing.com','LMT':'lockheedmartin.com','RTX':'rtx.com',
+  'DAL':'delta.com','WMT':'walmart.com','COST':'costco.com','NKE':'nike.com',
+  'DIS':'disney.com','BRK.B':'berkshirehathaway.com','BRK.A':'berkshirehathaway.com',
+  'F':'ford.com','GM':'gm.com','LULU':'lululemon.com','PGR':'progressive.com'
+};
 var openMonths  = {};
 var allExpanded = false;
 var sidebarOpen = true;
@@ -842,7 +859,7 @@ function fetchEvents() {
         time: r.display_time || deriveTime(r.notes || ''), utcDatetime: r.event_datetime_utc || '',
         sourceTz: r.source_tz || 'America/New_York', impact: impact, showMini: showMini,
         isEstimated: !!(r.is_estimated === true || r.is_estimated === 'TRUE' || r.is_estimated === 'true'),
-        logo: r.logo_url || ent.logo_url || deriveLogo(r.category, r.event),
+        logo: (function() { var l = r.logo_url || ent.logo_url || ''; if (!l && r.ticker && TICKER_DOMAIN[r.ticker]) { l = mkLogo(TICKER_DOMAIN[r.ticker]); } if (!l) { l = deriveLogo(r.category, r.event); } return l; })(),
         hero: r.hero_url || ent.hero_url || '', heroPosition: r.hero_position || 'center',
         whyMatters: r.why_it_matters || ent.why_it_matters || '', measures: r.measures || ent.measures || '',
         impactedAssets: ent.impacted_assets || '', frequency: r.frequency || ent.frequency || '',
