@@ -234,6 +234,15 @@
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.success .ti { color: var(--green); }
   #toast.error .ti { color: var(--red); }
+  /* TIME PICKER */
+  .time-picker-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .time-preset-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .time-preset-btn { padding: 5px 10px; border-radius: 6px; border: 1.5px solid #e5e5e0; background: #fff; color: #555; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+  .time-preset-btn:hover { border-color: #ccc; color: #1a1a1a; }
+  .time-preset-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .time-custom-row { display: flex; gap: 6px; align-items: center; }
+  .time-custom-row select, .time-custom-row input { flex: 1; }
+  .time-sep { color: #aaa; font-weight: 600; flex-shrink: 0; }
   @media (max-width: 560px) { .ep-row.c2, .ep-row.c3 { grid-template-columns: 1fr; } .impact-row { flex-wrap: wrap; } }
 </style>
 </head>
@@ -355,6 +364,8 @@
       </button>
     </div>
     <div class="ep-body">
+
+      <!-- SECTION 1: Identity -->
       <div class="ep-section">
         <div class="logo-area">
           <div>
@@ -363,44 +374,118 @@
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:10px">
             <div class="ep-field">
-              <label class="ep-label" id="titleLabel">Title</label>
-              <input type="text" class="ep-input" id="f_title" readonly style="background:#fafaf8;color:#888;cursor:default" placeholder="e.g. Federal Reserve Rate Decision">
+              <label class="ep-label">Event Title <span style="color:#dc2626">*</span></label>
+              <input type="text" class="ep-input" id="f_title" placeholder="e.g. Federal Reserve Rate Decision">
             </div>
             <div class="ep-row c2">
               <div class="ep-field">
-                <label class="ep-label" id="nameLabel">Name</label>
-                <input type="text" class="ep-input" id="f_name" readonly style="background:#fafaf8;color:#888;cursor:default" placeholder="e.g. Federal Reserve">
+                <label class="ep-label">Short Name <span class="opt">(mini calendar)</span></label>
+                <input type="text" class="ep-input" id="f_short_name" placeholder="e.g. FOMC Decision">
               </div>
               <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
             </div>
-            <div class="ep-field" id="categoryField" style="display:none">
-              <label class="ep-label">Category <span style="color:#dc2626">*</span></label>
-              <select class="ep-input" id="f_category">
-                <option value="">— select a category —</option>
-                <option value="Central Bank">Central Bank</option><option value="Economic Release">Economic Release</option>
-                <option value="Earnings">Earnings</option><option value="IPO">IPO</option>
-                <option value="Corporate Event">Corporate Event</option><option value="Market Structure">Market Structure</option>
-                <option value="Political / Macro">Political / Macro</option><option value="Sector Conference">Sector Conference</option>
-                <option value="Market Holiday">Market Holiday</option><option value="Other">Other</option>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Classification -->
+      <div class="ep-section">
+        <div class="ep-row c2" style="margin-bottom:12px">
+          <div class="ep-field">
+            <label class="ep-label">Category <span style="color:#dc2626">*</span></label>
+            <select class="ep-input" id="f_category">
+              <option value="">— select —</option>
+              <option value="Central Bank">Central Bank</option>
+              <option value="Economic Release">Economic Release</option>
+              <option value="Earnings">Earnings</option>
+              <option value="IPO">IPO</option>
+              <option value="Corporate Event">Corporate Event</option>
+              <option value="Market Structure">Market Structure</option>
+              <option value="Political / Macro">Political / Macro</option>
+              <option value="Sector Conference">Sector Conference</option>
+              <option value="Market Holiday">Market Holiday</option>
+              <option value="M&A">M&amp;A</option>
+              <option value="Treasuries">Treasuries</option>
+              <option value="Stock Split">Stock Split</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Also Known As <span class="opt">(optional)</span></label>
+            <input type="text" class="ep-input" id="f_aka" placeholder="e.g. Quad Witching">
+          </div>
+        </div>
+        <div class="ep-row c2">
+          <div class="ep-field">
+            <label class="ep-label">Region</label>
+            <select class="ep-input" id="f_region">
+              <option value="Americas">Americas</option>
+              <option value="Europe">Europe</option>
+              <option value="Asia Pacific">Asia Pacific</option>
+              <option value="Middle East & Africa">Middle East &amp; Africa</option>
+              <option value="Global">Global</option>
+            </select>
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Source Timezone</label>
+            <select class="ep-input" id="f_source_tz">
+              <option value="America/New_York">New York (ET)</option>
+              <option value="America/Chicago">Chicago (CT)</option>
+              <option value="America/Los_Angeles">Los Angeles (PT)</option>
+              <option value="Europe/London">London (GMT/BST)</option>
+              <option value="Europe/Paris">Frankfurt / Paris (CET)</option>
+              <option value="Asia/Tokyo">Tokyo (JST)</option>
+              <option value="Asia/Shanghai">Shanghai (CST)</option>
+              <option value="Asia/Hong_Kong">Hong Kong (HKT)</option>
+              <option value="UTC">UTC</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Date & Time -->
+      <div class="ep-section">
+        <div class="ep-field" style="margin-bottom:12px">
+          <label class="ep-label">Event Date / Duration</label>
+          <div class="duration-row">
+            <input type="date" class="ep-input" id="f_start_date"><span class="duration-arrow">&#8594;</span><input type="date" class="ep-input" id="f_end_date">
+          </div>
+        </div>
+        <div class="ep-field">
+          <label class="ep-label">Time</label>
+          <div class="time-picker-wrap">
+            <div class="time-preset-row">
+              <button class="time-preset-btn" onclick="setTimePreset(this,'All Day')">All Day</button>
+              <button class="time-preset-btn" onclick="setTimePreset(this,'Before Market Open')">Before Market Open</button>
+              <button class="time-preset-btn" onclick="setTimePreset(this,'After Market Close')">After Market Close</button>
+              <button class="time-preset-btn" onclick="setTimePreset(this,'Undetermined')">Undetermined</button>
+              <button class="time-preset-btn" id="customTimeBtn" onclick="setTimePreset(this,'custom')">Choose Time</button>
+            </div>
+            <div class="time-custom-row" id="timeCustomRow" style="display:none">
+              <select class="ep-input" id="f_time_hour" style="flex:0 0 70px">
+                <option>12</option><option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
+                <option>10</option><option>11</option>
+              </select>
+              <span class="time-sep">:</span>
+              <select class="ep-input" id="f_time_min" style="flex:0 0 70px">
+                <option>00</option><option>15</option><option>30</option><option>45</option>
+              </select>
+              <select class="ep-input" id="f_time_ampm" style="flex:0 0 70px">
+                <option>AM</option><option>PM</option>
+              </select>
+              <select class="ep-input" id="f_time_tz" style="flex:1">
+                <option value="ET">ET</option><option value="CT">CT</option><option value="PT">PT</option>
+                <option value="GMT">GMT</option><option value="CET">CET</option><option value="JST">JST</option><option value="UTC">UTC</option>
               </select>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- SECTION 4: Source & Impact -->
       <div class="ep-section">
-        <div class="ep-row c2" style="margin-bottom:12px">
-          <div class="ep-field"><label class="ep-label">Time</label><input type="text" class="ep-input" id="f_display_time" placeholder="e.g. 10:00 AM ET"></div>
-          <div class="ep-field"><label class="ep-label">Also Known As <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_aka" placeholder="e.g. Quad Witching"></div>
-        </div>
-        <div class="ep-field">
-          <label class="ep-label">Event Duration <span class="opt">(optional)</span></label>
-          <div class="duration-row">
-            <input type="date" class="ep-input" id="f_start_date"><span class="duration-arrow">&#8594;</span><input type="date" class="ep-input" id="f_end_date">
-          </div>
-        </div>
-      </div>
-      <div class="ep-section">
-        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
         <div class="ep-field" style="margin-bottom:14px">
           <label class="ep-label">Impact Level</label>
           <div class="impact-row">
@@ -417,6 +502,8 @@
           </div>
         </div>
       </div>
+
+      <!-- SECTION 5: Toggles & Settings -->
       <div class="ep-section">
         <div class="est-preview-banner">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -429,10 +516,7 @@
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleEstimated()">
             <div class="toggle-track" id="estimatedToggle"><div class="toggle-thumb"></div></div>
-            <div>
-              <div class="toggle-label">Estimated Event</div>
-              <div class="toggle-sub">Date unconfirmed — applies amber dashed visual on calendar &amp; event card</div>
-            </div>
+            <div><div class="toggle-label">Estimated Event</div><div class="toggle-sub">Date unconfirmed — applies amber dashed visual on calendar &amp; event card</div></div>
           </div>
         </div>
         <div style="margin-bottom:14px">
@@ -466,11 +550,16 @@
           </div>
         </div>
       </div>
+
+      <!-- SECTION 6: Content -->
       <div class="ep-section">
         <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Measures <span class="opt">(optional)</span></label><textarea class="ep-input" id="f_measures" rows="3" placeholder="What this event or release tracks…"></textarea></div>
         <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Why it Matters</label><textarea class="ep-input" id="f_why_it_matters" rows="3" placeholder="Add description of why this event matters…"></textarea></div>
-        <div class="ep-field"><label class="ep-label">Details <span class="opt">(custom content)</span></label><textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes…"></textarea></div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Details <span class="opt">(custom content)</span></label><textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes…"></textarea></div>
+        <div class="ep-field"><label class="ep-label">Internal Notes <span class="opt">(admin only)</span></label><textarea class="ep-input" id="f_notes" rows="2" placeholder="Notes visible only in admin panel…"></textarea></div>
       </div>
+
+      <!-- SECTION 7: Chart -->
       <div class="ep-section" style="border-bottom:none">
         <div class="ep-field">
           <label class="ep-label">Attach Chart <span class="opt">(optional)</span></label>
@@ -635,7 +724,7 @@ function writebackToSheet(syncId, fields) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,date,end_date,category,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,short_name,date,end_date,category,region,source_tz,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,notes,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
@@ -894,15 +983,14 @@ function openNewEvent() {
   document.getElementById('saveBtnLabel').textContent = 'Add to Calendar';
   document.getElementById('createBanner').style.display = 'flex';
   document.getElementById('deleteBtn').style.display = 'none';
-  document.getElementById('categoryField').style.display = 'block';
-  var ft = document.getElementById('f_title'); ft.readOnly = false; ft.style.background = ''; ft.style.color = ''; ft.style.cursor = '';
-  var fn = document.getElementById('f_name'); fn.readOnly = false; fn.style.background = ''; fn.style.color = ''; fn.style.cursor = '';
   setupHero('');
   document.getElementById('logoThumb').innerHTML = '<div class="logo-thumb-empty">No logo</div>';
-  ['f_title','f_name','f_ticker','f_display_time','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
+  ['f_title','f_short_name','f_ticker','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_notes','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
   document.getElementById('f_frequency').value = '';
   document.getElementById('f_price_move_type').value = 'percent';
   document.getElementById('f_category').value = '';
+  document.getElementById('f_region').value = 'Americas';
+  document.getElementById('f_source_tz').value = 'America/New_York';
   document.getElementById('chartTicker').value = '';
   document.getElementById('chartFrame').style.display = 'none';
   document.getElementById('chartPlaceholder').style.display = 'flex';
@@ -913,6 +1001,7 @@ function openNewEvent() {
   showInMonthly = false; updateToggleUI();
   isEstimated = false; updateEstimatedUI();
   isVisible = true; updateVisibleUI();
+  resetTimePicker();
   chartRange = '1M';
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === '1M'); });
   document.getElementById('epStatus').textContent = '';
@@ -941,9 +1030,6 @@ function openEdit(idx) {
   document.getElementById('saveBtnLabel').textContent = 'Save Changes';
   document.getElementById('createBanner').style.display = 'none';
   document.getElementById('deleteBtn').style.display = 'inline-flex';
-  document.getElementById('categoryField').style.display = 'none';
-  var ft = document.getElementById('f_title'); ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
-  var fn = document.getElementById('f_name'); fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
 
   var ev = currentEvent, ent = ev.entity || {};
   var heroUrl = ev.hero_url || ent.hero_url || '';
@@ -957,20 +1043,28 @@ function openEdit(idx) {
   var lt = document.getElementById('logoThumb');
   var logoUrl = ev.logo_url || ent.logo_url || '';
   lt.innerHTML = logoUrl ? '<img src="'+esc(logoUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
+
   document.getElementById('f_title').value = ev.event || '';
-  document.getElementById('f_name').value = ent.name || '';
+  document.getElementById('f_short_name').value = ev.short_name || '';
   document.getElementById('f_ticker').value = ev.ticker || '';
-  document.getElementById('f_display_time').value = ev.display_time || '';
   document.getElementById('f_aka').value = ev.aka || '';
   document.getElementById('f_source_url').value = ev.source_url || '';
+  document.getElementById('f_category').value = ev.category || '';
+  document.getElementById('f_region').value = ev.region || 'Americas';
+  document.getElementById('f_source_tz').value = ev.source_tz || 'America/New_York';
   document.getElementById('f_frequency').value = (ev.frequency || ent.frequency || '').toLowerCase();
   document.getElementById('f_measures').value = ev.measures || ent.measures || '';
   document.getElementById('f_why_it_matters').value = ev.why_it_matters || ent.why_it_matters || '';
   document.getElementById('f_details').value = ev.details || '';
+  document.getElementById('f_notes').value = ev.notes || '';
   document.getElementById('f_start_date').value = ev.date ? String(ev.date).substring(0,10) : '';
   document.getElementById('f_end_date').value = ev.end_date ? String(ev.end_date).substring(0,10) : '';
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
+
+  // Load time picker
+  loadTimePicker(ev.display_time || '');
+
   selectedImpact = (ev.impact || 'none').toLowerCase();
   if (!['high','medium','low','none'].includes(selectedImpact)) selectedImpact = 'none';
   updateImpactUI();
@@ -980,15 +1074,18 @@ function openEdit(idx) {
   updateEstimatedUI();
   isVisible = ev.visible !== false && ev.visible !== 'FALSE';
   updateVisibleUI();
+
   var assetWrap = document.getElementById('assetWrap'), assetInp = document.getElementById('assetInp');
   assetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
   var assets = (ev.impacted_assets || ent.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean);
   assets.forEach(function(a) { assetWrap.insertBefore(makeChip(a), assetInp); });
+
   var ct = ev.chart_ticker || ev.ticker || '';
   document.getElementById('chartTicker').value = ct;
   chartRange = ev.chart_range || '1M';
   document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.toggle('active', b.textContent === chartRange); });
   if (ct) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
+
   document.getElementById('epStatus').textContent = '';
   document.getElementById('saveBtn').disabled = false;
   document.getElementById('editOverlay').classList.add('open');
@@ -1003,9 +1100,6 @@ function closeEdit() {
   document.getElementById('saveBtnLabel').textContent = 'Save Changes';
   document.getElementById('createBanner').style.display = 'none';
   document.getElementById('deleteBtn').style.display = 'none';
-  document.getElementById('categoryField').style.display = 'none';
-  var ft = document.getElementById('f_title'); ft.readOnly = true; ft.style.background = '#fafaf8'; ft.style.color = '#888'; ft.style.cursor = 'default';
-  var fn = document.getElementById('f_name'); fn.readOnly = true; fn.style.background = '#fafaf8'; fn.style.color = '#888'; fn.style.cursor = 'default';
   isEstimated = false;
   document.getElementById('estimatedToggle').classList.remove('on');
   document.getElementById('editPanel').classList.remove('is-estimated');
@@ -1084,29 +1178,97 @@ function setRange(btn, range) {
   btn.classList.add('active'); loadChart();
 }
 
+// ── TIME PICKER ────────────────────────────────────────────
+var PRESETS = ['All Day', 'Before Market Open', 'After Market Close', 'Undetermined'];
+
+function setTimePreset(btn, val) {
+  document.querySelectorAll('.time-preset-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  var customRow = document.getElementById('timeCustomRow');
+  if (val === 'custom') {
+    customRow.style.display = 'flex';
+  } else {
+    customRow.style.display = 'none';
+  }
+}
+
+function resetTimePicker() {
+  document.querySelectorAll('.time-preset-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('timeCustomRow').style.display = 'none';
+  document.getElementById('f_time_hour').value = '9';
+  document.getElementById('f_time_min').value = '30';
+  document.getElementById('f_time_ampm').value = 'AM';
+  document.getElementById('f_time_tz').value = 'ET';
+}
+
+function loadTimePicker(val) {
+  resetTimePicker();
+  if (!val) return;
+  // Check if it matches a preset
+  for (var i = 0; i < PRESETS.length; i++) {
+    if (val.toLowerCase() === PRESETS[i].toLowerCase()) {
+      var btns = document.querySelectorAll('.time-preset-btn');
+      btns.forEach(function(b){ if (b.textContent.trim() === PRESETS[i]) { b.classList.add('active'); } });
+      return;
+    }
+  }
+  // Otherwise it's a custom time — activate Choose Time and parse
+  document.getElementById('customTimeBtn').classList.add('active');
+  document.getElementById('timeCustomRow').style.display = 'flex';
+  // Try to parse "9:30 AM ET" style
+  var m = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?\s*(\w+)?/i);
+  if (m) {
+    document.getElementById('f_time_hour').value = m[1];
+    document.getElementById('f_time_min').value = m[2];
+    if (m[3]) document.getElementById('f_time_ampm').value = m[3].toUpperCase();
+    if (m[4]) document.getElementById('f_time_tz').value = m[4].toUpperCase();
+  }
+}
+
+function getTimeValue() {
+  var activeBtn = document.querySelector('.time-preset-btn.active');
+  if (!activeBtn) return null;
+  var val = activeBtn.textContent.trim();
+  if (val === 'Choose Time') {
+    var h = document.getElementById('f_time_hour').value;
+    var m = document.getElementById('f_time_min').value;
+    var ap = document.getElementById('f_time_ampm').value;
+    var tz = document.getElementById('f_time_tz').value;
+    return h + ':' + m + ' ' + ap + ' ' + tz;
+  }
+  return val;
+}
+
+
 function saveChanges() {
   var btn = document.getElementById('saveBtn'), statusEl = document.getElementById('epStatus');
-  if (isNewEvent) {
-    var title = document.getElementById('f_title').value.trim();
-    var date  = document.getElementById('f_start_date').value;
-    var cat   = document.getElementById('f_category').value;
-    if (!title) { document.getElementById('f_title').focus(); showToast('Event title is required', 'error'); return; }
-    if (!date)  { document.getElementById('f_start_date').focus(); showToast('Date is required', 'error'); return; }
-    if (!cat)   { document.getElementById('f_category').focus(); showToast('Category is required', 'error'); return; }
-  } else {
-    if (!currentEvent) return;
-  }
+  var title = document.getElementById('f_title').value.trim();
+  var date  = document.getElementById('f_start_date').value;
+  var cat   = document.getElementById('f_category').value;
+  if (!title) { document.getElementById('f_title').focus(); showToast('Event title is required', 'error'); return; }
+  if (!date)  { document.getElementById('f_start_date').focus(); showToast('Date is required', 'error'); return; }
+  if (!cat)   { document.getElementById('f_category').focus(); showToast('Category is required', 'error'); return; }
+  if (!isNewEvent && !currentEvent) return;
+
   btn.disabled = true; statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Saving\u2026';
   var logoImg = document.getElementById('logoThumb').querySelector('img');
   var pmVal = document.getElementById('f_price_move_val').value.trim();
+  var timeVal = getTimeValue();
+
   var payload = {
+    event: title,
+    date: date,
+    category: cat,
+    short_name: document.getElementById('f_short_name').value.trim() || null,
     hero_url: currentHeroUrl || null,
     hero_position: heroOffsetX.toFixed(1) + '% ' + heroOffsetY.toFixed(1) + '%',
     logo_url: logoImg ? logoImg.src : null,
-    display_time: document.getElementById('f_display_time').value.trim() || null,
+    display_time: timeVal || null,
     ticker: document.getElementById('f_ticker').value.trim() || null,
     aka: document.getElementById('f_aka').value.trim() || null,
     source_url: document.getElementById('f_source_url').value.trim() || null,
+    region: document.getElementById('f_region').value || 'Americas',
+    source_tz: document.getElementById('f_source_tz').value || 'America/New_York',
     impact: selectedImpact || null,
     show_in_monthly: showInMonthly,
     is_estimated: isEstimated,
@@ -1116,6 +1278,7 @@ function saveChanges() {
     measures: document.getElementById('f_measures').value.trim() || null,
     why_it_matters: document.getElementById('f_why_it_matters').value.trim() || null,
     details: document.getElementById('f_details').value.trim() || null,
+    notes: document.getElementById('f_notes').value.trim() || null,
     impacted_assets: getAssets() || null,
     price_move_val: pmVal || null,
     price_move_type: pmVal ? document.getElementById('f_price_move_type').value : null,
@@ -1124,9 +1287,6 @@ function saveChanges() {
   };
 
   if (isNewEvent) {
-    payload.event    = document.getElementById('f_title').value.trim();
-    payload.date     = document.getElementById('f_start_date').value;
-    payload.category = document.getElementById('f_category').value;
     supaFetch('/rest/v1/Master%20Calendar', { method: 'POST', body: JSON.stringify(payload) })
       .then(function(result) {
         var newRow = (Array.isArray(result) ? result[0] : result) || payload;
@@ -1145,14 +1305,18 @@ function saveChanges() {
     supaFetch('/rest/v1/Master%20Calendar?id=eq.' + currentEvent.id, { method: 'PATCH', body: JSON.stringify(payload) })
       .then(function() {
         Object.assign(currentEvent, payload);
-        // Write back to Google Sheet
         writebackToSheet(currentEvent.sync_id, {
+          event: payload.event || '',
+          short_name: payload.short_name || '',
           hero_url: payload.hero_url || '',
           logo_url: payload.logo_url || '',
           display_time: payload.display_time || '',
           ticker: payload.ticker || '',
           aka: payload.aka || '',
           source_url: payload.source_url || '',
+          category: payload.category || '',
+          region: payload.region || '',
+          source_tz: payload.source_tz || '',
           impact: payload.impact || '',
           show_mini: payload.show_in_monthly ? 'TRUE' : 'FALSE',
           is_estimated: payload.is_estimated ? 'TRUE' : 'FALSE',
@@ -1162,6 +1326,7 @@ function saveChanges() {
           measures: payload.measures || '',
           why_it_matters: payload.why_it_matters || '',
           details: payload.details || '',
+          notes: payload.notes || '',
           impacted_assets: payload.impacted_assets || '',
           price_move: payload.price_move_val || '',
           price_move_type: payload.price_move_type || '',
