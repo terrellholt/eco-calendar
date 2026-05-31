@@ -167,7 +167,7 @@ tv-ticker-tape{display:block;width:100%}
 .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
 
 /* EVENT CARDS */
-.ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center;position:relative;overflow:hidden}
+.ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center;position:relative}
 .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
 .ecard.high{background:#FEF2F2;border-color:#FECACA}
 .ecard.medium{background:#FFF7ED;border-color:#FED7AA}
@@ -176,8 +176,6 @@ tv-ticker-tape{display:block;width:100%}
 
 /* ── Estimated event visual treatment ── */
 .ecard.est-event{border:2px dashed #c8930a !important}
-.ecard.est-event::before{content:'EST';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;font-weight:900;letter-spacing:-2px;color:transparent;-webkit-text-stroke:1.5px rgba(180,120,10,0.20);text-stroke:1.5px rgba(180,120,10,0.20);pointer-events:none;z-index:0;line-height:1}
-.ecard.est-event > *{position:relative;z-index:1}
 
 .card-top-row{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:5px}
 .card-time{font-size:10px;color:#999;font-weight:500}
