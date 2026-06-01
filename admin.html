@@ -114,7 +114,7 @@
   .vis-btn.hidden-event { color: var(--red); opacity: 0.7; }
   .vis-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
 
-  .td-date { font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; }
+  .td-date { font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; min-width: 110px; }
   .td-event { font-weight: 500; color: var(--text); }
   .td-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
   .td-cat { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; color: var(--text2); white-space: nowrap; display: inline-block; }
@@ -543,7 +543,7 @@
         <div class="ep-row c2" style="margin-bottom:0">
           <div class="ep-field">
             <label class="ep-label">Time</label>
-            <select class="ep-input" id="timePresetSelect" onchange="setTimePresetFromSelect(this.value)">
+            <select class="ep-input" id="timePresetSelect" onchange="setTimePresetFromSelect(this.value)" style="transition:border-color 0.15s,color 0.15s">
               <option value="">— select time —</option>
               <option value="All Day">All Day</option>
               <option value="Before Market Open">Before Market Open</option>
@@ -563,19 +563,19 @@
           </div>
         </div>
         <div class="time-custom-row" id="timeCustomRow" style="display:none;margin-top:8px">
-          <select class="ep-input" id="f_time_hour" style="flex:0 0 70px">
+          <select class="ep-input" id="f_time_hour" style="flex:0 0 70px" onchange="updateCustomTimeLabel()">
             <option>12</option><option>1</option><option>2</option><option>3</option><option>4</option>
             <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
             <option>10</option><option>11</option>
           </select>
           <span class="time-sep">:</span>
-          <select class="ep-input" id="f_time_min" style="flex:0 0 70px">
+          <select class="ep-input" id="f_time_min" style="flex:0 0 70px" onchange="updateCustomTimeLabel()">
             <option>00</option><option>15</option><option>30</option><option>45</option>
           </select>
-          <select class="ep-input" id="f_time_ampm" style="flex:0 0 70px">
+          <select class="ep-input" id="f_time_ampm" style="flex:0 0 70px" onchange="updateCustomTimeLabel()">
             <option>AM</option><option>PM</option>
           </select>
-          <select class="ep-input" id="f_time_tz" style="flex:1">
+          <select class="ep-input" id="f_time_tz" style="flex:1" onchange="updateCustomTimeLabel()">
             <option value="ET">ET</option><option value="CT">CT</option><option value="PT">PT</option>
             <option value="GMT">GMT</option><option value="CET">CET</option><option value="JST">JST</option><option value="UTC">UTC</option>
           </select>
@@ -1401,6 +1401,8 @@ function closeEdit() {
   isEstimated = false;
   document.getElementById('estimatedToggle').classList.remove('on');
   document.getElementById('editPanel').classList.remove('is-estimated');
+  var tsel = document.getElementById('timePresetSelect');
+  if (tsel) { tsel.style.borderColor = ''; tsel.style.color = ''; }
 }
 function overlayClick(e) { if (e.target === document.getElementById('editOverlay')) closeEdit(); }
 
@@ -1474,6 +1476,36 @@ function setRange(btn, range) {
 var PRESETS = ['All Day', 'Before Market Open', 'After Market Close', 'Undetermined'];
 function setTimePresetFromSelect(val) {
   document.getElementById('timeCustomRow').style.display = val === 'custom' ? 'flex' : 'none';
+  var sel = document.getElementById('timePresetSelect');
+  if (val && val !== 'custom') {
+    if (sel) { sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; }
+  } else if (!val) {
+    if (sel) { sel.style.borderColor = ''; sel.style.color = ''; }
+  }
+  if (val !== 'custom') updateCustomTimeLabel();
+}
+
+function updateCustomTimeLabel() {
+  var sel = document.getElementById('timePresetSelect');
+  if (!sel) return;
+  // Find or create the custom option
+  var customOpt = null;
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === 'custom') { customOpt = sel.options[i]; break; }
+  }
+  if (!customOpt) return;
+  if (sel.value !== 'custom') {
+    customOpt.text = 'Choose Time…';
+    return;
+  }
+  // Build the label from the current hour/min/ampm/tz values
+  var h = document.getElementById('f_time_hour') ? document.getElementById('f_time_hour').value : '';
+  var m = document.getElementById('f_time_min') ? document.getElementById('f_time_min').value : '00';
+  var ap = document.getElementById('f_time_ampm') ? document.getElementById('f_time_ampm').value : '';
+  var tz = document.getElementById('f_time_tz') ? document.getElementById('f_time_tz').value : '';
+  if (h) {
+    customOpt.text = '⏰ ' + h + ':' + m + ' ' + ap + ' ' + tz;
+  }
 }
 function resetTimePicker() {
   var sel = document.getElementById('timePresetSelect');
@@ -1510,6 +1542,12 @@ function loadTimePicker(val) {
     if (m[3]) document.getElementById('f_time_ampm').value = m[3].toUpperCase();
     if (m[4]) document.getElementById('f_time_tz').value = m[4].toUpperCase();
   }
+  // Update the dropdown label to show the time value, then color it
+  setTimeout(function() {
+    updateCustomTimeLabel();
+    var sel = document.getElementById('timePresetSelect');
+    if (sel) { sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; }
+  }, 10);
 }
 function getTimeValue() {
   var sel = document.getElementById('timePresetSelect');
