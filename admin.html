@@ -1056,7 +1056,7 @@ function writebackToSheet(syncId, fields) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,short_name,date,end_date,category,region,source_tz,impact,display_time,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,notes,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,template_id,template_overrides,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,short_name,date,end_date,category,region,source_tz,impact,display_time,event_datetime_utc,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,notes,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,template_id,template_overrides,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
@@ -1175,7 +1175,7 @@ function renderTable() {
       + handleHtml
       + '<td class="td-vis"><button class="vis-btn'+visBtnClass+'" title="'+visTitle+'" onclick="event.stopPropagation();toggleRowVisibility('+i+')">'+visIcon+'</button></td>'
       + '<td class="td-date">'+date+'</td>'
-      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+tmplBadge+'</div>'+(ev.display_time?'<div class="td-sub">&#9200; '+esc(ev.display_time)+'</div>':'')+'</td>'
+      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+tmplBadge+'</div>'+(resolveDisplayTime(ev)?'<div class="td-sub">&#9200; '+esc(resolveDisplayTime(ev))+'</div>':'')+'</td>'
       + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
       + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
       + '<td><div class="enr-chips">'+chips+'</div></td>'
@@ -1352,7 +1352,8 @@ function openEdit(idx) {
   // Store date/time values — applied after overlay opens to avoid browser rendering bugs
   var _startDate = parseCalendarDate(ev.date);
   var _endDate = parseCalendarDate(ev.end_date);
-  var _displayTime = ev.display_time || '';
+  // Prefer display_time; fall back to parsing event_datetime_utc
+  var _displayTime = ev.display_time || resolveDisplayTime(ev);
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
   selectedImpact = (ev.impact || 'none').toLowerCase();
@@ -1385,7 +1386,6 @@ function openEdit(idx) {
   setTimeout(function() {
     document.getElementById('f_start_date').value = _startDate;
     document.getElementById('f_end_date').value = _endDate;
-    console.log('TIME DEBUG — raw display_time:', JSON.stringify(_displayTime));
     if (_displayTime) loadTimePicker(_displayTime);
   }, 30);
 }
@@ -1520,6 +1520,41 @@ function getTimeValue() {
     return h + ':' + m + ' ' + ap + ' ' + tz;
   }
   return sel.value;
+}
+
+// ── RESOLVE DISPLAY TIME from event_datetime_utc or notes ──
+function resolveDisplayTime(ev) {
+  // Option 1: parse event_datetime_utc (e.g. "2027-01-13T13:30:00Z")
+  if (ev.event_datetime_utc) {
+    try {
+      var dt = new Date(ev.event_datetime_utc);
+      if (!isNaN(dt)) {
+        // Convert UTC to ET (UTC-5 EST / UTC-4 EDT)
+        // Use a simple offset — ET is stored as the source timezone
+        var etOffset = isDST(dt) ? -4 : -5;
+        var local = new Date(dt.getTime() + etOffset * 60 * 60 * 1000);
+        var h = local.getUTCHours();
+        var m = local.getUTCMinutes();
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        var h12 = h % 12 || 12;
+        var mm = String(m).padStart(2, '0');
+        return h12 + ':' + mm + ' ' + ampm + ' ET';
+      }
+    } catch(e) {}
+  }
+  // Option 2: extract time from notes field (e.g. "Bureau of Labor Statistics; 8:30 AM ET")
+  if (ev.notes) {
+    var m = ev.notes.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)\s*(?:ET|CT|PT|GMT|UTC)?)/i);
+    if (m) return m[1].trim();
+  }
+  return '';
+}
+
+function isDST(date) {
+  // DST in US: second Sunday in March to first Sunday in November
+  var jan = new Date(date.getUTCFullYear(), 0, 1).getTimezoneOffset();
+  var jul = new Date(date.getUTCFullYear(), 6, 1).getTimezoneOffset();
+  return date.getTimezoneOffset() < Math.max(jan, jul);
 }
 
 // ── INFER YEAR from current event name or title field ──────
