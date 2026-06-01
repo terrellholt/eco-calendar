@@ -1087,6 +1087,49 @@ function populateCats() {
   Object.keys(cats).sort().forEach(function(c) { var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
 }
 
+function resolveDisplayTime(ev) {
+  if (ev.display_time) return ev.display_time;
+  if (ev.event_datetime_utc) {
+    try {
+      var dt = new Date(ev.event_datetime_utc);
+      if (!isNaN(dt)) {
+        var etOffset = isDST(dt) ? -4 : -5;
+        var local = new Date(dt.getTime() + etOffset * 60 * 60 * 1000);
+        var h = local.getUTCHours();
+        var mn = local.getUTCMinutes();
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        var h12 = h % 12 || 12;
+        return h12 + ':' + String(mn).padStart(2,'0') + ' ' + ampm + ' ET';
+      }
+    } catch(e) {}
+  }
+  if (ev.notes) {
+    var m = ev.notes.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)\s*(?:ET|CT|PT|GMT|UTC)?)/i);
+    if (m) return m[1].trim();
+  }
+  return '';
+}
+
+function isDST(date) {
+  var jan = new Date(date.getUTCFullYear(), 0, 1).getTimezoneOffset();
+  var jul = new Date(date.getUTCFullYear(), 6, 1).getTimezoneOffset();
+  return date.getTimezoneOffset() < Math.max(jan, jul);
+}
+
+function formatTableDate(start, end) {
+  if (!start) return '';
+  var s = String(start).trim();
+  if (/^[A-Za-z]{3}\s+\d{1,2}$/.test(s)) return s;
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    var d = new Date(s + 'T12:00:00Z');
+    if (!isNaN(d)) {
+      var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return MO[d.getUTCMonth()] + ' ' + d.getUTCDate();
+    }
+  }
+  return s.replace(/,?\s*20\d{2}/, '').trim() || s.substring(0, 10);
+}
+
 function filterTable() {
   var q = document.getElementById('searchInput').value.toLowerCase();
   var imp = document.getElementById('impactFilter').value;
@@ -1147,7 +1190,7 @@ function renderTable() {
     return;
   }
   var dateGroups = getDateGroups();
-  var rows = [];
+  var html = '';
   filteredEvents.forEach(function(ev, i) {
     var ent = ev.entity || {};
     var hero = ev.hero_url || ent.hero_url || '';
@@ -1155,14 +1198,10 @@ function renderTable() {
     var why = ev.why_it_matters || ent.why_it_matters || '';
     var imp = (ev.impact||'none').toLowerCase();
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
-    var chips = '';
-    [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].forEach(function(p) {
-      chips += '<span class="echip ' + (p[1] ? 'echip-y' : 'echip-n') + '">' + p[0] + '</span>';
-    });
+    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
     var date = formatTableDate(ev.date, ev.end_date);
-    var dispTime = resolveDisplayTime(ev);
-    var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
-    var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
+    var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
+    var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
     var d = (ev.date||'').toString().substring(0,10);
     var draggable = dateGroups[d] && dateGroups[d].length > 1;
     var handleHtml = draggable
@@ -1174,22 +1213,20 @@ function renderTable() {
     var visBtnClass = !evVisible ? ' hidden-event' : '';
     var visTitle = evVisible ? 'Click to hide from website' : 'Click to show on website';
     var visIcon = evVisible ? EYE_OPEN : EYE_CLOSED;
-    var timeHtml = dispTime ? '<div class="td-sub">&#9200; ' + esc(dispTime) + '</div>' : '';
-    var impHtml = pillCls ? '<span class="ipill ' + pillCls + '">' + imp.toUpperCase() + '</span>' : '<span style="color:var(--text3)">&mdash;</span>';
-    var row = '<tr data-idx="' + i + '" data-id="' + ev.id + '" data-date="' + esc(d) + '" data-name="' + esc(ev.event||'') + '" draggable="' + (draggable ? 'true' : 'false') + '" onclick="rowClick(event,' + i + ')" class="' + reorderedClass + hiddenClass + '">';
-    row += '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="' + i + '" onchange="rowCheckChange(event,' + i + ')" onclick="event.stopPropagation()"></td>';
-    row += handleHtml;
-    row += '<td class="td-vis"><button class="vis-btn' + visBtnClass + '" title="' + visTitle + '" onclick="event.stopPropagation();toggleRowVisibility(' + i + ')">' + visIcon + '</button></td>';
-    row += '<td class="td-date">' + date + '</td>';
-    row += '<td><div class="td-event">' + esc(ev.event||'&mdash;') + estBadge + tmplBadge + '</div>' + timeHtml + '</td>';
-    row += '<td><span class="td-cat">' + esc(ev.category||'&mdash;') + '</span></td>';
-    row += '<td>' + impHtml + '</td>';
-    row += '<td><div class="enr-chips">' + chips + '</div></td>';
-    row += '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit(' + i + ')">Edit</button></td>';
-    row += '</tr>';
-    rows.push(row);
+    var dispTime = resolveDisplayTime(ev);
+    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" data-name="'+esc(ev.event||'')+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+hiddenClass+'">'
+      + '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="'+i+'" onchange="rowCheckChange(event,'+i+')" onclick="event.stopPropagation()"></td>'
+      + handleHtml
+      + '<td class="td-vis"><button class="vis-btn'+visBtnClass+'" title="'+visTitle+'" onclick="event.stopPropagation();toggleRowVisibility('+i+')">'+visIcon+'</button></td>'
+      + '<td class="td-date">'+date+'</td>'
+      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+tmplBadge+'</div>'+(dispTime?'<div class="td-sub">&#9200; '+esc(dispTime)+'</div>':'')+'</td>'
+      + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
+      + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
+      + '<td><div class="enr-chips">'+chips+'</div></td>'
+      + '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit('+i+')">Edit</button></td>'
+      + '</tr>';
   });
-  tb.innerHTML = rows.join('');
+  tb.innerHTML = html;
   attachDragHandlers();
 }
 
@@ -1568,66 +1605,12 @@ function getTimeValue() {
 }
 
 // ── RESOLVE DISPLAY TIME from event_datetime_utc or notes ──
-function resolveDisplayTime(ev) {
-  // Option 1: parse event_datetime_utc (e.g. "2027-01-13T13:30:00Z")
-  if (ev.event_datetime_utc) {
-    try {
-      var dt = new Date(ev.event_datetime_utc);
-      if (!isNaN(dt)) {
-        // Convert UTC to ET (UTC-5 EST / UTC-4 EDT)
-        // Use a simple offset — ET is stored as the source timezone
-        var etOffset = isDST(dt) ? -4 : -5;
-        var local = new Date(dt.getTime() + etOffset * 60 * 60 * 1000);
-        var h = local.getUTCHours();
-        var m = local.getUTCMinutes();
-        var ampm = h >= 12 ? 'PM' : 'AM';
-        var h12 = h % 12 || 12;
-        var mm = String(m).padStart(2, '0');
-        return h12 + ':' + mm + ' ' + ampm + ' ET';
-      }
-    } catch(e) {}
-  }
-  // Option 2: extract time from notes field (e.g. "Bureau of Labor Statistics; 8:30 AM ET")
-  if (ev.notes) {
-    var m = ev.notes.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)\s*(?:ET|CT|PT|GMT|UTC)?)/i);
-    if (m) return m[1].trim();
-  }
-  return '';
-}
 
-function isDST(date) {
-  // DST in US: second Sunday in March to first Sunday in November
-  var jan = new Date(date.getUTCFullYear(), 0, 1).getTimezoneOffset();
-  var jul = new Date(date.getUTCFullYear(), 6, 1).getTimezoneOffset();
-  return date.getTimezoneOffset() < Math.max(jan, jul);
-}
+
+
 
 // ── FORMAT DATE for table display ──────────────────────────
-function formatTableDate(start, end) {
-  if (!start) return '';
-  var s = String(start).trim();
-  // If already a clean "Mon DD" format (e.g. "Jan 13"), use as-is
-  if (/^[A-Za-z]{3}\s+\d{1,2}$/.test(s)) return s;
-  // If ISO format "2027-04-13", convert to "Apr 13"
-  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-    var d = new Date(s + 'T12:00:00Z');
-    if (!isNaN(d)) {
-      var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var startStr = MONTHS[d.getUTCMonth()] + ' ' + d.getUTCDate();
-      if (end) {
-        var e = new Date(String(end) + 'T12:00:00Z');
-        if (!isNaN(e)) {
-          var endStr = MONTHS[e.getUTCMonth()] + ' ' + e.getUTCDate();
-          return startStr + ' – ' + endStr;
-        }
-      }
-      return startStr;
-    }
-  }
-  // Raw text like "Jan 6-9, 2027" — strip year, clean up
-  var cleaned = s.replace(/,?\s*20\d{2}/, '').trim();
-  return cleaned || s.substring(0, 10);
-}
+
 
 // ── INFER YEAR from current event name or title field ──────
 function inferYearFromEvent() {
