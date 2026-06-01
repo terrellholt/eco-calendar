@@ -1327,10 +1327,9 @@ function openEdit(idx) {
   document.getElementById('f_details').value = ev.details || '';
   document.getElementById('f_notes').value = ev.notes || '';
   // Store date/time values — applied after overlay opens to avoid browser rendering bugs
-  var _startDate = ev.date ? String(ev.date).substring(0,10) : '';
-  var _endDate = ev.end_date ? String(ev.end_date).substring(0,10) : '';
+  var _startDate = parseCalendarDate(ev.date);
+  var _endDate = parseCalendarDate(ev.end_date);
   var _displayTime = ev.display_time || '';
-  console.log('DEBUG date raw:', ev.date, '| parsed:', _startDate, '| display_time:', _displayTime);
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
   selectedImpact = (ev.impact || 'none').toLowerCase();
@@ -1490,6 +1489,39 @@ function getTimeValue() {
     return h + ':' + m + ' ' + ap + ' ' + tz;
   }
   return sel.value;
+}
+
+// ── INFER YEAR from current event name or title field ──────
+function inferYearFromEvent() {
+  // Try to pull a 4-digit year from the event name (e.g. "March 2027 CPI Release")
+  var titleEl = document.getElementById('f_title');
+  var name = (titleEl ? titleEl.value : '') || (currentEvent ? (currentEvent.event || '') : '');
+  var m = name.match(/20\d{2}/);
+  if (m) return parseInt(m[0], 10);
+  // Fall back to the calendar's base year
+  return 2027;
+}
+
+// ── DATE PARSER: converts "Apr 13", "Apr 13, 2027", or "2027-04-13" → "2027-04-13" ──
+function parseCalendarDate(val) {
+  if (!val) return '';
+  var s = String(val).trim();
+  if (!s) return '';
+  // Already full ISO format: 2027-04-13 or 2027-04-13T...
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+  // "Apr 13" — no year, assume current calendar year context (use 2027 as base year)
+  var MONTHS = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12 };
+  // "Mon DD, YYYY" or "Mon DD YYYY"
+  var m = s.match(/^([A-Za-z]{3})\s+(\d{1,2})(?:[,\s]+(\d{4}))?/);
+  if (m) {
+    var mon = MONTHS[(m[1]||'').toLowerCase()];
+    if (!mon) return '';
+    var day = parseInt(m[2], 10);
+    // If no year in string, infer from the raw value or fall back to 2027
+    var year = m[3] ? parseInt(m[3], 10) : inferYearFromEvent();
+    return year + '-' + String(mon).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+  }
+  return '';
 }
 
 function saveChanges() {
