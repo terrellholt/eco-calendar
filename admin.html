@@ -1155,13 +1155,14 @@ function renderTable() {
     var why = ev.why_it_matters || ent.why_it_matters || '';
     var imp = (ev.impact||'none').toLowerCase();
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
-    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){
-      return '<span class="echip ' + (p[1] ? 'echip-y' : 'echip-n') + '">' + p[0] + '</span>';
-    }).join('');
+    var chips = '';
+    [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].forEach(function(p) {
+      chips += '<span class="echip ' + (p[1] ? 'echip-y' : 'echip-n') + '">' + p[0] + '</span>';
+    });
     var date = formatTableDate(ev.date, ev.end_date);
     var dispTime = resolveDisplayTime(ev);
-    var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
-    var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
+    var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
+    var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
     var d = (ev.date||'').toString().substring(0,10);
     var draggable = dateGroups[d] && dateGroups[d].length > 1;
     var handleHtml = draggable
@@ -1175,19 +1176,18 @@ function renderTable() {
     var visIcon = evVisible ? EYE_OPEN : EYE_CLOSED;
     var timeHtml = dispTime ? '<div class="td-sub">&#9200; ' + esc(dispTime) + '</div>' : '';
     var impHtml = pillCls ? '<span class="ipill ' + pillCls + '">' + imp.toUpperCase() + '</span>' : '<span style="color:var(--text3)">&mdash;</span>';
-    rows.push(
-      '<tr data-idx="' + i + '" data-id="' + ev.id + '" data-date="' + esc(d) + '" data-name="' + esc(ev.event||'') + '" draggable="' + (draggable ? 'true' : 'false') + '" onclick="rowClick(event,' + i + ')" class="' + reorderedClass + hiddenClass + '">' +
-      '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="' + i + '" onchange="rowCheckChange(event,' + i + ')" onclick="event.stopPropagation()"></td>' +
-      handleHtml +
-      '<td class="td-vis"><button class="vis-btn' + visBtnClass + '" title="' + visTitle + '" onclick="event.stopPropagation();toggleRowVisibility(' + i + ')">' + visIcon + '</button></td>' +
-      '<td class="td-date">' + date + '</td>' +
-      '<td><div class="td-event">' + esc(ev.event||'&mdash;') + estBadge + tmplBadge + '</div>' + timeHtml + '</td>' +
-      '<td><span class="td-cat">' + esc(ev.category||'&mdash;') + '</span></td>' +
-      '<td>' + impHtml + '</td>' +
-      '<td><div class="enr-chips">' + chips + '</div></td>' +
-      '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit(' + i + ')">Edit</button></td>' +
-      '</tr>'
-    );
+    var row = '<tr data-idx="' + i + '" data-id="' + ev.id + '" data-date="' + esc(d) + '" data-name="' + esc(ev.event||'') + '" draggable="' + (draggable ? 'true' : 'false') + '" onclick="rowClick(event,' + i + ')" class="' + reorderedClass + hiddenClass + '">';
+    row += '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="' + i + '" onchange="rowCheckChange(event,' + i + ')" onclick="event.stopPropagation()"></td>';
+    row += handleHtml;
+    row += '<td class="td-vis"><button class="vis-btn' + visBtnClass + '" title="' + visTitle + '" onclick="event.stopPropagation();toggleRowVisibility(' + i + ')">' + visIcon + '</button></td>';
+    row += '<td class="td-date">' + date + '</td>';
+    row += '<td><div class="td-event">' + esc(ev.event||'&mdash;') + estBadge + tmplBadge + '</div>' + timeHtml + '</td>';
+    row += '<td><span class="td-cat">' + esc(ev.category||'&mdash;') + '</span></td>';
+    row += '<td>' + impHtml + '</td>';
+    row += '<td><div class="enr-chips">' + chips + '</div></td>';
+    row += '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit(' + i + ')">Edit</button></td>';
+    row += '</tr>';
+    rows.push(row);
   });
   tb.innerHTML = rows.join('');
   attachDragHandlers();
