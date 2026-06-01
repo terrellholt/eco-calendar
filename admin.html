@@ -249,6 +249,21 @@
   .time-custom-row select, .time-custom-row input { flex: 1; }
   .time-sep { color: #aaa; font-weight: 600; flex-shrink: 0; }
 
+  /* ── CHECKBOX SELECT MODE ──────────────────────────────── */
+  .cb-cell { width: 36px; padding: 10px 8px !important; }
+  .row-cb { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  tbody tr.row-selected { background: rgba(232,197,71,0.06) !important; }
+  tbody tr.row-suggested { background: rgba(91,141,238,0.06) !important; }
+  tbody tr.row-suggested .td-event::after { content: ' — suggested'; font-size: 10px; color: var(--blue); font-family: var(--mono); opacity: 0.8; }
+  .bulk-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 300; background: #1a1a1a; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); min-width: 420px; }
+  .bulk-bar.visible { display: flex; animation: slideUp 0.2s ease; }
+  @keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(12px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+  .bulk-bar-count { font-size: 12px; font-family: var(--mono); color: var(--accent); font-weight: 600; white-space: nowrap; }
+  .bulk-bar-select { flex: 1; background: #2a2a2a; border: 1px solid #444; border-radius: 8px; color: var(--text); padding: 8px 28px 8px 10px; font-size: 12px; outline: none; cursor: pointer; font-family: var(--sans); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
+  .btn-bulk-assign { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; font-family: var(--sans); cursor: pointer; border: none; background: var(--accent); color: #0c0c0e; white-space: nowrap; }
+  .btn-bulk-assign:hover { opacity: 0.88; }
+  .btn-bulk-cancel { padding: 8px 12px; border-radius: 8px; font-size: 12px; font-family: var(--sans); cursor: pointer; border: 1px solid #444; background: transparent; color: var(--text3); white-space: nowrap; }
+  .btn-bulk-cancel:hover { color: var(--red); border-color: var(--red); }
   /* ── TEMPLATE MANAGER OVERLAY ───────────────────────────── */
   #tmplOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px; }
   #tmplOverlay.open { display: flex; }
@@ -392,6 +407,7 @@
   <div id="tableState" class="state-msg"><span class="spinner"></span></div>
   <table id="eventsTable" style="display:none">
     <thead><tr>
+      <th style="width:36px;padding:10px 8px"><input type="checkbox" id="selectAllCb" onchange="toggleSelectAll(this.checked)" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer"></th>
       <th></th>
       <th title="Visible on website">👁</th>
       <th onclick="sortBy('date')">DATE</th><th onclick="sortBy('event')">EVENT</th><th>CATEGORY</th>
@@ -399,6 +415,15 @@
     </tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
+  <!-- BULK ASSIGN BAR -->
+  <div class="bulk-bar" id="bulkBar">
+    <span class="bulk-bar-count" id="bulkCount">0 selected</span>
+    <select class="bulk-bar-select" id="bulkTmplSelect">
+      <option value="">— assign template —</option>
+    </select>
+    <button class="btn-bulk-assign" onclick="confirmBulkAssign()">Assign</button>
+    <button class="btn-bulk-cancel" onclick="clearSelection()">Cancel</button>
+  </div>
 </div>
 
 <!-- EVENT EDIT OVERLAY -->
@@ -445,6 +470,18 @@
               <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
             </div>
           </div>
+        </div>
+      </div>
+      <!-- TEMPLATE ASSIGNMENT -->
+      <div class="ep-section" id="tmplAssignSection" style="padding:12px 20px;background:#f9f9f8;border-bottom:1px solid #f0f0ec;">
+        <div class="ep-field">
+          <label class="ep-label" style="display:flex;align-items:center;gap:6px;">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="0.5" y="0.5" width="4" height="4" rx="0.6" stroke="#888" stroke-width="1.1"/><rect x="6.5" y="0.5" width="4" height="4" rx="0.6" stroke="#888" stroke-width="1.1"/><rect x="0.5" y="6.5" width="4" height="4" rx="0.6" stroke="#888" stroke-width="1.1"/><rect x="6.5" y="6.5" width="4" height="4" rx="0.6" stroke="#888" stroke-width="1.1"/></svg>
+            Template
+          </label>
+          <select class="ep-input" id="f_template_id" onchange="handleTemplateAssign(this.value)" style="font-size:12px;">
+            <option value="">— No template —</option>
+          </select>
         </div>
       </div>
       <!-- SECTION 2: Classification -->
@@ -501,7 +538,7 @@
           </div>
         </div>
       </div>
-      <!-- SECTION 3: Date & Time -->
+      <!-- SECTION 3: Date, Time & Impact -->
       <div class="ep-section">
         <div class="ep-field" style="margin-bottom:12px">
           <label class="ep-label">Event Date / Duration</label>
@@ -509,10 +546,10 @@
             <input type="date" class="ep-input" id="f_start_date"><span class="duration-arrow">&#8594;</span><input type="date" class="ep-input" id="f_end_date">
           </div>
         </div>
-        <div class="ep-field">
-          <label class="ep-label">Time</label>
-          <div class="time-picker-wrap">
-            <select class="ep-input" id="timePresetSelect" onchange="setTimePresetFromSelect(this.value)" style="margin-bottom:6px">
+        <div class="ep-row c2" style="margin-bottom:0">
+          <div class="ep-field">
+            <label class="ep-label">Time</label>
+            <select class="ep-input" id="timePresetSelect" onchange="setTimePresetFromSelect(this.value)">
               <option value="">— select time —</option>
               <option value="All Day">All Day</option>
               <option value="Before Market Open">Before Market Open</option>
@@ -520,39 +557,39 @@
               <option value="Undetermined">Undetermined</option>
               <option value="custom">Choose Time…</option>
             </select>
-            <div class="time-custom-row" id="timeCustomRow" style="display:none">
-              <select class="ep-input" id="f_time_hour" style="flex:0 0 70px">
-                <option>12</option><option>1</option><option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
-                <option>10</option><option>11</option>
-              </select>
-              <span class="time-sep">:</span>
-              <select class="ep-input" id="f_time_min" style="flex:0 0 70px">
-                <option>00</option><option>15</option><option>30</option><option>45</option>
-              </select>
-              <select class="ep-input" id="f_time_ampm" style="flex:0 0 70px">
-                <option>AM</option><option>PM</option>
-              </select>
-              <select class="ep-input" id="f_time_tz" style="flex:1">
-                <option value="ET">ET</option><option value="CT">CT</option><option value="PT">PT</option>
-                <option value="GMT">GMT</option><option value="CET">CET</option><option value="JST">JST</option><option value="UTC">UTC</option>
-              </select>
-            </div>
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Impact Level</label>
+            <select class="ep-input impact-select" id="f_impact" onchange="selectImpact(this.value)">
+              <option value="high">🔴 High</option>
+              <option value="medium">🟠 Medium</option>
+              <option value="low">🟡 Low</option>
+              <option value="none">⚪ None</option>
+            </select>
           </div>
         </div>
-      </div>
-      <!-- SECTION 4: Source & Impact -->
-      <div class="ep-section">
-        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
-        <div class="ep-field" style="margin-bottom:14px">
-          <label class="ep-label">Impact Level</label>
-          <select class="ep-input impact-select" id="f_impact" onchange="selectImpact(this.value)">
-            <option value="high">🔴 High</option>
-            <option value="medium">🟠 Medium</option>
-            <option value="low">🟡 Low</option>
-            <option value="none">⚪ None</option>
+        <div class="time-custom-row" id="timeCustomRow" style="display:none;margin-top:8px">
+          <select class="ep-input" id="f_time_hour" style="flex:0 0 70px">
+            <option>12</option><option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
+            <option>10</option><option>11</option>
+          </select>
+          <span class="time-sep">:</span>
+          <select class="ep-input" id="f_time_min" style="flex:0 0 70px">
+            <option>00</option><option>15</option><option>30</option><option>45</option>
+          </select>
+          <select class="ep-input" id="f_time_ampm" style="flex:0 0 70px">
+            <option>AM</option><option>PM</option>
+          </select>
+          <select class="ep-input" id="f_time_tz" style="flex:1">
+            <option value="ET">ET</option><option value="CT">CT</option><option value="PT">PT</option>
+            <option value="GMT">GMT</option><option value="CET">CET</option><option value="JST">JST</option><option value="UTC">UTC</option>
           </select>
         </div>
+      </div>
+      <!-- SECTION 4: Source & Assets -->
+      <div class="ep-section">
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
         <div class="ep-field">
           <label class="ep-label">Impacted Assets <span class="opt">(optional)</span></label>
           <div class="asset-wrap" id="assetWrap" onclick="document.getElementById('assetInp').focus()">
@@ -1055,13 +1092,17 @@ function filterTable() {
     return true;
   });
   filteredEvents.sort(function(a,b) {
-    var av = (a[sortCol]||'').toString().toLowerCase(), bv = (b[sortCol]||'').toString().toLowerCase();
-    if (av === bv && sortCol === 'date') {
-      var ao = (a.display_order != null ? a.display_order : 9999);
-      var bo = (b.display_order != null ? b.display_order : 9999);
-      return ao - bo;
-    }
-    return sortDir * (av < bv ? -1 : av > bv ? 1 : 0);
+    // Always sort chronologically by date; undated events go to bottom
+    var ad = (a.date||'').toString().substring(0,10);
+    var bd = (b.date||'').toString().substring(0,10);
+    if (!ad && !bd) { /* both undated, fall through to display_order */ }
+    else if (!ad) return 1;
+    else if (!bd) return -1;
+    else if (ad !== bd) return ad < bd ? -1 : 1;
+    // Same date: sort by display_order
+    var ao = (a.display_order != null ? a.display_order : 9999);
+    var bo = (b.display_order != null ? b.display_order : 9999);
+    return ao - bo;
   });
   document.getElementById('countBadge').textContent = filteredEvents.length + ' / ' + allEvents.length + ' events';
   renderTable();
@@ -1112,7 +1153,8 @@ function renderTable() {
     var visBtnClass = !evVisible ? ' hidden-event' : '';
     var visTitle = evVisible ? 'Click to hide from website' : 'Click to show on website';
     var visIcon = evVisible ? EYE_OPEN : EYE_CLOSED;
-    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+hiddenClass+'">'
+    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" data-name="'+esc(ev.event||'')+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+hiddenClass+'">'
+      + '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="'+i+'" onchange="rowCheckChange(event,'+i+')" onclick="event.stopPropagation()"></td>'
       + handleHtml
       + '<td class="td-vis"><button class="vis-btn'+visBtnClass+'" title="'+visTitle+'" onclick="event.stopPropagation();toggleRowVisibility('+i+')">'+visIcon+'</button></td>'
       + '<td class="td-date">'+date+'</td>'
@@ -1210,6 +1252,7 @@ function saveOrder() {
 function rowClick(e, idx) {
   if (e.target.classList.contains('drag-handle') || e.target.closest('.drag-handle')) return;
   if (e.target.classList.contains('vis-btn') || e.target.closest('.vis-btn')) return;
+  if (e.target.classList.contains('row-cb') || e.target.closest('.cb-cell')) return;
   openEdit(idx);
 }
 
@@ -1234,6 +1277,7 @@ function openNewEvent() {
   document.getElementById('f_start_date').value = new Date().toISOString().substring(0,10);
   document.getElementById('f_end_date').value = '';
   document.getElementById('assetWrap').querySelectorAll('.achip').forEach(function(c){c.remove()});
+  populateTmplAssignDropdown('');
   selectedImpact = 'none'; updateImpactUI();
   showInMonthly = false; updateToggleUI();
   isEstimated = false; updateEstimatedUI();
@@ -1311,6 +1355,8 @@ function openEdit(idx) {
   if (ct) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
   document.getElementById('epStatus').textContent = '';
   document.getElementById('saveBtn').disabled = false;
+  // Populate + set template assignment dropdown
+  populateTmplAssignDropdown(currentEvent.template_id || '');
   // Show "Create Template" button only if event has no template linked yet
   var hasTmpl = !!(currentEvent && currentEvent.template_id);
   var ctBtn = document.getElementById('createTmplBtn');
@@ -1482,6 +1528,8 @@ function saveChanges() {
     price_move_type: pmVal ? document.getElementById('f_price_move_type').value : null,
     chart_ticker: document.getElementById('chartTicker').value.trim().toUpperCase() || null,
     chart_range: chartRange,
+    template_id: document.getElementById('f_template_id').value || null,
+    template_overrides: currentEvent ? (currentEvent.template_overrides || {}) : {},
   };
   if (isNewEvent) {
     supaFetch('/rest/v1/Master%20Calendar', { method: 'POST', body: JSON.stringify(payload) })
@@ -1543,6 +1591,7 @@ function loadTemplates() {
     .then(function(data) {
       allTemplates = Array.isArray(data) ? data : [];
       renderTemplateList();
+      populateBulkTmplSelect();
     })
     .catch(function(err) {
       document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty" style="color:#e05555">' + err.message + '</div>';
@@ -1859,6 +1908,180 @@ function doCreateTemplateFromEvent(eventName, tmplId, matches) {
     });
 }
 
+// ── CHECKBOX SELECT MODE + BULK ASSIGN ────────────────────
+var selectedRowIds = new Set();
+
+function rowCheckChange(e, idx) {
+  e.stopPropagation();
+  var ev = filteredEvents[idx];
+  var checked = e.target.checked;
+  if (checked) {
+    selectedRowIds.add(ev.id);
+  } else {
+    selectedRowIds.delete(ev.id);
+  }
+  highlightSuggested(ev.event, checked);
+  updateBulkBar();
+}
+
+function highlightSuggested(eventName, isChecking) {
+  if (!isChecking || !eventName) return;
+  // Softly highlight rows with same event name that aren't already checked
+  document.querySelectorAll('#tableBody tr').forEach(function(row) {
+    var name = row.getAttribute('data-name');
+    var idx = parseInt(row.getAttribute('data-idx'));
+    var ev = filteredEvents[idx];
+    if (!ev) return;
+    var cb = row.querySelector('.row-cb');
+    if (name === eventName && ev.id && !selectedRowIds.has(ev.id)) {
+      row.classList.add('row-suggested');
+    }
+  });
+}
+
+function toggleSelectAll(checked) {
+  selectedRowIds.clear();
+  document.querySelectorAll('#tableBody tr').forEach(function(row) {
+    var idx = parseInt(row.getAttribute('data-idx'));
+    var ev = filteredEvents[idx];
+    var cb = row.querySelector('.row-cb');
+    if (cb) cb.checked = checked;
+    if (ev && checked) selectedRowIds.add(ev.id);
+    row.classList.remove('row-suggested', 'row-selected');
+  });
+  updateBulkBar();
+}
+
+function clearSelection() {
+  selectedRowIds.clear();
+  var masterCb = document.getElementById('selectAllCb');
+  if (masterCb) masterCb.checked = false;
+  document.querySelectorAll('#tableBody tr').forEach(function(row) {
+    var cb = row.querySelector('.row-cb');
+    if (cb) cb.checked = false;
+    row.classList.remove('row-selected', 'row-suggested');
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  var count = selectedRowIds.size;
+  var bar = document.getElementById('bulkBar');
+  var countEl = document.getElementById('bulkCount');
+  // Highlight selected rows
+  document.querySelectorAll('#tableBody tr').forEach(function(row) {
+    var idx = parseInt(row.getAttribute('data-idx'));
+    var ev = filteredEvents[idx];
+    if (ev && selectedRowIds.has(ev.id)) {
+      row.classList.add('row-selected');
+      row.classList.remove('row-suggested');
+    } else {
+      row.classList.remove('row-selected');
+    }
+  });
+  if (count === 0) {
+    bar.classList.remove('visible');
+    countEl.textContent = '0 selected';
+  } else {
+    bar.classList.add('visible');
+    countEl.textContent = count + ' event' + (count === 1 ? '' : 's') + ' selected';
+  }
+}
+
+function populateBulkTmplSelect() {
+  var sel = document.getElementById('bulkTmplSelect');
+  while (sel.options.length > 1) sel.remove(1);
+  allTemplates.forEach(function(t) {
+    var o = document.createElement('option');
+    o.value = t.id;
+    o.textContent = t.display_name || t.id;
+    sel.appendChild(o);
+  });
+}
+
+function confirmBulkAssign() {
+  var tmplId = document.getElementById('bulkTmplSelect').value;
+  if (!tmplId) { showToast('Please select a template first', 'error'); return; }
+  var tmpl = allTemplates.find(function(t) { return t.id === tmplId; });
+  var tmplName = tmpl ? tmpl.display_name : tmplId;
+  var count = selectedRowIds.size;
+  // Check how many already have a different template
+  var alreadyLinked = allEvents.filter(function(e) {
+    return selectedRowIds.has(e.id) && e.template_id && e.template_id !== tmplId;
+  });
+  var msg = 'This will assign the "' + tmplName + '" template to ' + count + ' event' + (count === 1 ? '' : 's') + '.';
+  if (alreadyLinked.length > 0) {
+    msg += ' ' + alreadyLinked.length + ' of these already have a different template and will be reassigned.';
+  }
+  showConfirmModal({
+    type: 'unlock',
+    title: 'Assign Template?',
+    msg: msg,
+    onConfirm: function() { doBulkAssign(tmplId); }
+  });
+}
+
+function doBulkAssign(tmplId) {
+  var ids = Array.from(selectedRowIds);
+  var promises = ids.map(function(id) {
+    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, {
+      method: 'PATCH',
+      body: JSON.stringify({ template_id: tmplId, template_overrides: {} })
+    }).then(function() {
+      var ev = allEvents.find(function(e) { return e.id === id; });
+      if (ev) { ev.template_id = tmplId; ev.template_overrides = {}; }
+    });
+  });
+  Promise.all(promises)
+    .then(function() {
+      showToast('Template assigned to ' + ids.length + ' event' + (ids.length === 1 ? '' : 's'), 'success');
+      clearSelection();
+      renderTable();
+    })
+    .catch(function(err) { showToast('Assign failed: ' + err.message, 'error'); });
+}
+
+// ── TEMPLATE ASSIGN DROPDOWN in event editor ──────────────
+function populateTmplAssignDropdown(currentTmplId) {
+  var sel = document.getElementById('f_template_id');
+  while (sel.options.length > 1) sel.remove(1);
+  allTemplates.forEach(function(t) {
+    var o = document.createElement('option');
+    o.value = t.id;
+    o.textContent = t.display_name || t.id;
+    sel.appendChild(o);
+  });
+  sel.value = currentTmplId || '';
+}
+
+function handleTemplateAssign(newTmplId) {
+  if (!currentEvent) return;
+  var oldTmplId = currentEvent.template_id || '';
+  if (oldTmplId && oldTmplId !== newTmplId) {
+    // Already has a different template — warn
+    var oldTmpl = allTemplates.find(function(t) { return t.id === oldTmplId; });
+    var newTmpl = allTemplates.find(function(t) { return t.id === newTmplId; });
+    var msg = newTmplId
+      ? 'This event is currently linked to "' + (oldTmpl ? oldTmpl.display_name : oldTmplId) + '". Changing it will assign the "' + (newTmpl ? newTmpl.display_name : newTmplId) + '" template instead.'
+      : 'This will remove the "' + (oldTmpl ? oldTmpl.display_name : oldTmplId) + '" template link from this event.';
+    showConfirmModal({
+      type: newTmplId ? 'unlock' : 'relock',
+      title: newTmplId ? 'Change Template?' : 'Remove Template?',
+      msg: msg,
+      onConfirm: function() { applyTemplateAssign(newTmplId); },
+      onCancel: function() {
+        // Revert dropdown
+        document.getElementById('f_template_id').value = oldTmplId;
+      }
+    });
+  }
+  // If assigning fresh (no old template), just let it sit — saved on Save Changes
+}
+
+function applyTemplateAssign(tmplId) {
+  document.getElementById('f_template_id').value = tmplId;
+}
+
 // ── CONFIRM MODAL (scaffold for next step: lock/unlock) ────
 var confirmCallback = null;
 function showConfirmModal(opts) {
@@ -1871,9 +2094,15 @@ function showConfirmModal(opts) {
   document.getElementById('confirmTitle').textContent = opts.title || '';
   document.getElementById('confirmMsg').textContent = opts.msg || '';
   confirmCallback = opts.onConfirm || null;
+  confirmCancelCallback = opts.onCancel || null;
   document.getElementById('confirmModal').classList.add('open');
 }
-function closeConfirmModal() { document.getElementById('confirmModal').classList.remove('open'); confirmCallback = null; }
+var confirmCancelCallback = null;
+function closeConfirmModal() {
+  document.getElementById('confirmModal').classList.remove('open');
+  if (confirmCancelCallback) confirmCancelCallback();
+  confirmCallback = null; confirmCancelCallback = null;
+}
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('confirmOkBtn').addEventListener('click', function() {
     if (confirmCallback) confirmCallback();
