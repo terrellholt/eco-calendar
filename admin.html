@@ -1385,6 +1385,7 @@ function openEdit(idx) {
   setTimeout(function() {
     document.getElementById('f_start_date').value = _startDate;
     document.getElementById('f_end_date').value = _endDate;
+    console.log('TIME DEBUG — raw display_time:', JSON.stringify(_displayTime));
     if (_displayTime) loadTimePicker(_displayTime);
   }, 30);
 }
