@@ -1148,6 +1148,8 @@ function renderTable() {
   }
   var dateGroups = getDateGroups();
   var html = '';
+  // TEMP: log first 5 raw date values
+  filteredEvents.slice(0,5).forEach(function(ev) { console.log('DATE RAW:', JSON.stringify(ev.date), '| END:', JSON.stringify(ev.end_date)); });
   filteredEvents.forEach(function(ev, i) {
     var ent = ev.entity || {};
     var hero = ev.hero_url || ent.hero_url || '';
