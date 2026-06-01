@@ -61,9 +61,6 @@
   .btn-new-event:hover { opacity: 0.88; }
   .btn-new-event:active { transform: scale(0.97); }
 
-  /* TEMPLATES BUTTON */
-  .btn-templates { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 600; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); display: flex; align-items: center; gap: 6px; transition: all 0.15s; white-space: nowrap; }
-  .btn-templates:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,197,71,0.06); }
 
   .create-banner { background: linear-gradient(135deg,rgba(232,197,71,0.08),rgba(232,197,71,0.03)); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
 
@@ -393,11 +390,7 @@
     <option value="">All Visibility</option><option value="visible">Visible only</option><option value="hidden">Hidden only</option>
   </select>
   <span class="count-badge" id="countBadge"></span>
-  <!-- TEMPLATES BUTTON -->
-  <button class="btn-templates" onclick="openTemplateManager()">
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
-    Templates
-  </button>
+
   <button class="btn-new-event" onclick="openNewEvent()">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     New Event
@@ -418,10 +411,11 @@
   <!-- BULK ASSIGN BAR -->
   <div class="bulk-bar" id="bulkBar">
     <span class="bulk-bar-count" id="bulkCount">0 selected</span>
-    <select class="bulk-bar-select" id="bulkTmplSelect">
+    <span id="bulkNoTemplates" style="display:none;font-size:11px;font-family:var(--mono);color:var(--text3);flex:1">No templates yet — open any event and click <strong style="color:var(--accent)">Create Template</strong> first</span>
+    <select class="bulk-bar-select" id="bulkTmplSelect" style="display:none">
       <option value="">— assign template —</option>
     </select>
-    <button class="btn-bulk-assign" onclick="confirmBulkAssign()">Assign</button>
+    <button class="btn-bulk-assign" id="bulkAssignBtn" style="display:none" onclick="confirmBulkAssign()">Assign</button>
     <button class="btn-bulk-cancel" onclick="clearSelection()">Cancel</button>
   </div>
 </div>
@@ -1897,8 +1891,13 @@ function doCreateTemplateFromEvent(eventName, tmplId, matches) {
       statusEl.className = 'ep-save-status saved';
       statusEl.textContent = '✓ Template created';
       showToast('Template created & linked to ' + linkedCount + ' event' + (linkedCount === 1 ? '' : 's'), 'success');
-      // Hide the Create Template button since this event is now linked
+      // Hide Create Template button — this event is now linked
       document.getElementById('createTmplBtn').style.display = 'none';
+      // Refresh template dropdowns so bulk bar + assign dropdown are immediately usable
+      populateBulkTmplSelect();
+      populateTmplAssignDropdown(tmplId);
+      // Update the assign dropdown to reflect the new link
+      currentEvent.template_id = tmplId;
       renderTable();
     })
     .catch(function(err) {
@@ -1990,6 +1989,8 @@ function updateBulkBar() {
 
 function populateBulkTmplSelect() {
   var sel = document.getElementById('bulkTmplSelect');
+  var noTmpl = document.getElementById('bulkNoTemplates');
+  var assignBtn = document.getElementById('bulkAssignBtn');
   while (sel.options.length > 1) sel.remove(1);
   allTemplates.forEach(function(t) {
     var o = document.createElement('option');
@@ -1997,6 +1998,10 @@ function populateBulkTmplSelect() {
     o.textContent = t.display_name || t.id;
     sel.appendChild(o);
   });
+  var hasTemplates = allTemplates.length > 0;
+  sel.style.display = hasTemplates ? '' : 'none';
+  assignBtn.style.display = hasTemplates ? '' : 'none';
+  noTmpl.style.display = hasTemplates ? 'none' : '';
 }
 
 function confirmBulkAssign() {
