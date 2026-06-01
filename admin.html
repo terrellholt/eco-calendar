@@ -1326,11 +1326,12 @@ function openEdit(idx) {
   document.getElementById('f_why_it_matters').value = ev.why_it_matters || ent.why_it_matters || '';
   document.getElementById('f_details').value = ev.details || '';
   document.getElementById('f_notes').value = ev.notes || '';
-  document.getElementById('f_start_date').value = ev.date ? String(ev.date).substring(0,10) : '';
-  document.getElementById('f_end_date').value = ev.end_date ? String(ev.end_date).substring(0,10) : '';
+  // Store date/time values — applied after overlay opens to avoid browser rendering bugs
+  var _startDate = ev.date ? String(ev.date).substring(0,10) : '';
+  var _endDate = ev.end_date ? String(ev.end_date).substring(0,10) : '';
+  var _displayTime = ev.display_time || '';
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
-  loadTimePicker(ev.display_time || '');
   selectedImpact = (ev.impact || 'none').toLowerCase();
   if (!['high','medium','low','none'].includes(selectedImpact)) selectedImpact = 'none';
   updateImpactUI();
@@ -1357,6 +1358,12 @@ function openEdit(idx) {
   ctBtn.style.display = hasTmpl ? 'none' : 'inline-flex';
   document.getElementById('editOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // Set date + time after panel is visible — fixes browser date input rendering
+  requestAnimationFrame(function() {
+    document.getElementById('f_start_date').value = _startDate;
+    document.getElementById('f_end_date').value = _endDate;
+    loadTimePicker(_displayTime);
+  });
 }
 
 function closeEdit() {
