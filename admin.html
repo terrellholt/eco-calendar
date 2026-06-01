@@ -1149,38 +1149,46 @@ function renderTable() {
   var dateGroups = getDateGroups();
   var html = '';
   filteredEvents.forEach(function(ev, i) {
-    var ent = ev.entity || {};
-    var hero = ev.hero_url || ent.hero_url || '';
-    var logo = ev.logo_url || ent.logo_url || '';
-    var why = ev.why_it_matters || ent.why_it_matters || '';
-    var imp = (ev.impact||'none').toLowerCase();
-    var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
-    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
-    var date = formatTableDate(ev.date, ev.end_date);
-    var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
-    var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
-    var d = (ev.date||'').toString().substring(0,10);
-    var draggable = dateGroups[d] && dateGroups[d].length > 1;
-    var handleHtml = draggable
-      ? '<td class="td-drag"><div class="drag-handle active" title="Drag to reorder within this date">&#8801;</div></td>'
-      : '<td class="td-drag"><div class="drag-handle"></div></td>';
-    var reorderedClass = orderChanges[ev.id] != null ? ' reordered' : '';
-    var evVisible = ev.visible !== false && ev.visible !== 'FALSE';
-    var hiddenClass = !evVisible ? ' row-hidden' : '';
-    var visBtnClass = !evVisible ? ' hidden-event' : '';
-    var visTitle = evVisible ? 'Click to hide from website' : 'Click to show on website';
-    var visIcon = evVisible ? EYE_OPEN : EYE_CLOSED;
-    html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" data-name="'+esc(ev.event||'')+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+hiddenClass+'">'
-      + '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="'+i+'" onchange="rowCheckChange(event,'+i+')" onclick="event.stopPropagation()"></td>'
-      + handleHtml
-      + '<td class="td-vis"><button class="vis-btn'+visBtnClass+'" title="'+visTitle+'" onclick="event.stopPropagation();toggleRowVisibility('+i+')">'+visIcon+'</button></td>'
-      + '<td class="td-date">'+date+'</td>'
-      + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+tmplBadge+'</div>'+(resolveDisplayTime(ev)?'<div class="td-sub">&#9200; '+esc(resolveDisplayTime(ev))+'</div>':'')+'</td>'
-      + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
-      + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
-      + '<td><div class="enr-chips">'+chips+'</div></td>'
-      + '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit('+i+')">Edit</button></td>'
-      + '</tr>';
+    try {
+      var ent = ev.entity || {};
+      var hero = ev.hero_url || ent.hero_url || '';
+      var logo = ev.logo_url || ent.logo_url || '';
+      var why = ev.why_it_matters || ent.why_it_matters || '';
+      var imp = (ev.impact||'none').toLowerCase();
+      var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
+      var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
+      var date = '';
+      try { date = formatTableDate(ev.date, ev.end_date); } catch(e) { date = String(ev.date||''); }
+      var dispTime = '';
+      try { dispTime = resolveDisplayTime(ev); } catch(e) {}
+      var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
+      var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
+      var d = (ev.date||'').toString().substring(0,10);
+      var draggable = dateGroups[d] && dateGroups[d].length > 1;
+      var handleHtml = draggable
+        ? '<td class="td-drag"><div class="drag-handle active" title="Drag to reorder within this date">&#8801;</div></td>'
+        : '<td class="td-drag"><div class="drag-handle"></div></td>';
+      var reorderedClass = orderChanges[ev.id] != null ? ' reordered' : '';
+      var evVisible = ev.visible !== false && ev.visible !== 'FALSE';
+      var hiddenClass = !evVisible ? ' row-hidden' : '';
+      var visBtnClass = !evVisible ? ' hidden-event' : '';
+      var visTitle = evVisible ? 'Click to hide from website' : 'Click to show on website';
+      var visIcon = evVisible ? EYE_OPEN : EYE_CLOSED;
+      html += '<tr data-idx="'+i+'" data-id="'+ev.id+'" data-date="'+esc(d)+'" data-name="'+esc(ev.event||'')+'" draggable="'+(draggable?'true':'false')+'" onclick="rowClick(event,'+i+')" class="'+reorderedClass+hiddenClass+'">'
+        + '<td class="cb-cell"><input type="checkbox" class="row-cb" data-idx="'+i+'" onchange="rowCheckChange(event,'+i+')" onclick="event.stopPropagation()"></td>'
+        + handleHtml
+        + '<td class="td-vis"><button class="vis-btn'+visBtnClass+'" title="'+visTitle+'" onclick="event.stopPropagation();toggleRowVisibility('+i+')">'+visIcon+'</button></td>'
+        + '<td class="td-date">'+date+'</td>'
+        + '<td><div class="td-event">'+esc(ev.event||'&mdash;')+estBadge+tmplBadge+'</div>'+(dispTime?'<div class="td-sub">&#9200; '+esc(dispTime)+'</div>':'')+'</td>'
+        + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
+        + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
+        + '<td><div class="enr-chips">'+chips+'</div></td>'
+        + '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit('+i+')">Edit</button></td>'
+        + '</tr>';
+    } catch(rowErr) {
+      console.error('Row render error for event:', ev.event, rowErr);
+      html += '<tr><td colspan="9" style="color:var(--red);font-size:11px;padding:8px 12px;font-family:var(--mono)">Error rendering: '+esc(ev.event||'unknown')+'</td></tr>';
+    }
   });
   tb.innerHTML = html;
   attachDragHandlers();
