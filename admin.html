@@ -1156,7 +1156,7 @@ function renderTable() {
     var imp = (ev.impact||'none').toLowerCase();
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
     var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
-    var date = ev.date ? String(ev.date).substring(0,10) : '';
+    var date = formatTableDate(ev.date, ev.end_date);
     var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
     var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
     var d = (ev.date||'').toString().substring(0,10);
@@ -1593,6 +1593,33 @@ function isDST(date) {
   var jan = new Date(date.getUTCFullYear(), 0, 1).getTimezoneOffset();
   var jul = new Date(date.getUTCFullYear(), 6, 1).getTimezoneOffset();
   return date.getTimezoneOffset() < Math.max(jan, jul);
+}
+
+// ── FORMAT DATE for table display ──────────────────────────
+function formatTableDate(start, end) {
+  if (!start) return '';
+  var s = String(start).trim();
+  // If already a clean "Mon DD" format (e.g. "Jan 13"), use as-is
+  if (/^[A-Za-z]{3}\s+\d{1,2}$/.test(s)) return s;
+  // If ISO format "2027-04-13", convert to "Apr 13"
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    var d = new Date(s + 'T12:00:00Z');
+    if (!isNaN(d)) {
+      var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var startStr = MONTHS[d.getUTCMonth()] + ' ' + d.getUTCDate();
+      if (end) {
+        var e = new Date(String(end) + 'T12:00:00Z');
+        if (!isNaN(e)) {
+          var endStr = MONTHS[e.getUTCMonth()] + ' ' + e.getUTCDate();
+          return startStr + ' – ' + endStr;
+        }
+      }
+      return startStr;
+    }
+  }
+  // Raw text like "Jan 6-9, 2027" — strip year, clean up
+  var cleaned = s.replace(/,?\s*20\d{2}/, '').trim();
+  return cleaned || s.substring(0, 10);
 }
 
 // ── INFER YEAR from current event name or title field ──────
