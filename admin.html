@@ -1330,6 +1330,7 @@ function openEdit(idx) {
   var _startDate = ev.date ? String(ev.date).substring(0,10) : '';
   var _endDate = ev.end_date ? String(ev.end_date).substring(0,10) : '';
   var _displayTime = ev.display_time || '';
+  console.log('DEBUG date raw:', ev.date, '| parsed:', _startDate, '| display_time:', _displayTime);
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
   selectedImpact = (ev.impact || 'none').toLowerCase();
