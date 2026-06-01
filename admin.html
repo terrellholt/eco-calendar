@@ -1086,9 +1086,9 @@ function filterTable() {
     return true;
   });
   filteredEvents.sort(function(a,b) {
-    // Always sort chronologically by date; undated events go to bottom
-    var ad = (a.date||'').toString().substring(0,10);
-    var bd = (b.date||'').toString().substring(0,10);
+    // Parse raw dates ("Apr 13", "2027-04-13", etc.) into sortable ISO strings
+    var ad = parseCalendarDate(a.date);
+    var bd = parseCalendarDate(b.date);
     if (!ad && !bd) { /* both undated, fall through to display_order */ }
     else if (!ad) return 1;
     else if (!bd) return -1;
@@ -1463,16 +1463,23 @@ function resetTimePicker() {
 function loadTimePicker(val) {
   resetTimePicker(); if (!val) return;
   var sel = document.getElementById('timePresetSelect');
+  var valLower = val.trim().toLowerCase();
+  // Match presets with flexible comparison (trim + lowercase)
   for (var i = 0; i < PRESETS.length; i++) {
-    if (val.toLowerCase() === PRESETS[i].toLowerCase()) {
+    if (valLower === PRESETS[i].toLowerCase()) {
       if (sel) sel.value = PRESETS[i];
       return;
     }
   }
-  // Custom time
+  // Try partial preset matches (e.g. "Before Open" → "Before Market Open")
+  if (valLower.indexOf('before') > -1) { if (sel) sel.value = 'Before Market Open'; return; }
+  if (valLower.indexOf('after') > -1)  { if (sel) sel.value = 'After Market Close'; return; }
+  if (valLower === 'all day')           { if (sel) sel.value = 'All Day'; return; }
+  if (valLower.indexOf('undetermined') > -1 || valLower.indexOf('tbd') > -1) { if (sel) sel.value = 'Undetermined'; return; }
+  // Custom time — show the hour/min row
   if (sel) sel.value = 'custom';
   document.getElementById('timeCustomRow').style.display = 'flex';
-  var m = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?\s*(\w+)?/i);
+  var m = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?\s*([A-Z]{2,3})?/i);
   if (m) {
     document.getElementById('f_time_hour').value = m[1];
     document.getElementById('f_time_min').value = m[2];
@@ -1493,12 +1500,13 @@ function getTimeValue() {
 
 // ── INFER YEAR from current event name or title field ──────
 function inferYearFromEvent() {
-  // Try to pull a 4-digit year from the event name (e.g. "March 2027 CPI Release")
-  var titleEl = document.getElementById('f_title');
-  var name = (titleEl ? titleEl.value : '') || (currentEvent ? (currentEvent.event || '') : '');
+  // Pull year from currentEvent.event (reliable at parse time)
+  var name = currentEvent ? (currentEvent.event || '') : '';
   var m = name.match(/20\d{2}/);
   if (m) return parseInt(m[0], 10);
-  // Fall back to the calendar's base year
+  // Check event title field as fallback
+  var titleEl = document.getElementById('f_title');
+  if (titleEl) { var m2 = titleEl.value.match(/20\d{2}/); if (m2) return parseInt(m2[0], 10); }
   return 2027;
 }
 
