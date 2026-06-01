@@ -252,7 +252,7 @@
   tbody tr.row-selected { background: rgba(232,197,71,0.06) !important; }
   tbody tr.row-suggested { background: rgba(91,141,238,0.06) !important; }
   tbody tr.row-suggested .td-event::after { content: ' — suggested'; font-size: 10px; color: var(--blue); font-family: var(--mono); opacity: 0.8; }
-  .bulk-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 300; background: #1a1a1a; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); min-width: 420px; }
+  .bulk-bar { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 300; background: #1a1a1a; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); min-width: 420px; max-width: 90vw; }
   .bulk-bar.visible { display: flex; animation: slideUp 0.2s ease; }
   @keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(12px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
   .bulk-bar-count { font-size: 12px; font-family: var(--mono); color: var(--accent); font-weight: 600; white-space: nowrap; }
@@ -895,6 +895,23 @@
 </div>
 
 <div id="toast"><span class="ti" id="toastIcon">&#10003;</span><span id="toastMsg"></span></div>
+
+<!-- TEMPLATE NAME PROMPT MODAL -->
+<div class="confirm-modal-overlay" id="tmplNameModal">
+  <div class="confirm-modal" style="width:400px">
+    <div class="confirm-modal-icon unlock">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="1" y="1" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.4"/><rect x="11" y="1" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="11" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.4"/><rect x="11" y="11" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.4"/></svg>
+    </div>
+    <h3>Name this Template</h3>
+    <p id="tmplNameModalMsg" style="margin-bottom:14px"></p>
+    <input type="text" class="ep-input" id="tmplNameInput" placeholder="e.g. CPI Release" style="margin-bottom:20px;font-size:14px">
+    <div class="confirm-modal-btns">
+      <button class="btn-confirm-cancel" onclick="closeTmplNameModal()">Cancel</button>
+      <button class="btn-confirm-ok" onclick="confirmTmplName()">Create Template</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /appWrap -->
 
 <script>
@@ -1047,6 +1064,12 @@ function loadEvents() {
       populateCats(); filterTable();
       document.getElementById('tableState').style.display = 'none';
       document.getElementById('eventsTable').style.display = 'table';
+      // Pre-load templates so dropdowns are ready without opening Template Manager
+      supaFetch('/rest/v1/event_templates?select=*&order=display_name.asc')
+        .then(function(td) {
+          allTemplates = Array.isArray(td) ? td : [];
+          populateBulkTmplSelect();
+        }).catch(function() {});
     })
     .catch(function(err) {
       document.getElementById('statusDot').style.cssText = 'background:#e05555';
@@ -1358,12 +1381,12 @@ function openEdit(idx) {
   ctBtn.style.display = hasTmpl ? 'none' : 'inline-flex';
   document.getElementById('editOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Set date + time after panel is visible — fixes browser date input rendering
-  requestAnimationFrame(function() {
+  // Set date + time after panel is visible — small delay ensures DOM is ready
+  setTimeout(function() {
     document.getElementById('f_start_date').value = _startDate;
     document.getElementById('f_end_date').value = _endDate;
-    loadTimePicker(_displayTime);
-  });
+    if (_displayTime) loadTimePicker(_displayTime);
+  }, 30);
 }
 
 function closeEdit() {
@@ -1879,16 +1902,8 @@ function createTemplateFromEvent() {
     return;
   }
 
-  var msg = totalLinked > 1
-    ? 'This will create a template using this event\'s current details and automatically link all ' + totalLinked + ' "' + eventName + '" events on your calendar to it.'
-    : 'This will create a template using this event\'s current details.';
-
-  showConfirmModal({
-    type: 'unlock',
-    title: 'Create Template for "' + eventName + '"?',
-    msg: msg,
-    onConfirm: function() { doCreateTemplateFromEvent(eventName, tmplId, matches); }
-  });
+  // Show name prompt before confirming
+  showTemplateNamePrompt(eventName, tmplId, matches, totalLinked);
 }
 
 function doCreateTemplateFromEvent(eventName, tmplId, matches) {
@@ -1944,7 +1959,8 @@ function doCreateTemplateFromEvent(eventName, tmplId, matches) {
       // Refresh template dropdowns so bulk bar + assign dropdown are immediately usable
       populateBulkTmplSelect();
       populateTmplAssignDropdown(tmplId);
-      // Update the assign dropdown to reflect the new link
+      // Update the assign dropdown value to show the newly linked template
+      document.getElementById('f_template_id').value = tmplId;
       currentEvent.template_id = tmplId;
       renderTable();
     })
@@ -2133,6 +2149,45 @@ function handleTemplateAssign(newTmplId) {
 
 function applyTemplateAssign(tmplId) {
   document.getElementById('f_template_id').value = tmplId;
+}
+
+// ── TEMPLATE NAME PROMPT ──────────────────────────────────
+var _tmplNamePending = null; // { eventName, tmplId, matches, totalLinked }
+
+function showTemplateNamePrompt(eventName, tmplId, matches, totalLinked) {
+  _tmplNamePending = { eventName: eventName, tmplId: tmplId, matches: matches, totalLinked: totalLinked };
+  var msg = totalLinked > 1
+    ? 'This will be linked to all ' + totalLinked + ' matching events on your calendar.'
+    : 'Give this template a name.';
+  document.getElementById('tmplNameModalMsg').textContent = msg;
+  document.getElementById('tmplNameInput').value = eventName;
+  document.getElementById('tmplNameModal').classList.add('open');
+  setTimeout(function() {
+    var inp = document.getElementById('tmplNameInput');
+    inp.focus(); inp.select();
+  }, 50);
+}
+
+function closeTmplNameModal() {
+  document.getElementById('tmplNameModal').classList.remove('open');
+  _tmplNamePending = null;
+}
+
+function confirmTmplName() {
+  if (!_tmplNamePending) return;
+  var customName = document.getElementById('tmplNameInput').value.trim();
+  if (!customName) { document.getElementById('tmplNameInput').focus(); return; }
+  var p = _tmplNamePending;
+  // Regenerate ID from the custom name
+  var newId = customName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  // Check for duplicate
+  if (allTemplates.find(function(t) { return t.id === newId; })) {
+    document.getElementById('tmplNameInput').style.borderColor = '#dc2626';
+    document.getElementById('tmplNameInput').title = 'A template with this name already exists';
+    return;
+  }
+  closeTmplNameModal();
+  doCreateTemplateFromEvent(customName, newId, p.matches);
 }
 
 // ── CONFIRM MODAL (scaffold for next step: lock/unlock) ────
