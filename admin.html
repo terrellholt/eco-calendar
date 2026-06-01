@@ -512,13 +512,14 @@
         <div class="ep-field">
           <label class="ep-label">Time</label>
           <div class="time-picker-wrap">
-            <div class="time-preset-row">
-              <button class="time-preset-btn" onclick="setTimePreset(this,'All Day')">All Day</button>
-              <button class="time-preset-btn" onclick="setTimePreset(this,'Before Market Open')">Before Market Open</button>
-              <button class="time-preset-btn" onclick="setTimePreset(this,'After Market Close')">After Market Close</button>
-              <button class="time-preset-btn" onclick="setTimePreset(this,'Undetermined')">Undetermined</button>
-              <button class="time-preset-btn" id="customTimeBtn" onclick="setTimePreset(this,'custom')">Choose Time</button>
-            </div>
+            <select class="ep-input" id="timePresetSelect" onchange="setTimePresetFromSelect(this.value)" style="margin-bottom:6px">
+              <option value="">— select time —</option>
+              <option value="All Day">All Day</option>
+              <option value="Before Market Open">Before Market Open</option>
+              <option value="After Market Close">After Market Close</option>
+              <option value="Undetermined">Undetermined</option>
+              <option value="custom">Choose Time…</option>
+            </select>
             <div class="time-custom-row" id="timeCustomRow" style="display:none">
               <select class="ep-input" id="f_time_hour" style="flex:0 0 70px">
                 <option>12</option><option>1</option><option>2</option><option>3</option><option>4</option>
@@ -545,12 +546,12 @@
         <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
         <div class="ep-field" style="margin-bottom:14px">
           <label class="ep-label">Impact Level</label>
-          <div class="impact-row">
-            <div class="impact-opt" id="imp-high" onclick="selectImpact('high')"><span class="impact-dot dot-high"></span>High</div>
-            <div class="impact-opt" id="imp-medium" onclick="selectImpact('medium')"><span class="impact-dot dot-medium"></span>Medium</div>
-            <div class="impact-opt" id="imp-low" onclick="selectImpact('low')"><span class="impact-dot dot-low"></span>Low</div>
-            <div class="impact-opt" id="imp-none" onclick="selectImpact('none')"><span class="impact-dot dot-none"></span>None</div>
-          </div>
+          <select class="ep-input impact-select" id="f_impact" onchange="selectImpact(this.value)">
+            <option value="high">🔴 High</option>
+            <option value="medium">🟠 Medium</option>
+            <option value="low">🟡 Low</option>
+            <option value="none">⚪ None</option>
+          </select>
         </div>
         <div class="ep-field">
           <label class="ep-label">Impacted Assets <span class="opt">(optional)</span></label>
@@ -650,6 +651,10 @@
       <div class="ep-footer-btns">
         <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
         <button id="deleteBtn" style="display:none;padding:9px 16px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #fecaca;background:#fff;color:#dc2626;font-weight:500;" onclick="deleteEvent()">Delete</button>
+        <button id="createTmplBtn" style="display:none;padding:9px 14px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #c7d7f8;background:#f0f5ff;color:#3b6fd4;font-weight:600;display:none;align-items:center;gap:6px;" onclick="createTemplateFromEvent()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="1" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="7" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="7" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/></svg>
+          Create Template
+        </button>
         <button class="btn-save" id="saveBtn" onclick="saveChanges()">
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3.5 3.5L11 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span id="saveBtnLabel">Save Changes</span>
@@ -1214,6 +1219,7 @@ function openNewEvent() {
   document.getElementById('saveBtnLabel').textContent = 'Add to Calendar';
   document.getElementById('createBanner').style.display = 'flex';
   document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('createTmplBtn').style.display = 'none';
   setupHero('');
   document.getElementById('logoThumb').innerHTML = '<div class="logo-thumb-empty">No logo</div>';
   ['f_title','f_short_name','f_ticker','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_notes','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
@@ -1305,6 +1311,10 @@ function openEdit(idx) {
   if (ct) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
   document.getElementById('epStatus').textContent = '';
   document.getElementById('saveBtn').disabled = false;
+  // Show "Create Template" button only if event has no template linked yet
+  var hasTmpl = !!(currentEvent && currentEvent.template_id);
+  var ctBtn = document.getElementById('createTmplBtn');
+  ctBtn.style.display = hasTmpl ? 'none' : 'inline-flex';
   document.getElementById('editOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1353,7 +1363,7 @@ function promptLogoUrl() {
   }
 }
 function selectImpact(val) { selectedImpact = val; updateImpactUI(); }
-function updateImpactUI() { ['high','medium','low','none'].forEach(function(v) { document.getElementById('imp-' + v).className = 'impact-opt' + (selectedImpact === v ? ' sel-' + v : ''); }); }
+function updateImpactUI() { var sel = document.getElementById('f_impact'); if (sel) { sel.value = selectedImpact; var colors = { high: '#dc2626', medium: '#ea7000', low: '#d4a000', none: '#e5e5e0' }; sel.style.borderColor = colors[selectedImpact] || '#e5e5e0'; } }
 function toggleMonthly() { showInMonthly = !showInMonthly; updateToggleUI(); }
 function updateToggleUI() { document.getElementById('monthlyToggle').classList.toggle('on', showInMonthly); }
 function toggleEstimated() { isEstimated = !isEstimated; updateEstimatedUI(); }
@@ -1391,13 +1401,12 @@ function setRange(btn, range) {
 
 // ── TIME PICKER ────────────────────────────────────────────
 var PRESETS = ['All Day', 'Before Market Open', 'After Market Close', 'Undetermined'];
-function setTimePreset(btn, val) {
-  document.querySelectorAll('.time-preset-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
+function setTimePresetFromSelect(val) {
   document.getElementById('timeCustomRow').style.display = val === 'custom' ? 'flex' : 'none';
 }
 function resetTimePicker() {
-  document.querySelectorAll('.time-preset-btn').forEach(function(b){ b.classList.remove('active'); });
+  var sel = document.getElementById('timePresetSelect');
+  if (sel) sel.value = '';
   document.getElementById('timeCustomRow').style.display = 'none';
   document.getElementById('f_time_hour').value = '9';
   document.getElementById('f_time_min').value = '30';
@@ -1406,13 +1415,15 @@ function resetTimePicker() {
 }
 function loadTimePicker(val) {
   resetTimePicker(); if (!val) return;
+  var sel = document.getElementById('timePresetSelect');
   for (var i = 0; i < PRESETS.length; i++) {
     if (val.toLowerCase() === PRESETS[i].toLowerCase()) {
-      document.querySelectorAll('.time-preset-btn').forEach(function(b){ if (b.textContent.trim() === PRESETS[i]) b.classList.add('active'); });
+      if (sel) sel.value = PRESETS[i];
       return;
     }
   }
-  document.getElementById('customTimeBtn').classList.add('active');
+  // Custom time
+  if (sel) sel.value = 'custom';
   document.getElementById('timeCustomRow').style.display = 'flex';
   var m = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?\s*(\w+)?/i);
   if (m) {
@@ -1423,14 +1434,14 @@ function loadTimePicker(val) {
   }
 }
 function getTimeValue() {
-  var activeBtn = document.querySelector('.time-preset-btn.active'); if (!activeBtn) return null;
-  var val = activeBtn.textContent.trim();
-  if (val === 'Choose Time') {
+  var sel = document.getElementById('timePresetSelect');
+  if (!sel || !sel.value) return null;
+  if (sel.value === 'custom') {
     var h = document.getElementById('f_time_hour').value, m = document.getElementById('f_time_min').value;
     var ap = document.getElementById('f_time_ampm').value, tz = document.getElementById('f_time_tz').value;
     return h + ':' + m + ' ' + ap + ' ' + tz;
   }
-  return val;
+  return sel.value;
 }
 
 function saveChanges() {
@@ -1754,6 +1765,98 @@ function deleteTemplate() {
       showToast('Template deleted', 'success');
     })
     .catch(function(err) { showToast('Delete failed: ' + err.message, 'error'); });
+}
+
+// ── CREATE TEMPLATE FROM EVENT ────────────────────────────
+function createTemplateFromEvent() {
+  if (!currentEvent) return;
+  var eventName = currentEvent.event || '';
+  if (!eventName) { showToast('Event has no name', 'error'); return; }
+
+  // Find all other events with the same name
+  var matches = allEvents.filter(function(e) {
+    return e.event === eventName && e.id !== currentEvent.id;
+  });
+
+  var totalLinked = matches.length + 1; // include current event
+  var tmplId = eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  // Check if template already exists
+  var existing = allTemplates.find(function(t) { return t.id === tmplId; });
+  if (existing) {
+    showToast('A template for "' + eventName + '" already exists. Open Templates to edit it.', 'error');
+    return;
+  }
+
+  var msg = totalLinked > 1
+    ? 'This will create a template using this event\'s current details and automatically link all ' + totalLinked + ' "' + eventName + '" events on your calendar to it.'
+    : 'This will create a template using this event\'s current details.';
+
+  showConfirmModal({
+    type: 'unlock',
+    title: 'Create Template for "' + eventName + '"?',
+    msg: msg,
+    onConfirm: function() { doCreateTemplateFromEvent(eventName, tmplId, matches); }
+  });
+}
+
+function doCreateTemplateFromEvent(eventName, tmplId, matches) {
+  var ev = currentEvent;
+  var ent = ev.entity || {};
+  var statusEl = document.getElementById('epStatus');
+  statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Creating template…';
+
+  var payload = {
+    id: tmplId,
+    display_name: eventName,
+    short_name: ev.short_name || null,
+    logo_url: ev.logo_url || (ent.logo_url || null),
+    hero_image_url: ev.hero_url || (ent.hero_url || null),
+    hero_position: ev.hero_position || '50% 50%',
+    impact_level: ev.impact || 'none',
+    impacted_assets: ev.impacted_assets || (ent.impacted_assets || null),
+    category: ev.category || null,
+    region: ev.region || null,
+    frequency: ev.frequency || (ent.frequency || null),
+    source_url: ev.source_url || null,
+    measures: ev.measures || (ent.measures || null),
+    why_it_matters: ev.why_it_matters || (ent.why_it_matters || null),
+  };
+
+  // Step 1: Create the template
+  supaFetch('/rest/v1/event_templates', { method: 'POST', body: JSON.stringify(payload) })
+    .then(function(result) {
+      var newTmpl = (Array.isArray(result) ? result[0] : result) || payload;
+      allTemplates.push(newTmpl);
+      allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
+
+      // Step 2: Link all matching events (including current) to the template
+      var allToLink = matches.concat([currentEvent]);
+      var promises = allToLink.map(function(e) {
+        return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + e.id, {
+          method: 'PATCH',
+          body: JSON.stringify({ template_id: tmplId, template_overrides: {} })
+        }).then(function() {
+          e.template_id = tmplId;
+          e.template_overrides = {};
+        });
+      });
+
+      return Promise.all(promises).then(function() { return allToLink.length; });
+    })
+    .then(function(linkedCount) {
+      statusEl.className = 'ep-save-status saved';
+      statusEl.textContent = '✓ Template created';
+      showToast('Template created & linked to ' + linkedCount + ' event' + (linkedCount === 1 ? '' : 's'), 'success');
+      // Hide the Create Template button since this event is now linked
+      document.getElementById('createTmplBtn').style.display = 'none';
+      renderTable();
+    })
+    .catch(function(err) {
+      statusEl.className = 'ep-save-status error';
+      statusEl.textContent = '✗ ' + err.message;
+      showToast('Failed: ' + err.message, 'error');
+    });
 }
 
 // ── CONFIRM MODAL (scaffold for next step: lock/unlock) ────
