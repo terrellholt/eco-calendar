@@ -1056,7 +1056,7 @@ function writebackToSheet(syncId, fields) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,short_name,date,end_date,category,region,source_tz,impact,display_time,event_datetime_utc,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,notes,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,template_id,template_overrides,entity:entity_id!left(id,name,logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&order=date.asc,display_order.asc.nullslast&limit=2000')
+  supaFetch('/rest/v1/Master%20Calendar?select=id,sync_id,event,short_name,date,end_date,category,region,source_tz,impact,display_time,event_datetime_utc,aka,ticker,source_url,hero_url,hero_position,logo_url,why_it_matters,measures,details,notes,impacted_assets,frequency,show_in_monthly,is_estimated,visible,price_move_val,price_move_type,chart_ticker,chart_range,display_order,template_id,template_overrides&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
