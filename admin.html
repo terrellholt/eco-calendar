@@ -1530,7 +1530,7 @@ function saveChanges() {
     chart_ticker: document.getElementById('chartTicker').value.trim().toUpperCase() || null,
     chart_range: chartRange,
     template_id: document.getElementById('f_template_id').value || null,
-    template_overrides: currentEvent ? (currentEvent.template_overrides || {}) : {},
+    template_overrides: currentEvent ? (lockedFields ? (function() { var o = {}; Object.keys(lockedFields).forEach(function(k) { if (!lockedFields[k]) o[k] = true; }); return o; })() : (currentEvent.template_overrides || {})) : {},
   };
   if (isNewEvent) {
     supaFetch('/rest/v1/Master%20Calendar', { method: 'POST', body: JSON.stringify(payload) })
