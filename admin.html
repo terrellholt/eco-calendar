@@ -535,7 +535,7 @@
         </div>
       </div>
       <div class="ep-section">
-        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
+        <div class="ep-field" style="margin-bottom:14px"><div class="ep-label-row"><label class="ep-label">Source URL</label><button class="lock-btn locked" id="lock_source_url" onclick="toggleLock('source_url')"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4.5" width="6" height="4.5" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 4.5V3a1.5 1.5 0 0 1 3 0v1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Shared</button></div><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
         <div class="ep-field">
           <label class="ep-label">Impacted Assets <span class="opt">(optional)</span></label>
           <div class="asset-wrap" id="assetWrap" onclick="document.getElementById('assetInp').focus()">
