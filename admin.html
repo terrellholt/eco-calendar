@@ -1319,6 +1319,7 @@ function openEdit(idx) {
     document.getElementById('f_end_date').value = _endDate;
     if (_displayTime) loadTimePicker(_displayTime);
   }, 30);
+  initLockStates();
 }
 
 function closeEdit() {
