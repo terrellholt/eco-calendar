@@ -934,6 +934,10 @@ function loadEvents() {
   supaFetch('/rest/v1/Master%20Calendar?select=*&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
+      // DIAGNOSTIC
+      console.log('RAW DATA TYPE:', typeof data, Array.isArray(data));
+      console.log('RAW DATA (first item):', JSON.stringify(data && data[0]));
+      console.log('ALL KEYS in first row:', data && data[0] ? Object.keys(data[0]) : 'no data');
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
       document.getElementById('statusText').textContent = allEvents.length + ' events loaded';
       populateCats(); filterTable();
