@@ -1899,6 +1899,66 @@ function showToast(msg, type) {
   toastTimer = setTimeout(function(){ t.className = ''; }, 3000);
 }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  var lockedFields = {};
+
+function initLockStates() {
+  var fields = ['category','impact','source_url','impacted_assets','frequency','measures','why_it_matters'];
+  var overrides = (currentEvent && currentEvent.template_overrides) ? currentEvent.template_overrides : {};
+  var hasTmpl = !!(currentEvent && currentEvent.template_id);
+  fields.forEach(function(f) {
+    var btn = document.getElementById('lock_' + f);
+    var field = btn ? btn.closest('.ep-field') : null;
+    if (!btn) return;
+    if (!hasTmpl) { btn.style.display = 'none'; return; }
+    btn.style.display = '';
+    var isOverridden = overrides.hasOwnProperty(f);
+    lockedFields[f] = !isOverridden;
+    btn.className = 'lock-btn ' + (lockedFields[f] ? 'locked' : 'unlocked');
+    btn.innerHTML = lockedFields[f]
+      ? '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4.5" width="6" height="4.5" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 4.5V3a1.5 1.5 0 0 1 3 0v1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Shared'
+      : '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4.5" width="6" height="4.5" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 4.5V3a1.5 1.5 0 0 1 3 0" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Override';
+    if (field) field.classList.toggle('tmpl-locked', lockedFields[f]);
+  });
+}
+
+function toggleLock(fieldKey) {
+  if (!currentEvent || !currentEvent.template_id) return;
+  var tmpl = allTemplates.find(function(t) { return t.id === currentEvent.template_id; });
+  var tmplName = tmpl ? tmpl.display_name : currentEvent.template_id;
+  var fieldLabels = {
+    category: 'Category', impact: 'Impact Level', source_url: 'Source URL',
+    impacted_assets: 'Impacted Assets', frequency: 'Frequency',
+    measures: 'Measures', why_it_matters: 'Why it Matters'
+  };
+  var fieldLabel = fieldLabels[fieldKey] || fieldKey;
+  if (lockedFields[fieldKey]) {
+    showConfirmModal({
+      type: 'unlock',
+      title: 'Override ' + fieldLabel + '?',
+      msg: "You're overriding the " + fieldLabel + " for this event only. Every other " + tmplName + " event will stay unchanged.",
+      onConfirm: function() {
+        lockedFields[fieldKey] = false;
+        var overrides = currentEvent.template_overrides || {};
+        overrides[fieldKey] = true;
+        currentEvent.template_overrides = overrides;
+        initLockStates();
+      }
+    });
+  } else {
+    showConfirmModal({
+      type: 'relock',
+      title: 'Restore Shared ' + fieldLabel + '?',
+      msg: 'This will remove your custom ' + fieldLabel + ' and restore the shared template value. This event will match all other ' + tmplName + ' events again.',
+      onConfirm: function() {
+        lockedFields[fieldKey] = true;
+        var overrides = currentEvent.template_overrides || {};
+        delete overrides[fieldKey];
+        currentEvent.template_overrides = overrides;
+        initLockStates();
+      }
+    });
+  }
+}
 </script>
 </body>
 </html>
