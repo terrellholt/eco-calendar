@@ -1052,6 +1052,16 @@ if (ev.chartTicker) {
   var div2 = document.getElementById('modalDiv2');
   if (ev.source) { srcEl.href = ev.source; srcEl.style.display = 'inline'; div2.style.display = 'block'; } else { srcEl.style.display = 'none'; div2.style.display = 'none'; }
   overlay.classList.add('open');
+}function loadModalChart(ticker, range) {
+  var w = document.getElementById('modalChartWidget');
+  w.innerHTML = '<div class="tradingview-widget-container" style="height:300px"><div class="tradingview-widget-container__widget" style="height:300px"></div></div>';
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  s.async = true;
+  s.innerHTML = JSON.stringify({symbol:ticker,interval:range==='1D'?'5':'D',range:range,width:'100%',height:300,theme:'light',style:'1',locale:'en',allow_symbol_change:false,save_image:false,hide_top_toolbar:true,hide_legend:true,backgroundColor:'#ffffff'});
+  w.querySelector('.tradingview-widget-container__widget').appendChild(s);
+  document.querySelectorAll('#modalChartBar .modal-chart-btn').forEach(function(b) { b.classList.toggle('active', b.textContent === range); });
 }
 function closeModal() { var overlay = document.getElementById('overlay'); overlay.classList.remove('open'); overlay.classList.remove('est-modal'); }
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
