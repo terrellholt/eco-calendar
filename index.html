@@ -1034,6 +1034,8 @@ function openModal(id) {
   if (ev.measures) { ms.style.display = 'block'; document.getElementById('modalMeasures').textContent = ev.measures; } else { ms.style.display = 'none'; }
   var ws = document.getElementById('modalWhySection');
   if (ev.whyMatters) { ws.style.display = 'block'; document.getElementById('modalWhy').textContent = ev.whyMatters; } else { ws.style.display = 'none'; }
+  var ias = document.getElementById('modalAssetsSection');
+  if (ev.impactedAssets) { ias.style.display = 'block'; document.getElementById('modalAssets').textContent = ev.impactedAssets; } else { ias.style.display = 'none'; }
   var chartEl = document.getElementById('modalChart');
 var chartBar = document.getElementById('modalChartBar');
 var chartWidget = document.getElementById('modalChartWidget');
