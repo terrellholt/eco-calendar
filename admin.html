@@ -16,8 +16,6 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
-
-  /* PASSWORD GATE */
   #pwGate { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; }
   #pwGate.unlocking { animation: gateOut 0.45s ease forwards; }
   @keyframes gateOut { 0% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(1.04); pointer-events:none; } }
@@ -40,10 +38,7 @@
   .gate-btn:hover { opacity: 0.9; }
   .gate-btn:active { transform: scale(0.98); }
   .gate-error { font-size: 11px; color: var(--red); font-family: var(--mono); text-align: center; height: 14px; letter-spacing: 0.04em; }
-
-  /* MAIN APP */
   #appWrap { display: none; }
-
   .topbar { position: sticky; top: 0; z-index: 100; background: rgba(12,12,14,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 50px; }
   .topbar-logo { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.08em; }
   .topbar-badge { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: var(--text3); font-family: var(--mono); margin-left: 10px; }
@@ -60,11 +55,7 @@
   .btn-new-event { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 600; font-family: var(--sans); cursor: pointer; border: none; background: var(--accent); color: #0c0c0e; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; }
   .btn-new-event:hover { opacity: 0.88; }
   .btn-new-event:active { transform: scale(0.97); }
-
-
   .create-banner { background: linear-gradient(135deg,rgba(232,197,71,0.08),rgba(232,197,71,0.03)); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
-
-  /* SAVE ORDER BAR */
   .order-bar { position: sticky; top: 50px; z-index: 90; background: rgba(20,20,23,0.97); backdrop-filter: blur(12px); border-bottom: 2px solid var(--accent); padding: 10px 24px; display: none; align-items: center; gap: 12px; }
   .order-bar.visible { display: flex; animation: slideDown 0.2s ease; }
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
@@ -77,7 +68,6 @@
   .btn-save-order:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-discard-order { padding: 7px 14px; border-radius: var(--r); font-size: 12px; font-weight: 500; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border2); background: transparent; color: var(--text3); transition: all 0.15s; white-space: nowrap; }
   .btn-discard-order:hover { border-color: var(--red); color: var(--red); }
-
   .table-wrap { overflow-x: auto; padding: 0 24px 100px; }
   table { width: 100%; border-collapse: collapse; min-width: 800px; }
   thead th { text-align: left; font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
@@ -87,8 +77,6 @@
   tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; position: relative; }
   tbody tr:hover { background: var(--surface); }
   tbody td { padding: 10px 12px; vertical-align: middle; }
-
-  /* DRAG HANDLE COLUMN */
   .td-drag { width: 32px; padding: 10px 8px !important; }
   .drag-handle { display: flex; align-items: center; justify-content: center; width: 22px; height: 28px; border-radius: 4px; cursor: grab; color: var(--text3); opacity: 0; transition: opacity 0.15s, color 0.15s, background 0.15s; user-select: none; font-size: 14px; letter-spacing: 1px; }
   .drag-handle:hover { color: var(--accent); background: rgba(232,197,71,0.08); }
@@ -96,24 +84,19 @@
   .drag-handle.active { opacity: 1 !important; }
   tbody tr:hover .drag-handle { opacity: 0.5; }
   tbody tr:hover .drag-handle.active { opacity: 1; }
-
-  /* DRAG STATES */
   tbody tr.dragging { opacity: 0.35; background: var(--surface2) !important; }
   tbody tr.drag-over-top { box-shadow: inset 0 2px 0 var(--accent); }
   tbody tr.drag-over-bottom { box-shadow: inset 0 -2px 0 var(--accent); }
   tbody tr.drag-blocked { background: rgba(224,85,85,0.25) !important; box-shadow: inset 0 0 0 2px var(--red), inset 4px 0 0 0 var(--red) !important; }
   tbody tr.drag-blocked td { color: var(--red) !important; opacity: 0.7; }
   tbody tr.drag-blocked .td-event { color: var(--red) !important; }
-  tbody tr.drag-blocked::after { content: '✕ date boundary'; position: absolute; right: 80px; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 0.08em; pointer-events: none; }
+  tbody tr.drag-blocked::after { content: 'x date boundary'; position: absolute; right: 80px; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 0.08em; pointer-events: none; }
   tbody tr.reordered { background: rgba(232,197,71,0.04); }
-
-  /* VISIBILITY */
   .td-vis { width: 36px; padding: 10px 8px !important; }
   .vis-btn { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: var(--text3); transition: all 0.15s; padding: 0; }
   .vis-btn:hover { background: var(--surface2); }
   .vis-btn.hidden-event { color: var(--red); opacity: 0.7; }
   .vis-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
-
   .td-date { font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; min-width: 110px; }
   .td-event { font-weight: 500; color: var(--text); }
   .td-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
@@ -131,12 +114,8 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn-edit { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-family: var(--sans); cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); transition: all 0.15s; }
   .btn-edit:hover { border-color: var(--border2); color: var(--text); }
-
-  /* hidden row style */
   tbody tr.row-hidden { opacity: 0.4; }
   tbody tr.row-hidden .td-event { text-decoration: line-through; text-decoration-color: var(--red); }
-
-  /* EDIT OVERLAY */
   #editOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
   #editOverlay.open { display: flex; }
   .edit-panel { background: #fff; border-radius: 16px; width: 560px; max-width: 96vw; max-height: 96vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 32px 100px rgba(0,0,0,0.7); color: #1a1a1a; }
@@ -236,22 +215,14 @@
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.success .ti { color: var(--green); }
   #toast.error .ti { color: var(--red); }
-  /* TIME PICKER */
-  .time-picker-wrap { display: flex; flex-direction: column; gap: 8px; }
-  .time-preset-row { display: flex; flex-wrap: wrap; gap: 6px; }
-  .time-preset-btn { padding: 5px 10px; border-radius: 6px; border: 1.5px solid #e5e5e0; background: #fff; color: #555; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
-  .time-preset-btn:hover { border-color: #ccc; color: #1a1a1a; }
-  .time-preset-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
   .time-custom-row { display: flex; gap: 6px; align-items: center; }
   .time-custom-row select, .time-custom-row input { flex: 1; }
   .time-sep { color: #aaa; font-weight: 600; flex-shrink: 0; }
-
-  /* ── CHECKBOX SELECT MODE ──────────────────────────────── */
   .cb-cell { width: 36px; padding: 10px 8px !important; }
   .row-cb { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
   tbody tr.row-selected { background: rgba(232,197,71,0.06) !important; }
   tbody tr.row-suggested { background: rgba(91,141,238,0.06) !important; }
-  tbody tr.row-suggested .td-event::after { content: ' — suggested'; font-size: 10px; color: var(--blue); font-family: var(--mono); opacity: 0.8; }
+  tbody tr.row-suggested .td-event::after { content: ' \2014 suggested'; font-size: 10px; color: var(--blue); font-family: var(--mono); opacity: 0.8; }
   .bulk-bar { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 300; background: #1a1a1a; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); min-width: 420px; max-width: 90vw; }
   .bulk-bar.visible { display: flex; animation: slideUp 0.2s ease; }
   @keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(12px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
@@ -261,14 +232,9 @@
   .btn-bulk-assign:hover { opacity: 0.88; }
   .btn-bulk-cancel { padding: 8px 12px; border-radius: 8px; font-size: 12px; font-family: var(--sans); cursor: pointer; border: 1px solid #444; background: transparent; color: var(--text3); white-space: nowrap; }
   .btn-bulk-cancel:hover { color: var(--red); border-color: var(--red); }
-  /* ── TEMPLATE MANAGER OVERLAY ───────────────────────────── */
   #tmplOverlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px; }
   #tmplOverlay.open { display: flex; }
-
-  /* Two-pane layout */
   .tmpl-shell { display: flex; gap: 16px; width: 100%; max-width: 960px; min-height: min(96vh, 700px); }
-
-  /* LEFT: template list */
   .tmpl-list-pane { width: 240px; flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; }
   .tmpl-list-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .tmpl-list-title { font-size: 11px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -282,17 +248,11 @@
   .tmpl-item-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tmpl-item-meta { font-size: 10px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
   .tmpl-item-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-
-  /* RIGHT: template edit panel — same white panel style as event editor */
   .tmpl-edit-pane { flex: 1; background: #fff; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 32px 100px rgba(0,0,0,0.7); color: #1a1a1a; min-width: 0; }
   .tmpl-empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #bbb; }
   .tmpl-empty-state svg { opacity: 0.3; }
   .tmpl-empty-state p { font-size: 13px; color: #aaa; }
-
-  /* template banner strip at top of edit pane */
   .tmpl-banner { background: linear-gradient(135deg, #0f0f1a, #1a1a2e); border-bottom: 2px solid var(--accent); padding: 8px 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 0.06em; flex-shrink: 0; }
-
-  /* CONFIRM MODAL (for lock/unlock popups — built next step) */
   .confirm-modal-overlay { display: none; position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
   .confirm-modal-overlay.open { display: flex; }
   .confirm-modal { background: #fff; border-radius: 14px; width: 360px; max-width: 94vw; padding: 28px 24px 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); color: #1a1a1a; }
@@ -306,11 +266,7 @@
   .btn-confirm-cancel:hover { background: #f5f5f0; }
   .btn-confirm-ok { padding: 9px 18px; border-radius: 8px; font-size: 13px; font-family: var(--sans); cursor: pointer; border: none; background: #1a1a1a; color: #fff; font-weight: 600; }
   .btn-confirm-ok:hover { background: #2a2a2a; }
-
-  @media (max-width: 700px) {
-    .tmpl-shell { flex-direction: column; }
-    .tmpl-list-pane { width: 100%; min-height: 180px; }
-  }
+  @media (max-width: 700px) { .tmpl-shell { flex-direction: column; } .tmpl-list-pane { width: 100%; min-height: 180px; } }
   @media (max-width: 560px) { .ep-row.c2, .ep-row.c3 { grid-template-columns: 1fr; } .impact-row { flex-wrap: wrap; } }
 </style>
 </head>
@@ -356,17 +312,16 @@
   </div>
   <div class="status-wrap">
     <div class="status-dot" id="statusDot" style="background:var(--text3)"></div>
-    <span class="status-text" id="statusText">connecting…</span>
+    <span class="status-text" id="statusText">connecting&hellip;</span>
   </div>
 </div>
 
-<!-- SAVE ORDER BAR -->
 <div class="order-bar" id="orderBar">
   <svg class="order-bar-icon" width="15" height="15" viewBox="0 0 15 15" fill="none">
     <path d="M3 5h9M3 7.5h6M3 10h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
     <path d="M11 9l2 2-2 2" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
-  <span class="order-bar-msg"><strong id="orderChangeCount">0 changes</strong> — reorder pending. Save to apply or discard to revert.</span>
+  <span class="order-bar-msg"><strong id="orderChangeCount">0 changes</strong> &mdash; reorder pending. Save to apply or discard to revert.</span>
   <button class="btn-discard-order" onclick="discardOrder()">Discard</button>
   <button class="btn-save-order" id="saveOrderBtn" onclick="saveOrder()">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -377,7 +332,7 @@
 <div class="toolbar">
   <div class="search-wrap">
     <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9 9L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-    <input type="text" id="searchInput" placeholder="Search events…" oninput="filterTable()">
+    <input type="text" id="searchInput" placeholder="Search events&hellip;" oninput="filterTable()">
   </div>
   <select class="fsel" id="impactFilter" onchange="filterTable()">
     <option value="">All Impact</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option><option value="none">None</option>
@@ -390,31 +345,28 @@
     <option value="">All Visibility</option><option value="visible">Visible only</option><option value="hidden">Hidden only</option>
   </select>
   <span class="count-badge" id="countBadge"></span>
-
   <button class="btn-new-event" onclick="openNewEvent()">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     New Event
   </button>
 </div>
+
 <div class="table-wrap">
   <div id="tableState" class="state-msg"><span class="spinner"></span></div>
   <table id="eventsTable" style="display:none">
     <thead><tr>
       <th style="width:36px;padding:10px 8px"><input type="checkbox" id="selectAllCb" onchange="toggleSelectAll(this.checked)" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer"></th>
       <th></th>
-      <th title="Visible on website">👁</th>
+      <th title="Visible on website">&#128065;</th>
       <th onclick="sortBy('date')">DATE</th><th onclick="sortBy('event')">EVENT</th><th>CATEGORY</th>
       <th onclick="sortBy('impact')">IMPACT</th><th>ENRICHMENT</th><th style="width:60px"></th>
     </tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
-  <!-- BULK ASSIGN BAR -->
   <div class="bulk-bar" id="bulkBar">
     <span class="bulk-bar-count" id="bulkCount">0 selected</span>
-    <span id="bulkNoTemplates" style="display:none;font-size:11px;font-family:var(--mono);color:var(--text3);flex:1">No templates yet — open any event and click <strong style="color:var(--accent)">Create Template</strong> first</span>
-    <select class="bulk-bar-select" id="bulkTmplSelect" style="display:none">
-      <option value="">— assign template —</option>
-    </select>
+    <span id="bulkNoTemplates" style="display:none;font-size:11px;font-family:var(--mono);color:var(--text3);flex:1">No templates yet &mdash; open any event and click <strong style="color:var(--accent)">Create Template</strong> first</span>
+    <select class="bulk-bar-select" id="bulkTmplSelect" style="display:none"><option value="">&mdash; assign template &mdash;</option></select>
     <button class="btn-bulk-assign" id="bulkAssignBtn" style="display:none" onclick="confirmBulkAssign()">Assign</button>
     <button class="btn-bulk-cancel" onclick="clearSelection()">Cancel</button>
   </div>
@@ -429,7 +381,7 @@
     </div>
     <div class="create-banner" id="createBanner" style="display:none">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      NEW EVENT — Fill in the details below and click Add to Calendar
+      NEW EVENT &mdash; Fill in the details below and click Add to Calendar
     </div>
     <div class="hero-drag-wrap" id="heroDragWrap">
       <img id="heroDragImg" class="hero-drag-img" src="" alt="" style="display:none">
@@ -444,7 +396,6 @@
       </button>
     </div>
     <div class="ep-body">
-      <!-- SECTION 1: Identity -->
       <div class="ep-section">
         <div class="logo-area">
           <div>
@@ -466,7 +417,6 @@
           </div>
         </div>
       </div>
-      <!-- TEMPLATE ASSIGNMENT -->
       <div class="ep-section" id="tmplAssignSection" style="padding:12px 20px;background:#f9f9f8;border-bottom:1px solid #f0f0ec;">
         <div class="ep-field">
           <label class="ep-label" style="display:flex;align-items:center;gap:6px;">
@@ -474,29 +424,22 @@
             Template
           </label>
           <select class="ep-input" id="f_template_id" onchange="handleTemplateAssign(this.value)" style="font-size:12px;">
-            <option value="">— No template —</option>
+            <option value="">&mdash; No template &mdash;</option>
           </select>
         </div>
       </div>
-      <!-- SECTION 2: Classification -->
       <div class="ep-section">
         <div class="ep-row c2" style="margin-bottom:12px">
           <div class="ep-field">
             <label class="ep-label">Category <span style="color:#dc2626">*</span></label>
             <select class="ep-input" id="f_category">
-              <option value="">— select —</option>
-              <option value="Central Bank">Central Bank</option>
-              <option value="Economic Release">Economic Release</option>
-              <option value="Earnings">Earnings</option>
-              <option value="IPO">IPO</option>
-              <option value="Corporate Event">Corporate Event</option>
-              <option value="Market Structure">Market Structure</option>
-              <option value="Political / Macro">Political / Macro</option>
-              <option value="Sector Conference">Sector Conference</option>
-              <option value="Market Holiday">Market Holiday</option>
-              <option value="M&A">M&amp;A</option>
-              <option value="Treasuries">Treasuries</option>
-              <option value="Stock Split">Stock Split</option>
+              <option value="">&mdash; select &mdash;</option>
+              <option value="Central Bank">Central Bank</option><option value="Economic Release">Economic Release</option>
+              <option value="Earnings">Earnings</option><option value="IPO">IPO</option>
+              <option value="Corporate Event">Corporate Event</option><option value="Market Structure">Market Structure</option>
+              <option value="Political / Macro">Political / Macro</option><option value="Sector Conference">Sector Conference</option>
+              <option value="Market Holiday">Market Holiday</option><option value="M&A">M&amp;A</option>
+              <option value="Treasuries">Treasuries</option><option value="Stock Split">Stock Split</option>
               <option value="Other">Other</option>
             </select>
           </div>
@@ -509,30 +452,23 @@
           <div class="ep-field">
             <label class="ep-label">Region</label>
             <select class="ep-input" id="f_region">
-              <option value="Americas">Americas</option>
-              <option value="Europe">Europe</option>
-              <option value="Asia Pacific">Asia Pacific</option>
-              <option value="Middle East & Africa">Middle East &amp; Africa</option>
+              <option value="Americas">Americas</option><option value="Europe">Europe</option>
+              <option value="Asia Pacific">Asia Pacific</option><option value="Middle East & Africa">Middle East &amp; Africa</option>
               <option value="Global">Global</option>
             </select>
           </div>
           <div class="ep-field">
             <label class="ep-label">Source Timezone</label>
             <select class="ep-input" id="f_source_tz">
-              <option value="America/New_York">New York (ET)</option>
-              <option value="America/Chicago">Chicago (CT)</option>
-              <option value="America/Los_Angeles">Los Angeles (PT)</option>
-              <option value="Europe/London">London (GMT/BST)</option>
-              <option value="Europe/Paris">Frankfurt / Paris (CET)</option>
-              <option value="Asia/Tokyo">Tokyo (JST)</option>
-              <option value="Asia/Shanghai">Shanghai (CST)</option>
-              <option value="Asia/Hong_Kong">Hong Kong (HKT)</option>
+              <option value="America/New_York">New York (ET)</option><option value="America/Chicago">Chicago (CT)</option>
+              <option value="America/Los_Angeles">Los Angeles (PT)</option><option value="Europe/London">London (GMT/BST)</option>
+              <option value="Europe/Paris">Frankfurt / Paris (CET)</option><option value="Asia/Tokyo">Tokyo (JST)</option>
+              <option value="Asia/Shanghai">Shanghai (CST)</option><option value="Asia/Hong_Kong">Hong Kong (HKT)</option>
               <option value="UTC">UTC</option>
             </select>
           </div>
         </div>
       </div>
-      <!-- SECTION 3: Date, Time & Impact -->
       <div class="ep-section">
         <div class="ep-field" style="margin-bottom:12px">
           <label class="ep-label">Event Date / Duration</label>
@@ -544,21 +480,19 @@
           <div class="ep-field">
             <label class="ep-label">Time</label>
             <select class="ep-input" id="timePresetSelect" onchange="setTimePresetFromSelect(this.value)" style="transition:border-color 0.15s,color 0.15s">
-              <option value="">— select time —</option>
+              <option value="">&mdash; select time &mdash;</option>
               <option value="All Day">All Day</option>
               <option value="Before Market Open">Before Market Open</option>
               <option value="After Market Close">After Market Close</option>
               <option value="Undetermined">Undetermined</option>
-              <option value="custom">Choose Time…</option>
+              <option value="custom">Choose Time&hellip;</option>
             </select>
           </div>
           <div class="ep-field">
             <label class="ep-label">Impact Level</label>
             <select class="ep-input impact-select" id="f_impact" onchange="selectImpact(this.value)">
-              <option value="high">🔴 High</option>
-              <option value="medium">🟠 Medium</option>
-              <option value="low">🟡 Low</option>
-              <option value="none">⚪ None</option>
+              <option value="high">&#128308; High</option><option value="medium">&#128992; Medium</option>
+              <option value="low">&#128993; Low</option><option value="none">&#9898; None</option>
             </select>
           </div>
         </div>
@@ -581,7 +515,6 @@
           </select>
         </div>
       </div>
-      <!-- SECTION 4: Source & Assets -->
       <div class="ep-section">
         <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="f_source_url" placeholder="Add URL here"></div>
         <div class="ep-field">
@@ -591,7 +524,6 @@
           </div>
         </div>
       </div>
-      <!-- SECTION 5: Toggles & Settings -->
       <div class="ep-section">
         <div class="est-preview-banner">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -599,18 +531,18 @@
             <line x1="8" y1="6.5" x2="8" y2="10" stroke="#b8820a" stroke-width="1.3" stroke-linecap="round"/>
             <circle cx="8" cy="12" r=".65" fill="#b8820a"/>
           </svg>
-          Estimated / Unconfirmed — amber dashed style active on calendar
+          Estimated / Unconfirmed &mdash; amber dashed style active on calendar
         </div>
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleEstimated()">
             <div class="toggle-track" id="estimatedToggle"><div class="toggle-thumb"></div></div>
-            <div><div class="toggle-label">Estimated Event</div><div class="toggle-sub">Date unconfirmed — applies amber dashed visual on calendar &amp; event card</div></div>
+            <div><div class="toggle-label">Estimated Event</div><div class="toggle-sub">Date unconfirmed &mdash; applies amber dashed visual on calendar &amp; event card</div></div>
           </div>
         </div>
         <div style="margin-bottom:14px">
           <div class="toggle-row" onclick="toggleMonthly()">
             <div class="toggle-track" id="monthlyToggle"><div class="toggle-thumb"></div></div>
-            <div><div class="toggle-label">Show in monthly calendar view</div><div class="toggle-sub">Multi-day banner — only top events should be enabled</div></div>
+            <div><div class="toggle-label">Show in monthly calendar view</div><div class="toggle-sub">Multi-day banner &mdash; only top events should be enabled</div></div>
           </div>
         </div>
         <div style="margin-bottom:14px">
@@ -623,7 +555,7 @@
           <div class="ep-field">
             <label class="ep-label">Frequency</label>
             <select class="ep-input" id="f_frequency">
-              <option value="">— not set —</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>
+              <option value="">&mdash; not set &mdash;</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>
               <option value="roughly every six weeks">Roughly every six weeks</option><option value="quarterly">Quarterly</option>
               <option value="semi-annual">Semi-Annual</option><option value="annual">Annual</option>
             </select>
@@ -638,14 +570,12 @@
           </div>
         </div>
       </div>
-      <!-- SECTION 6: Content -->
       <div class="ep-section">
-        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Measures <span class="opt">(optional)</span></label><textarea class="ep-input" id="f_measures" rows="3" placeholder="What this event or release tracks…"></textarea></div>
-        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Why it Matters</label><textarea class="ep-input" id="f_why_it_matters" rows="3" placeholder="Add description of why this event matters…"></textarea></div>
-        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Details <span class="opt">(custom content)</span></label><textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes…"></textarea></div>
-        <div class="ep-field"><label class="ep-label">Internal Notes <span class="opt">(admin only)</span></label><textarea class="ep-input" id="f_notes" rows="2" placeholder="Notes visible only in admin panel…"></textarea></div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Measures <span class="opt">(optional)</span></label><textarea class="ep-input" id="f_measures" rows="3" placeholder="What this event or release tracks&hellip;"></textarea></div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Why it Matters</label><textarea class="ep-input" id="f_why_it_matters" rows="3" placeholder="Add description of why this event matters&hellip;"></textarea></div>
+        <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Details <span class="opt">(custom content)</span></label><textarea class="ep-input" id="f_details" rows="3" placeholder="Add any additional details or notes&hellip;"></textarea></div>
+        <div class="ep-field"><label class="ep-label">Internal Notes <span class="opt">(admin only)</span></label><textarea class="ep-input" id="f_notes" rows="2" placeholder="Notes visible only in admin panel&hellip;"></textarea></div>
       </div>
-      <!-- SECTION 7: Chart -->
       <div class="ep-section" style="border-bottom:none">
         <div class="ep-field">
           <label class="ep-label">Attach Chart <span class="opt">(optional)</span></label>
@@ -682,7 +612,7 @@
       <div class="ep-footer-btns">
         <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
         <button id="deleteBtn" style="display:none;padding:9px 16px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #fecaca;background:#fff;color:#dc2626;font-weight:500;" onclick="deleteEvent()">Delete</button>
-        <button id="createTmplBtn" style="display:none;padding:9px 14px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #c7d7f8;background:#f0f5ff;color:#3b6fd4;font-weight:600;display:none;align-items:center;gap:6px;" onclick="createTemplateFromEvent()">
+        <button id="createTmplBtn" style="display:none;padding:9px 14px;border-radius:8px;font-size:13px;font-family:var(--sans);cursor:pointer;border:1.5px solid #c7d7f8;background:#f0f5ff;color:#3b6fd4;font-weight:600;align-items:center;gap:6px;" onclick="createTemplateFromEvent()">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="1" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="7" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="7" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/></svg>
           Create Template
         </button>
@@ -695,13 +625,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     TEMPLATE MANAGER OVERLAY
-═══════════════════════════════════════════════════════════ -->
+<!-- TEMPLATE MANAGER OVERLAY -->
 <div id="tmplOverlay" onclick="tmplOverlayClick(event)">
   <div class="tmpl-shell" id="tmplShell">
-
-    <!-- LEFT PANE: list of templates -->
     <div class="tmpl-list-pane">
       <div class="tmpl-list-header">
         <span class="tmpl-list-title">Templates</span>
@@ -714,16 +640,11 @@
         <div class="tmpl-list-empty">No templates yet.<br>Click <strong>New</strong> to create one.</div>
       </div>
     </div>
-
-    <!-- RIGHT PANE: edit a template (same white panel style) -->
     <div class="tmpl-edit-pane" id="tmplEditPane">
-      <!-- shown when nothing is selected -->
       <div class="tmpl-empty-state" id="tmplEmptyState">
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="4" y="4" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="26" y="4" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="26" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="26" y="26" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/></svg>
         <p>Select a template or create a new one</p>
       </div>
-
-      <!-- shown when editing a template -->
       <div id="tmplEditForm" style="display:none;flex-direction:column;height:100%">
         <div class="ep-header" id="tmplEditHeader">
           <div class="ep-header-title" id="tmplPanelTitle">New Template</div>
@@ -731,12 +652,9 @@
         </div>
         <div class="tmpl-banner">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.2"/><rect x="7" y="1" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.2"/><rect x="7" y="7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.2"/></svg>
-          SHARED TEMPLATE — Changes here apply to all linked events
+          SHARED TEMPLATE &mdash; Changes here apply to all linked events
         </div>
-
         <div style="overflow-y:auto;flex:1">
-
-          <!-- Hero image drag (same as event editor) -->
           <div class="hero-drag-wrap" id="tmplHeroDragWrap">
             <img id="tmplHeroDragImg" class="hero-drag-img" src="" alt="" style="display:none">
             <div class="hero-empty" id="tmplHeroEmpty">
@@ -749,8 +667,6 @@
               Change Hero Image
             </button>
           </div>
-
-          <!-- Identity -->
           <div class="ep-section">
             <div class="logo-area">
               <div>
@@ -763,48 +679,32 @@
                   <input type="text" class="ep-input" id="tf_display_name" placeholder="e.g. FOMC Rate Decision">
                 </div>
                 <div class="ep-row c2">
-                  <div class="ep-field">
-                    <label class="ep-label">Short Name</label>
-                    <input type="text" class="ep-input" id="tf_short_name" placeholder="e.g. FOMC">
-                  </div>
-                  <div class="ep-field">
-                    <label class="ep-label">Template ID <span class="opt">(auto)</span></label>
-                    <input type="text" class="ep-input" id="tf_id" placeholder="e.g. fomc-rate-decision" style="font-family:var(--mono);font-size:11px">
-                  </div>
+                  <div class="ep-field"><label class="ep-label">Short Name</label><input type="text" class="ep-input" id="tf_short_name" placeholder="e.g. FOMC"></div>
+                  <div class="ep-field"><label class="ep-label">Template ID <span class="opt">(auto)</span></label><input type="text" class="ep-input" id="tf_id" placeholder="e.g. fomc-rate-decision" style="font-family:var(--mono);font-size:11px"></div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Classification -->
           <div class="ep-section">
             <div class="ep-row c2" style="margin-bottom:12px">
               <div class="ep-field">
                 <label class="ep-label">Category</label>
                 <select class="ep-input" id="tf_category">
-                  <option value="">— select —</option>
-                  <option value="Central Bank">Central Bank</option>
-                  <option value="Economic Release">Economic Release</option>
-                  <option value="Earnings">Earnings</option>
-                  <option value="IPO">IPO</option>
-                  <option value="Corporate Event">Corporate Event</option>
-                  <option value="Market Structure">Market Structure</option>
-                  <option value="Political / Macro">Political / Macro</option>
-                  <option value="Sector Conference">Sector Conference</option>
-                  <option value="Market Holiday">Market Holiday</option>
-                  <option value="M&A">M&amp;A</option>
-                  <option value="Treasuries">Treasuries</option>
-                  <option value="Stock Split">Stock Split</option>
+                  <option value="">&mdash; select &mdash;</option>
+                  <option value="Central Bank">Central Bank</option><option value="Economic Release">Economic Release</option>
+                  <option value="Earnings">Earnings</option><option value="IPO">IPO</option>
+                  <option value="Corporate Event">Corporate Event</option><option value="Market Structure">Market Structure</option>
+                  <option value="Political / Macro">Political / Macro</option><option value="Sector Conference">Sector Conference</option>
+                  <option value="Market Holiday">Market Holiday</option><option value="M&A">M&amp;A</option>
+                  <option value="Treasuries">Treasuries</option><option value="Stock Split">Stock Split</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
               <div class="ep-field">
                 <label class="ep-label">Region</label>
                 <select class="ep-input" id="tf_region">
-                  <option value="Americas">Americas</option>
-                  <option value="Europe">Europe</option>
-                  <option value="Asia Pacific">Asia Pacific</option>
-                  <option value="Middle East & Africa">Middle East &amp; Africa</option>
+                  <option value="Americas">Americas</option><option value="Europe">Europe</option>
+                  <option value="Asia Pacific">Asia Pacific</option><option value="Middle East & Africa">Middle East &amp; Africa</option>
                   <option value="Global">Global</option>
                 </select>
               </div>
@@ -813,23 +713,14 @@
               <div class="ep-field">
                 <label class="ep-label">Frequency</label>
                 <select class="ep-input" id="tf_frequency">
-                  <option value="">— not set —</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="roughly every six weeks">Roughly every six weeks</option>
-                  <option value="quarterly">Quarterly</option>
-                  <option value="semi-annual">Semi-Annual</option>
-                  <option value="annual">Annual</option>
+                  <option value="">&mdash; not set &mdash;</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>
+                  <option value="roughly every six weeks">Roughly every six weeks</option><option value="quarterly">Quarterly</option>
+                  <option value="semi-annual">Semi-Annual</option><option value="annual">Annual</option>
                 </select>
               </div>
-              <div class="ep-field">
-                <label class="ep-label">Source URL</label>
-                <input type="url" class="ep-input" id="tf_source_url" placeholder="https://…">
-              </div>
+              <div class="ep-field"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="tf_source_url" placeholder="https://&hellip;"></div>
             </div>
           </div>
-
-          <!-- Impact & Assets -->
           <div class="ep-section">
             <div class="ep-field" style="margin-bottom:14px">
               <label class="ep-label">Impact Level</label>
@@ -847,21 +738,11 @@
               </div>
             </div>
           </div>
-
-          <!-- Content -->
           <div class="ep-section" style="border-bottom:none">
-            <div class="ep-field" style="margin-bottom:14px">
-              <label class="ep-label">Measures <span class="opt">(optional)</span></label>
-              <textarea class="ep-input" id="tf_measures" rows="3" placeholder="What this event or release tracks…"></textarea>
-            </div>
-            <div class="ep-field">
-              <label class="ep-label">Why it Matters</label>
-              <textarea class="ep-input" id="tf_why_it_matters" rows="3" placeholder="Why this event matters to markets…"></textarea>
-            </div>
+            <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Measures <span class="opt">(optional)</span></label><textarea class="ep-input" id="tf_measures" rows="3" placeholder="What this event or release tracks&hellip;"></textarea></div>
+            <div class="ep-field"><label class="ep-label">Why it Matters</label><textarea class="ep-input" id="tf_why_it_matters" rows="3" placeholder="Why this event matters to markets&hellip;"></textarea></div>
           </div>
-
-        </div><!-- /scroll area -->
-
+        </div>
         <div class="ep-footer">
           <div class="ep-save-status" id="tmplStatus"></div>
           <div class="ep-footer-btns">
@@ -873,15 +754,12 @@
             </button>
           </div>
         </div>
-      </div><!-- /tmplEditForm -->
-    </div><!-- /tmpl-edit-pane -->
-  </div><!-- /tmpl-shell -->
-
-  <!-- Close button outside the shell -->
+      </div>
+    </div>
+  </div>
   <button onclick="closeTemplateManager()" style="position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">&#10005;</button>
 </div>
 
-<!-- CONFIRM MODAL (reusable for lock/unlock — wired up next step) -->
 <div class="confirm-modal-overlay" id="confirmModal">
   <div class="confirm-modal">
     <div class="confirm-modal-icon" id="confirmIcon"></div>
@@ -896,7 +774,6 @@
 
 <div id="toast"><span class="ti" id="toastIcon">&#10003;</span><span id="toastMsg"></span></div>
 
-<!-- TEMPLATE NAME PROMPT MODAL -->
 <div class="confirm-modal-overlay" id="tmplNameModal">
   <div class="confirm-modal" style="width:400px">
     <div class="confirm-modal-icon unlock">
@@ -953,8 +830,6 @@ function togglePwVisibility() {
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('pwInput').focus();
-
-  // ── Event hero drag ──
   document.getElementById('heroDragImg').addEventListener('load', positionHeroImg);
   var wrap = document.getElementById('heroDragWrap');
   wrap.addEventListener('mousedown', function(e) {
@@ -987,8 +862,6 @@ document.addEventListener('DOMContentLoaded', function() {
     positionHeroImg();
   }, {passive:true});
   document.addEventListener('touchend', function() { heroDragging = false; });
-
-  // ── Template hero drag ──
   document.getElementById('tmplHeroDragImg').addEventListener('load', positionTmplHeroImg);
   var twrap = document.getElementById('tmplHeroDragWrap');
   twrap.addEventListener('mousedown', function(e) {
@@ -1007,6 +880,10 @@ document.addEventListener('DOMContentLoaded', function() {
     positionTmplHeroImg();
   });
   document.addEventListener('mouseup', function() { tmplHeroDragging = false; document.getElementById('tmplHeroDragWrap').classList.remove('dragging'); });
+  document.getElementById('confirmOkBtn').addEventListener('click', function() {
+    if (confirmCallback) confirmCallback();
+    closeConfirmModal();
+  });
 });
 
 var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
@@ -1023,8 +900,6 @@ var heroDragging = false, heroDragStartX, heroDragStartY, heroDragStartOX, heroD
 var currentHeroUrl = '';
 var isNewEvent = false;
 var orderChanges = {};
-
-// ── TEMPLATE STATE ─────────────────────────────────────────
 var allTemplates = [];
 var currentTemplate = null;
 var isNewTemplate = false;
@@ -1064,7 +939,6 @@ function loadEvents() {
       populateCats(); filterTable();
       document.getElementById('tableState').style.display = 'none';
       document.getElementById('eventsTable').style.display = 'table';
-      // Pre-load templates so dropdowns are ready without opening Template Manager
       supaFetch('/rest/v1/event_templates?select=*&order=display_name.asc')
         .then(function(td) {
           allTemplates = Array.isArray(td) ? td : [];
@@ -1082,7 +956,6 @@ function populateCats() {
   var cats = {};
   allEvents.forEach(function(e) { if (e.category) cats[e.category] = 1; });
   var sel = document.getElementById('catFilter');
-  // Clear existing options beyond the first
   while (sel.options.length > 1) sel.remove(1);
   Object.keys(cats).sort().forEach(function(c) { var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
 }
@@ -1095,8 +968,7 @@ function resolveDisplayTime(ev) {
       if (!isNaN(dt)) {
         var etOffset = isDST(dt) ? -4 : -5;
         var local = new Date(dt.getTime() + etOffset * 60 * 60 * 1000);
-        var h = local.getUTCHours();
-        var mn = local.getUTCMinutes();
+        var h = local.getUTCHours(), mn = local.getUTCMinutes();
         var ampm = h >= 12 ? 'PM' : 'AM';
         var h12 = h % 12 || 12;
         return h12 + ':' + String(mn).padStart(2,'0') + ' ' + ampm + ' ET';
@@ -1124,7 +996,12 @@ function formatTableDate(start, end) {
     var d = new Date(s + 'T12:00:00Z');
     if (!isNaN(d)) {
       var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return MO[d.getUTCMonth()] + ' ' + d.getUTCDate();
+      var startStr = MO[d.getUTCMonth()] + ' ' + d.getUTCDate();
+      if (end) {
+        var e = new Date(String(end) + 'T12:00:00Z');
+        if (!isNaN(e)) return startStr + ' \u2013 ' + MO[e.getUTCMonth()] + ' ' + e.getUTCDate();
+      }
+      return startStr;
     }
   }
   return s.replace(/,?\s*20\d{2}/, '').trim() || s.substring(0, 10);
@@ -1140,9 +1017,8 @@ function filterTable() {
     if (q && (e.event||'').toLowerCase().indexOf(q) === -1 && (e.category||'').toLowerCase().indexOf(q) === -1) return false;
     if (imp && (e.impact||'none').toLowerCase() !== imp) return false;
     if (cat && e.category !== cat) return false;
-    var ent = e.entity || {};
-    var hero = e.hero_url || ent.hero_url || '';
-    var why = e.why_it_matters || ent.why_it_matters || '';
+    var hero = e.hero_url || '';
+    var why = e.why_it_matters || '';
     if (enr === 'missing' && hero && why) return false;
     if (enr === 'has-hero' && !hero) return false;
     if (enr === 'has-why' && !why) return false;
@@ -1152,14 +1028,12 @@ function filterTable() {
     return true;
   });
   filteredEvents.sort(function(a,b) {
-    // Parse raw dates ("Apr 13", "2027-04-13", etc.) into sortable ISO strings
     var ad = parseCalendarDate(a.date);
     var bd = parseCalendarDate(b.date);
-    if (!ad && !bd) { /* both undated, fall through to display_order */ }
+    if (!ad && !bd) {}
     else if (!ad) return 1;
     else if (!bd) return -1;
     else if (ad !== bd) return ad < bd ? -1 : 1;
-    // Same date: sort by display_order
     var ao = (a.display_order != null ? a.display_order : 9999);
     var bo = (b.display_order != null ? b.display_order : 9999);
     return ao - bo;
@@ -1192,13 +1066,12 @@ function renderTable() {
   var dateGroups = getDateGroups();
   var html = '';
   filteredEvents.forEach(function(ev, i) {
-    var ent = ev.entity || {};
-    var hero = ev.hero_url || ent.hero_url || '';
-    var logo = ev.logo_url || ent.logo_url || '';
-    var why = ev.why_it_matters || ent.why_it_matters || '';
+    var hero = ev.hero_url || '';
+    var logo = ev.logo_url || '';
+    var why = ev.why_it_matters || '';
     var imp = (ev.impact||'none').toLowerCase();
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
-    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets||ent.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
+    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
     var date = formatTableDate(ev.date, ev.end_date);
     var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
     var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
@@ -1248,7 +1121,6 @@ function toggleRowVisibility(idx) {
   renderTable();
 }
 
-// ── DRAG & DROP ────────────────────────────────────────────
 var dragSrcIdx = null, dragSrcDate = null;
 
 function attachDragHandlers() {
@@ -1296,13 +1168,13 @@ function discardOrder() { orderChanges = {}; loadEvents(); document.getElementBy
 function saveOrder() {
   var ids = Object.keys(orderChanges); if (!ids.length) return;
   var btn = document.getElementById('saveOrderBtn'); btn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving…';
+  btn.innerHTML = '<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving\u2026';
   var promises = ids.map(function(id) { return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ display_order: orderChanges[id] }) }); });
   Promise.all(promises).then(function() {
     ids.forEach(function(id) { var ev = allEvents.find(function(e) { return String(e.id) === String(id); }); if (ev) ev.display_order = orderChanges[id]; });
     orderChanges = {}; updateOrderBar(); btn.disabled = false;
     btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Order';
-    showToast('Order saved — ' + ids.length + ' event' + (ids.length === 1 ? '' : 's') + ' updated', 'success'); renderTable();
+    showToast('Order saved \u2014 ' + ids.length + ' event' + (ids.length === 1 ? '' : 's') + ' updated', 'success'); renderTable();
   }).catch(function(err) {
     btn.disabled = false;
     btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Order';
@@ -1368,8 +1240,8 @@ function openEdit(idx) {
   document.getElementById('saveBtnLabel').textContent = 'Save Changes';
   document.getElementById('createBanner').style.display = 'none';
   document.getElementById('deleteBtn').style.display = 'inline-flex';
-  var ev = currentEvent, ent = ev.entity || {};
-  var heroUrl = ev.hero_url || ent.hero_url || '';
+  var ev = currentEvent;
+  var heroUrl = ev.hero_url || '';
   heroOffsetX = 50; heroOffsetY = 50;
   var heroPos = ev.hero_position || '';
   if (heroPos && heroPos.indexOf('%') > -1) {
@@ -1378,7 +1250,7 @@ function openEdit(idx) {
   }
   setupHero(heroUrl);
   var lt = document.getElementById('logoThumb');
-  var logoUrl = ev.logo_url || ent.logo_url || '';
+  var logoUrl = ev.logo_url || '';
   lt.innerHTML = logoUrl ? '<img src="'+esc(logoUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
   document.getElementById('f_title').value = ev.event || '';
   document.getElementById('f_short_name').value = ev.short_name || '';
@@ -1388,15 +1260,13 @@ function openEdit(idx) {
   document.getElementById('f_category').value = ev.category || '';
   document.getElementById('f_region').value = ev.region || 'Americas';
   document.getElementById('f_source_tz').value = ev.source_tz || 'America/New_York';
-  document.getElementById('f_frequency').value = (ev.frequency || ent.frequency || '').toLowerCase();
-  document.getElementById('f_measures').value = ev.measures || ent.measures || '';
-  document.getElementById('f_why_it_matters').value = ev.why_it_matters || ent.why_it_matters || '';
+  document.getElementById('f_frequency').value = (ev.frequency || '').toLowerCase();
+  document.getElementById('f_measures').value = ev.measures || '';
+  document.getElementById('f_why_it_matters').value = ev.why_it_matters || '';
   document.getElementById('f_details').value = ev.details || '';
   document.getElementById('f_notes').value = ev.notes || '';
-  // Store date/time values — applied after overlay opens to avoid browser rendering bugs
   var _startDate = parseCalendarDate(ev.date);
   var _endDate = parseCalendarDate(ev.end_date);
-  // Prefer display_time; fall back to parsing event_datetime_utc
   var _displayTime = ev.display_time || resolveDisplayTime(ev);
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
@@ -1409,7 +1279,7 @@ function openEdit(idx) {
   isVisible = ev.visible !== false && ev.visible !== 'FALSE'; updateVisibleUI();
   var assetWrap = document.getElementById('assetWrap'), assetInp = document.getElementById('assetInp');
   assetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
-  var assets = (ev.impacted_assets || ent.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean);
+  var assets = (ev.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean);
   assets.forEach(function(a) { assetWrap.insertBefore(makeChip(a), assetInp); });
   var ct = ev.chart_ticker || ev.ticker || '';
   document.getElementById('chartTicker').value = ct;
@@ -1418,15 +1288,12 @@ function openEdit(idx) {
   if (ct) { loadChart(); } else { document.getElementById('chartFrame').style.display = 'none'; document.getElementById('chartPlaceholder').style.display = 'flex'; }
   document.getElementById('epStatus').textContent = '';
   document.getElementById('saveBtn').disabled = false;
-  // Populate + set template assignment dropdown
   populateTmplAssignDropdown(currentEvent.template_id || '');
-  // Show "Create Template" button only if event has no template linked yet
   var hasTmpl = !!(currentEvent && currentEvent.template_id);
   var ctBtn = document.getElementById('createTmplBtn');
   ctBtn.style.display = hasTmpl ? 'none' : 'inline-flex';
   document.getElementById('editOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Set date + time after panel is visible — small delay ensures DOM is ready
   setTimeout(function() {
     document.getElementById('f_start_date').value = _startDate;
     document.getElementById('f_end_date').value = _endDate;
@@ -1516,44 +1383,28 @@ function setRange(btn, range) {
   btn.classList.add('active'); loadChart();
 }
 
-// ── TIME PICKER ────────────────────────────────────────────
 var PRESETS = ['All Day', 'Before Market Open', 'After Market Close', 'Undetermined'];
 function setTimePresetFromSelect(val) {
   document.getElementById('timeCustomRow').style.display = val === 'custom' ? 'flex' : 'none';
   var sel = document.getElementById('timePresetSelect');
-  if (val && val !== 'custom') {
-    if (sel) { sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; }
-  } else if (!val) {
-    if (sel) { sel.style.borderColor = ''; sel.style.color = ''; }
-  }
+  if (val && val !== 'custom') { if (sel) { sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; } }
+  else if (!val) { if (sel) { sel.style.borderColor = ''; sel.style.color = ''; } }
   if (val !== 'custom') updateCustomTimeLabel();
 }
-
 function updateCustomTimeLabel() {
-  var sel = document.getElementById('timePresetSelect');
-  if (!sel) return;
-  // Find or create the custom option
+  var sel = document.getElementById('timePresetSelect'); if (!sel) return;
   var customOpt = null;
-  for (var i = 0; i < sel.options.length; i++) {
-    if (sel.options[i].value === 'custom') { customOpt = sel.options[i]; break; }
-  }
+  for (var i = 0; i < sel.options.length; i++) { if (sel.options[i].value === 'custom') { customOpt = sel.options[i]; break; } }
   if (!customOpt) return;
-  if (sel.value !== 'custom') {
-    customOpt.text = 'Choose Time…';
-    return;
-  }
-  // Build the label from the current hour/min/ampm/tz values
+  if (sel.value !== 'custom') { customOpt.text = 'Choose Time\u2026'; return; }
   var h = document.getElementById('f_time_hour') ? document.getElementById('f_time_hour').value : '';
   var m = document.getElementById('f_time_min') ? document.getElementById('f_time_min').value : '00';
   var ap = document.getElementById('f_time_ampm') ? document.getElementById('f_time_ampm').value : '';
   var tz = document.getElementById('f_time_tz') ? document.getElementById('f_time_tz').value : '';
-  if (h) {
-    customOpt.text = '⏰ ' + h + ':' + m + ' ' + ap + ' ' + tz;
-  }
+  if (h) { customOpt.text = '\u23f0 ' + h + ':' + m + ' ' + ap + ' ' + tz; }
 }
 function resetTimePicker() {
-  var sel = document.getElementById('timePresetSelect');
-  if (sel) sel.value = '';
+  var sel = document.getElementById('timePresetSelect'); if (sel) sel.value = '';
   document.getElementById('timeCustomRow').style.display = 'none';
   document.getElementById('f_time_hour').value = '9';
   document.getElementById('f_time_min').value = '30';
@@ -1564,19 +1415,11 @@ function loadTimePicker(val) {
   resetTimePicker(); if (!val) return;
   var sel = document.getElementById('timePresetSelect');
   var valLower = val.trim().toLowerCase();
-  // Match presets with flexible comparison (trim + lowercase)
-  for (var i = 0; i < PRESETS.length; i++) {
-    if (valLower === PRESETS[i].toLowerCase()) {
-      if (sel) sel.value = PRESETS[i];
-      return;
-    }
-  }
-  // Try partial preset matches (e.g. "Before Open" → "Before Market Open")
+  for (var i = 0; i < PRESETS.length; i++) { if (valLower === PRESETS[i].toLowerCase()) { if (sel) sel.value = PRESETS[i]; return; } }
   if (valLower.indexOf('before') > -1) { if (sel) sel.value = 'Before Market Open'; return; }
   if (valLower.indexOf('after') > -1)  { if (sel) sel.value = 'After Market Close'; return; }
   if (valLower === 'all day')           { if (sel) sel.value = 'All Day'; return; }
   if (valLower.indexOf('undetermined') > -1 || valLower.indexOf('tbd') > -1) { if (sel) sel.value = 'Undetermined'; return; }
-  // Custom time — show the hour/min row
   if (sel) sel.value = 'custom';
   document.getElementById('timeCustomRow').style.display = 'flex';
   var m = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?\s*([A-Z]{2,3})?/i);
@@ -1586,7 +1429,6 @@ function loadTimePicker(val) {
     if (m[3]) document.getElementById('f_time_ampm').value = m[3].toUpperCase();
     if (m[4]) document.getElementById('f_time_tz').value = m[4].toUpperCase();
   }
-  // Update the dropdown label to show the time value, then color it
   setTimeout(function() {
     updateCustomTimeLabel();
     var sel = document.getElementById('timePresetSelect');
@@ -1604,42 +1446,24 @@ function getTimeValue() {
   return sel.value;
 }
 
-// ── RESOLVE DISPLAY TIME from event_datetime_utc or notes ──
-
-
-
-
-// ── FORMAT DATE for table display ──────────────────────────
-
-
-// ── INFER YEAR from current event name or title field ──────
 function inferYearFromEvent() {
-  // Pull year from currentEvent.event (reliable at parse time)
   var name = currentEvent ? (currentEvent.event || '') : '';
   var m = name.match(/20\d{2}/);
   if (m) return parseInt(m[0], 10);
-  // Check event title field as fallback
   var titleEl = document.getElementById('f_title');
   if (titleEl) { var m2 = titleEl.value.match(/20\d{2}/); if (m2) return parseInt(m2[0], 10); }
   return 2027;
 }
 
-// ── DATE PARSER: converts "Apr 13", "Apr 13, 2027", or "2027-04-13" → "2027-04-13" ──
 function parseCalendarDate(val) {
   if (!val) return '';
-  var s = String(val).trim();
-  if (!s) return '';
-  // Already full ISO format: 2027-04-13 or 2027-04-13T...
+  var s = String(val).trim(); if (!s) return '';
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
-  // "Apr 13" — no year, assume current calendar year context (use 2027 as base year)
   var MONTHS = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12 };
-  // "Mon DD, YYYY" or "Mon DD YYYY"
   var m = s.match(/^([A-Za-z]{3})\s+(\d{1,2})(?:[,\s]+(\d{4}))?/);
   if (m) {
-    var mon = MONTHS[(m[1]||'').toLowerCase()];
-    if (!mon) return '';
+    var mon = MONTHS[(m[1]||'').toLowerCase()]; if (!mon) return '';
     var day = parseInt(m[2], 10);
-    // If no year in string, infer from the raw value or fall back to 2027
     var year = m[3] ? parseInt(m[3], 10) : inferYearFromEvent();
     return year + '-' + String(mon).padStart(2,'0') + '-' + String(day).padStart(2,'0');
   }
@@ -1720,48 +1544,22 @@ function saveChanges() {
   }
 }
 
-// ══════════════════════════════════════════════════════════
-// TEMPLATE MANAGER
-// ══════════════════════════════════════════════════════════
-
-function openTemplateManager() {
-  document.getElementById('tmplOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  loadTemplates();
-}
-
-function closeTemplateManager() {
-  document.getElementById('tmplOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  currentTemplate = null; isNewTemplate = false;
-}
-
-function tmplOverlayClick(e) {
-  // Only close if clicking the dark backdrop itself (not the shell)
-  if (e.target === document.getElementById('tmplOverlay')) closeTemplateManager();
-}
+function openTemplateManager() { document.getElementById('tmplOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; loadTemplates(); }
+function closeTemplateManager() { document.getElementById('tmplOverlay').classList.remove('open'); document.body.style.overflow = ''; currentTemplate = null; isNewTemplate = false; }
+function tmplOverlayClick(e) { if (e.target === document.getElementById('tmplOverlay')) closeTemplateManager(); }
 
 function loadTemplates() {
   document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty"><span class="spinner" style="width:14px;height:14px;border-width:1.5px"></span></div>';
   supaFetch('/rest/v1/event_templates?select=*&order=display_name.asc')
-    .then(function(data) {
-      allTemplates = Array.isArray(data) ? data : [];
-      renderTemplateList();
-      populateBulkTmplSelect();
-    })
-    .catch(function(err) {
-      document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty" style="color:#e05555">' + err.message + '</div>';
-    });
+    .then(function(data) { allTemplates = Array.isArray(data) ? data : []; renderTemplateList(); populateBulkTmplSelect(); })
+    .catch(function(err) { document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty" style="color:#e05555">' + err.message + '</div>'; });
 }
 
 function renderTemplateList() {
   var body = document.getElementById('tmplListBody');
-  if (!allTemplates.length) {
-    body.innerHTML = '<div class="tmpl-list-empty">No templates yet.<br>Click <strong>New</strong> to create one.</div>';
-    return;
-  }
+  if (!allTemplates.length) { body.innerHTML = '<div class="tmpl-list-empty">No templates yet.<br>Click <strong>New</strong> to create one.</div>'; return; }
   var impColors = { high: '#dc2626', medium: '#ea7000', low: '#d4a000', none: '#aaa' };
-  var html = allTemplates.map(function(t) {
+  body.innerHTML = allTemplates.map(function(t) {
     var dotColor = impColors[(t.impact_level||'none').toLowerCase()] || '#aaa';
     var isActive = currentTemplate && currentTemplate.id === t.id;
     return '<div class="tmpl-item' + (isActive ? ' active' : '') + '" onclick="selectTemplate(\'' + esc(t.id) + '\')">'
@@ -1769,46 +1567,26 @@ function renderTemplateList() {
       + '<div class="tmpl-item-meta"><span class="tmpl-item-dot" style="background:' + dotColor + '"></span>' + esc(t.category || 'No category') + '</div>'
       + '</div>';
   }).join('');
-  body.innerHTML = html;
 }
 
 function selectTemplate(id) {
-  var tmpl = allTemplates.find(function(t) { return t.id === id; });
-  if (!tmpl) return;
-  currentTemplate = tmpl; isNewTemplate = false;
-  renderTemplateList();
-  showTemplateForm(tmpl);
+  var tmpl = allTemplates.find(function(t) { return t.id === id; }); if (!tmpl) return;
+  currentTemplate = tmpl; isNewTemplate = false; renderTemplateList(); showTemplateForm(tmpl);
 }
-
-function openNewTemplate() {
-  currentTemplate = null; isNewTemplate = true;
-  renderTemplateList();
-  showTemplateForm(null);
-}
+function openNewTemplate() { currentTemplate = null; isNewTemplate = true; renderTemplateList(); showTemplateForm(null); }
 
 function showTemplateForm(tmpl) {
   document.getElementById('tmplEmptyState').style.display = 'none';
-  var formEl = document.getElementById('tmplEditForm');
-  formEl.style.display = 'flex';
-
+  var formEl = document.getElementById('tmplEditForm'); formEl.style.display = 'flex';
   document.getElementById('tmplPanelTitle').textContent = tmpl ? 'Edit Template' : 'New Template';
   document.getElementById('tmplDeleteBtn').style.display = tmpl ? 'inline-flex' : 'none';
-
-  // Hero image
   var heroUrl = tmpl ? (tmpl.hero_image_url || '') : '';
   tmplHeroOffsetX = 50; tmplHeroOffsetY = 50;
-  if (tmpl && tmpl.hero_position) {
-    var pp = tmpl.hero_position.split(' ');
-    if (pp.length >= 2) { tmplHeroOffsetX = parseFloat(pp[0])||50; tmplHeroOffsetY = parseFloat(pp[1])||50; }
-  }
+  if (tmpl && tmpl.hero_position) { var pp = tmpl.hero_position.split(' '); if (pp.length >= 2) { tmplHeroOffsetX = parseFloat(pp[0])||50; tmplHeroOffsetY = parseFloat(pp[1])||50; } }
   setupTmplHero(heroUrl);
-
-  // Logo
   var tmplLt = document.getElementById('tmplLogoThumb');
   var logoUrl = tmpl ? (tmpl.logo_url || '') : '';
   tmplLt.innerHTML = logoUrl ? '<img src="'+esc(logoUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
-
-  // Fields
   document.getElementById('tf_display_name').value = tmpl ? (tmpl.display_name || '') : '';
   document.getElementById('tf_short_name').value = tmpl ? (tmpl.short_name || '') : '';
   document.getElementById('tf_id').value = tmpl ? (tmpl.id || '') : '';
@@ -1818,42 +1596,22 @@ function showTemplateForm(tmpl) {
   document.getElementById('tf_source_url').value = tmpl ? (tmpl.source_url || '') : '';
   document.getElementById('tf_measures').value = tmpl ? (tmpl.measures || '') : '';
   document.getElementById('tf_why_it_matters').value = tmpl ? (tmpl.why_it_matters || '') : '';
-
-  // Impact
-  tmplSelectedImpact = tmpl ? ((tmpl.impact_level || 'none').toLowerCase()) : 'none';
-  updateTmplImpactUI();
-
-  // Assets
+  tmplSelectedImpact = tmpl ? ((tmpl.impact_level || 'none').toLowerCase()) : 'none'; updateTmplImpactUI();
   var tmplAssetWrap = document.getElementById('tmplAssetWrap'), tmplAssetInp = document.getElementById('tmplAssetInp');
   tmplAssetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
   var assets = tmpl ? ((tmpl.impacted_assets || '').split(',').map(function(a){return a.trim();}).filter(Boolean)) : [];
   assets.forEach(function(a) { tmplAssetWrap.insertBefore(makeTmplChip(a), tmplAssetInp); });
-
-  // Auto-generate ID from name for new templates
-  if (!tmpl) {
-    document.getElementById('tf_display_name').addEventListener('input', autoGenTmplId, { once: false });
-  } else {
-    document.getElementById('tf_display_name').removeEventListener('input', autoGenTmplId);
-  }
-
+  if (!tmpl) { document.getElementById('tf_display_name').addEventListener('input', autoGenTmplId, { once: false }); }
+  else { document.getElementById('tf_display_name').removeEventListener('input', autoGenTmplId); }
   document.getElementById('tmplStatus').textContent = '';
   document.getElementById('tmplSaveBtn').disabled = false;
 }
 
 function autoGenTmplId() {
   var name = document.getElementById('tf_display_name').value;
-  var id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  document.getElementById('tf_id').value = id;
+  document.getElementById('tf_id').value = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
-
-function closeTemplateForm() {
-  document.getElementById('tmplEmptyState').style.display = 'flex';
-  document.getElementById('tmplEditForm').style.display = 'none';
-  currentTemplate = null; isNewTemplate = false;
-  renderTemplateList();
-}
-
-// Template hero helpers
+function closeTemplateForm() { document.getElementById('tmplEmptyState').style.display = 'flex'; document.getElementById('tmplEditForm').style.display = 'none'; currentTemplate = null; isNewTemplate = false; renderTemplateList(); }
 function setupTmplHero(url) {
   tmplCurrentHeroUrl = url;
   var img = document.getElementById('tmplHeroDragImg'), empty = document.getElementById('tmplHeroEmpty');
@@ -1871,33 +1629,16 @@ function positionTmplHeroImg() {
   img.style.left = -(tmplHeroOffsetX / 100 * maxOffX) + 'px';
   img.style.top = -(tmplHeroOffsetY / 100 * maxOffY) + 'px';
 }
-function promptTmplHeroUrl() {
-  var url = prompt('Enter hero image URL:', tmplCurrentHeroUrl || '');
-  if (url !== null) setupTmplHero(url.trim());
-}
+function promptTmplHeroUrl() { var url = prompt('Enter hero image URL:', tmplCurrentHeroUrl || ''); if (url !== null) setupTmplHero(url.trim()); }
 function promptTmplLogoUrl() {
   var cur = document.getElementById('tmplLogoThumb').querySelector('img');
   var url = prompt('Enter logo image URL:', (cur ? cur.src : '') || '');
-  if (url !== null) {
-    var lt = document.getElementById('tmplLogoThumb');
-    lt.innerHTML = url.trim() ? '<img src="'+esc(url.trim())+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>';
-  }
+  if (url !== null) { var lt = document.getElementById('tmplLogoThumb'); lt.innerHTML = url.trim() ? '<img src="'+esc(url.trim())+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>'; }
 }
 function selectTmplImpact(val) { tmplSelectedImpact = val; updateTmplImpactUI(); }
 function updateTmplImpactUI() { ['high','medium','low','none'].forEach(function(v) { document.getElementById('timp-' + v).className = 'impact-opt' + (tmplSelectedImpact === v ? ' sel-' + v : ''); }); }
-
-// Template asset chips (separate from event chips)
-function makeTmplChip(val) {
-  var s = document.createElement('span'); s.className = 'achip';
-  s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>';
-  return s;
-}
-function addTmplChip(val) {
-  val = val.trim().toUpperCase().replace(/,/g,''); if (!val) return;
-  var ex = Array.from(document.querySelectorAll('#tmplAssetWrap .achip span:first-child')).map(function(s){return s.textContent;});
-  if (ex.indexOf(val) > -1) return;
-  document.getElementById('tmplAssetWrap').insertBefore(makeTmplChip(val), document.getElementById('tmplAssetInp'));
-}
+function makeTmplChip(val) { var s = document.createElement('span'); s.className = 'achip'; s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>'; return s; }
+function addTmplChip(val) { val = val.trim().toUpperCase().replace(/,/g,''); if (!val) return; var ex = Array.from(document.querySelectorAll('#tmplAssetWrap .achip span:first-child')).map(function(s){return s.textContent;}); if (ex.indexOf(val) > -1) return; document.getElementById('tmplAssetWrap').insertBefore(makeTmplChip(val), document.getElementById('tmplAssetInp')); }
 function tmplAssetKey(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTmplChip(e.target.value); e.target.value = ''; } }
 function tmplAssetBlur() { if (document.getElementById('tmplAssetInp').value.trim()) { addTmplChip(document.getElementById('tmplAssetInp').value); document.getElementById('tmplAssetInp').value = ''; } }
 function getTmplAssets() { return Array.from(document.querySelectorAll('#tmplAssetWrap .achip span:first-child')).map(function(s){return s.textContent.trim();}).filter(Boolean).join(', '); }
@@ -1908,13 +1649,10 @@ function saveTemplate() {
   var tmplId = document.getElementById('tf_id').value.trim();
   if (!displayName) { document.getElementById('tf_display_name').focus(); showToast('Template name is required', 'error'); return; }
   if (!tmplId) { document.getElementById('tf_id').focus(); showToast('Template ID is required', 'error'); return; }
-
   btn.disabled = true; statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Saving\u2026';
-
   var tmplLogoImg = document.getElementById('tmplLogoThumb').querySelector('img');
   var payload = {
-    id: tmplId,
-    display_name: displayName,
+    id: tmplId, display_name: displayName,
     short_name: document.getElementById('tf_short_name').value.trim() || null,
     logo_url: tmplLogoImg ? tmplLogoImg.src : null,
     hero_image_url: tmplCurrentHeroUrl || null,
@@ -1928,33 +1666,25 @@ function saveTemplate() {
     measures: document.getElementById('tf_measures').value.trim() || null,
     why_it_matters: document.getElementById('tf_why_it_matters').value.trim() || null,
   };
-
   if (isNewTemplate) {
     supaFetch('/rest/v1/event_templates', { method: 'POST', body: JSON.stringify(payload) })
       .then(function(result) {
         var newTmpl = (Array.isArray(result) ? result[0] : result) || payload;
-        allTemplates.push(newTmpl);
-        allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
-        currentTemplate = newTmpl; isNewTemplate = false;
-        renderTemplateList();
+        allTemplates.push(newTmpl); allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
+        currentTemplate = newTmpl; isNewTemplate = false; renderTemplateList();
         document.getElementById('tmplPanelTitle').textContent = 'Edit Template';
         document.getElementById('tmplDeleteBtn').style.display = 'inline-flex';
         document.getElementById('tf_id').readOnly = true;
         statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Template created';
-        showToast('Template "' + displayName + '" created', 'success');
-        btn.disabled = false;
+        showToast('Template "' + displayName + '" created', 'success'); btn.disabled = false;
       })
       .catch(function(err) { statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message; showToast('Could not create template: ' + err.message, 'error'); btn.disabled = false; });
   } else {
     supaFetch('/rest/v1/event_templates?id=eq.' + encodeURIComponent(currentTemplate.id), { method: 'PATCH', body: JSON.stringify(payload) })
       .then(function() {
         Object.assign(currentTemplate, payload);
-        var idx = allTemplates.findIndex(function(t){ return t.id === currentTemplate.id; });
-        if (idx > -1) allTemplates[idx] = currentTemplate;
-        renderTemplateList();
-        statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved';
-        showToast('Template saved', 'success');
-        btn.disabled = false;
+        var idx = allTemplates.findIndex(function(t){ return t.id === currentTemplate.id; }); if (idx > -1) allTemplates[idx] = currentTemplate;
+        renderTemplateList(); statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved'; showToast('Template saved', 'success'); btn.disabled = false;
       })
       .catch(function(err) { statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message; showToast('Save failed: ' + err.message, 'error'); btn.disabled = false; });
   }
@@ -1964,327 +1694,166 @@ function deleteTemplate() {
   if (!currentTemplate) return;
   if (!confirm('Delete template "' + (currentTemplate.display_name || currentTemplate.id) + '"?\n\nThis will not delete any events, but they will lose their template link.')) return;
   supaFetch('/rest/v1/event_templates?id=eq.' + encodeURIComponent(currentTemplate.id), { method: 'DELETE' })
-    .then(function() {
-      allTemplates = allTemplates.filter(function(t){ return t.id !== currentTemplate.id; });
-      closeTemplateForm();
-      showToast('Template deleted', 'success');
-    })
+    .then(function() { allTemplates = allTemplates.filter(function(t){ return t.id !== currentTemplate.id; }); closeTemplateForm(); showToast('Template deleted', 'success'); })
     .catch(function(err) { showToast('Delete failed: ' + err.message, 'error'); });
 }
 
-// ── CREATE TEMPLATE FROM EVENT ────────────────────────────
 function createTemplateFromEvent() {
   if (!currentEvent) return;
-  var eventName = currentEvent.event || '';
-  if (!eventName) { showToast('Event has no name', 'error'); return; }
-
-  // Find all other events with the same name
-  var matches = allEvents.filter(function(e) {
-    return e.event === eventName && e.id !== currentEvent.id;
-  });
-
-  var totalLinked = matches.length + 1; // include current event
+  var eventName = currentEvent.event || ''; if (!eventName) { showToast('Event has no name', 'error'); return; }
+  var matches = allEvents.filter(function(e) { return e.event === eventName && e.id !== currentEvent.id; });
+  var totalLinked = matches.length + 1;
   var tmplId = eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
-  // Check if template already exists
   var existing = allTemplates.find(function(t) { return t.id === tmplId; });
-  if (existing) {
-    showToast('A template for "' + eventName + '" already exists. Open Templates to edit it.', 'error');
-    return;
-  }
-
-  // Show name prompt before confirming
+  if (existing) { showToast('A template for "' + eventName + '" already exists. Open Templates to edit it.', 'error'); return; }
   showTemplateNamePrompt(eventName, tmplId, matches, totalLinked);
 }
 
 function doCreateTemplateFromEvent(eventName, tmplId, matches) {
   var ev = currentEvent;
-  var ent = ev.entity || {};
   var statusEl = document.getElementById('epStatus');
-  statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Creating template…';
-
+  statusEl.className = 'ep-save-status saving'; statusEl.textContent = 'Creating template\u2026';
   var payload = {
-    id: tmplId,
-    display_name: eventName,
+    id: tmplId, display_name: eventName,
     short_name: ev.short_name || null,
-    logo_url: ev.logo_url || (ent.logo_url || null),
-    hero_image_url: ev.hero_url || (ent.hero_url || null),
+    logo_url: ev.logo_url || null,
+    hero_image_url: ev.hero_url || null,
     hero_position: ev.hero_position || '50% 50%',
     impact_level: ev.impact || 'none',
-    impacted_assets: ev.impacted_assets || (ent.impacted_assets || null),
-    category: ev.category || null,
-    region: ev.region || null,
-    frequency: ev.frequency || (ent.frequency || null),
+    impacted_assets: ev.impacted_assets || null,
+    category: ev.category || null, region: ev.region || null,
+    frequency: ev.frequency || null,
     source_url: ev.source_url || null,
-    measures: ev.measures || (ent.measures || null),
-    why_it_matters: ev.why_it_matters || (ent.why_it_matters || null),
+    measures: ev.measures || null,
+    why_it_matters: ev.why_it_matters || null,
   };
-
-  // Step 1: Create the template
   supaFetch('/rest/v1/event_templates', { method: 'POST', body: JSON.stringify(payload) })
     .then(function(result) {
       var newTmpl = (Array.isArray(result) ? result[0] : result) || payload;
-      allTemplates.push(newTmpl);
-      allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
-
-      // Step 2: Link all matching events (including current) to the template
+      allTemplates.push(newTmpl); allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
       var allToLink = matches.concat([currentEvent]);
       var promises = allToLink.map(function(e) {
         return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + e.id, {
-          method: 'PATCH',
-          body: JSON.stringify({ template_id: tmplId, template_overrides: {} })
-        }).then(function() {
-          e.template_id = tmplId;
-          e.template_overrides = {};
-        });
+          method: 'PATCH', body: JSON.stringify({ template_id: tmplId, template_overrides: {} })
+        }).then(function() { e.template_id = tmplId; e.template_overrides = {}; });
       });
-
       return Promise.all(promises).then(function() { return allToLink.length; });
     })
     .then(function(linkedCount) {
-      statusEl.className = 'ep-save-status saved';
-      statusEl.textContent = '✓ Template created';
+      statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Template created';
       showToast('Template created & linked to ' + linkedCount + ' event' + (linkedCount === 1 ? '' : 's'), 'success');
-      // Hide Create Template button — this event is now linked
       document.getElementById('createTmplBtn').style.display = 'none';
-      // Refresh template dropdowns so bulk bar + assign dropdown are immediately usable
-      populateBulkTmplSelect();
-      populateTmplAssignDropdown(tmplId);
-      // Update the assign dropdown value to show the newly linked template
+      populateBulkTmplSelect(); populateTmplAssignDropdown(tmplId);
       document.getElementById('f_template_id').value = tmplId;
-      currentEvent.template_id = tmplId;
-      renderTable();
+      currentEvent.template_id = tmplId; renderTable();
     })
-    .catch(function(err) {
-      statusEl.className = 'ep-save-status error';
-      statusEl.textContent = '✗ ' + err.message;
-      showToast('Failed: ' + err.message, 'error');
-    });
+    .catch(function(err) { statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message; showToast('Failed: ' + err.message, 'error'); });
 }
 
-// ── CHECKBOX SELECT MODE + BULK ASSIGN ────────────────────
 var selectedRowIds = new Set();
 
 function rowCheckChange(e, idx) {
   e.stopPropagation();
-  var ev = filteredEvents[idx];
-  var checked = e.target.checked;
-  if (checked) {
-    selectedRowIds.add(ev.id);
-  } else {
-    selectedRowIds.delete(ev.id);
-  }
-  highlightSuggested(ev.event, checked);
-  updateBulkBar();
+  var ev = filteredEvents[idx]; var checked = e.target.checked;
+  if (checked) { selectedRowIds.add(ev.id); } else { selectedRowIds.delete(ev.id); }
+  highlightSuggested(ev.event, checked); updateBulkBar();
 }
-
 function highlightSuggested(eventName, isChecking) {
   if (!isChecking || !eventName) return;
-  // Softly highlight rows with same event name that aren't already checked
   document.querySelectorAll('#tableBody tr').forEach(function(row) {
-    var name = row.getAttribute('data-name');
-    var idx = parseInt(row.getAttribute('data-idx'));
-    var ev = filteredEvents[idx];
-    if (!ev) return;
-    var cb = row.querySelector('.row-cb');
-    if (name === eventName && ev.id && !selectedRowIds.has(ev.id)) {
-      row.classList.add('row-suggested');
-    }
+    var name = row.getAttribute('data-name'); var idx = parseInt(row.getAttribute('data-idx')); var ev = filteredEvents[idx]; if (!ev) return;
+    if (name === eventName && ev.id && !selectedRowIds.has(ev.id)) { row.classList.add('row-suggested'); }
   });
 }
-
 function toggleSelectAll(checked) {
   selectedRowIds.clear();
   document.querySelectorAll('#tableBody tr').forEach(function(row) {
-    var idx = parseInt(row.getAttribute('data-idx'));
-    var ev = filteredEvents[idx];
-    var cb = row.querySelector('.row-cb');
-    if (cb) cb.checked = checked;
-    if (ev && checked) selectedRowIds.add(ev.id);
+    var idx = parseInt(row.getAttribute('data-idx')); var ev = filteredEvents[idx]; var cb = row.querySelector('.row-cb');
+    if (cb) cb.checked = checked; if (ev && checked) selectedRowIds.add(ev.id);
     row.classList.remove('row-suggested', 'row-selected');
-  });
-  updateBulkBar();
+  }); updateBulkBar();
 }
-
 function clearSelection() {
-  selectedRowIds.clear();
-  var masterCb = document.getElementById('selectAllCb');
-  if (masterCb) masterCb.checked = false;
-  document.querySelectorAll('#tableBody tr').forEach(function(row) {
-    var cb = row.querySelector('.row-cb');
-    if (cb) cb.checked = false;
-    row.classList.remove('row-selected', 'row-suggested');
-  });
+  selectedRowIds.clear(); var masterCb = document.getElementById('selectAllCb'); if (masterCb) masterCb.checked = false;
+  document.querySelectorAll('#tableBody tr').forEach(function(row) { var cb = row.querySelector('.row-cb'); if (cb) cb.checked = false; row.classList.remove('row-selected', 'row-suggested'); });
   updateBulkBar();
 }
-
 function updateBulkBar() {
-  var count = selectedRowIds.size;
-  var bar = document.getElementById('bulkBar');
-  var countEl = document.getElementById('bulkCount');
-  // Highlight selected rows
+  var count = selectedRowIds.size; var bar = document.getElementById('bulkBar'); var countEl = document.getElementById('bulkCount');
   document.querySelectorAll('#tableBody tr').forEach(function(row) {
-    var idx = parseInt(row.getAttribute('data-idx'));
-    var ev = filteredEvents[idx];
-    if (ev && selectedRowIds.has(ev.id)) {
-      row.classList.add('row-selected');
-      row.classList.remove('row-suggested');
-    } else {
-      row.classList.remove('row-selected');
-    }
+    var idx = parseInt(row.getAttribute('data-idx')); var ev = filteredEvents[idx];
+    if (ev && selectedRowIds.has(ev.id)) { row.classList.add('row-selected'); row.classList.remove('row-suggested'); }
+    else { row.classList.remove('row-selected'); }
   });
-  if (count === 0) {
-    bar.classList.remove('visible');
-    countEl.textContent = '0 selected';
-  } else {
-    bar.classList.add('visible');
-    countEl.textContent = count + ' event' + (count === 1 ? '' : 's') + ' selected';
-  }
+  if (count === 0) { bar.classList.remove('visible'); countEl.textContent = '0 selected'; }
+  else { bar.classList.add('visible'); countEl.textContent = count + ' event' + (count === 1 ? '' : 's') + ' selected'; }
 }
-
 function populateBulkTmplSelect() {
-  var sel = document.getElementById('bulkTmplSelect');
-  var noTmpl = document.getElementById('bulkNoTemplates');
-  var assignBtn = document.getElementById('bulkAssignBtn');
+  var sel = document.getElementById('bulkTmplSelect'); var noTmpl = document.getElementById('bulkNoTemplates'); var assignBtn = document.getElementById('bulkAssignBtn');
   while (sel.options.length > 1) sel.remove(1);
-  allTemplates.forEach(function(t) {
-    var o = document.createElement('option');
-    o.value = t.id;
-    o.textContent = t.display_name || t.id;
-    sel.appendChild(o);
-  });
+  allTemplates.forEach(function(t) { var o = document.createElement('option'); o.value = t.id; o.textContent = t.display_name || t.id; sel.appendChild(o); });
   var hasTemplates = allTemplates.length > 0;
-  sel.style.display = hasTemplates ? '' : 'none';
-  assignBtn.style.display = hasTemplates ? '' : 'none';
-  noTmpl.style.display = hasTemplates ? 'none' : '';
+  sel.style.display = hasTemplates ? '' : 'none'; assignBtn.style.display = hasTemplates ? '' : 'none'; noTmpl.style.display = hasTemplates ? 'none' : '';
 }
-
 function confirmBulkAssign() {
-  var tmplId = document.getElementById('bulkTmplSelect').value;
-  if (!tmplId) { showToast('Please select a template first', 'error'); return; }
-  var tmpl = allTemplates.find(function(t) { return t.id === tmplId; });
-  var tmplName = tmpl ? tmpl.display_name : tmplId;
-  var count = selectedRowIds.size;
-  // Check how many already have a different template
-  var alreadyLinked = allEvents.filter(function(e) {
-    return selectedRowIds.has(e.id) && e.template_id && e.template_id !== tmplId;
-  });
+  var tmplId = document.getElementById('bulkTmplSelect').value; if (!tmplId) { showToast('Please select a template first', 'error'); return; }
+  var tmpl = allTemplates.find(function(t) { return t.id === tmplId; }); var tmplName = tmpl ? tmpl.display_name : tmplId; var count = selectedRowIds.size;
+  var alreadyLinked = allEvents.filter(function(e) { return selectedRowIds.has(e.id) && e.template_id && e.template_id !== tmplId; });
   var msg = 'This will assign the "' + tmplName + '" template to ' + count + ' event' + (count === 1 ? '' : 's') + '.';
-  if (alreadyLinked.length > 0) {
-    msg += ' ' + alreadyLinked.length + ' of these already have a different template and will be reassigned.';
-  }
-  showConfirmModal({
-    type: 'unlock',
-    title: 'Assign Template?',
-    msg: msg,
-    onConfirm: function() { doBulkAssign(tmplId); }
-  });
+  if (alreadyLinked.length > 0) msg += ' ' + alreadyLinked.length + ' of these already have a different template and will be reassigned.';
+  showConfirmModal({ type: 'unlock', title: 'Assign Template?', msg: msg, onConfirm: function() { doBulkAssign(tmplId); } });
 }
-
 function doBulkAssign(tmplId) {
   var ids = Array.from(selectedRowIds);
-  var promises = ids.map(function(id) {
-    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, {
-      method: 'PATCH',
-      body: JSON.stringify({ template_id: tmplId, template_overrides: {} })
-    }).then(function() {
-      var ev = allEvents.find(function(e) { return e.id === id; });
-      if (ev) { ev.template_id = tmplId; ev.template_overrides = {}; }
-    });
-  });
-  Promise.all(promises)
-    .then(function() {
-      showToast('Template assigned to ' + ids.length + ' event' + (ids.length === 1 ? '' : 's'), 'success');
-      clearSelection();
-      renderTable();
-    })
+  Promise.all(ids.map(function(id) {
+    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ template_id: tmplId, template_overrides: {} }) })
+      .then(function() { var ev = allEvents.find(function(e) { return e.id === id; }); if (ev) { ev.template_id = tmplId; ev.template_overrides = {}; } });
+  })).then(function() { showToast('Template assigned to ' + ids.length + ' event' + (ids.length === 1 ? '' : 's'), 'success'); clearSelection(); renderTable(); })
     .catch(function(err) { showToast('Assign failed: ' + err.message, 'error'); });
 }
-
-// ── TEMPLATE ASSIGN DROPDOWN in event editor ──────────────
 function populateTmplAssignDropdown(currentTmplId) {
-  var sel = document.getElementById('f_template_id');
-  while (sel.options.length > 1) sel.remove(1);
-  allTemplates.forEach(function(t) {
-    var o = document.createElement('option');
-    o.value = t.id;
-    o.textContent = t.display_name || t.id;
-    sel.appendChild(o);
-  });
+  var sel = document.getElementById('f_template_id'); while (sel.options.length > 1) sel.remove(1);
+  allTemplates.forEach(function(t) { var o = document.createElement('option'); o.value = t.id; o.textContent = t.display_name || t.id; sel.appendChild(o); });
   sel.value = currentTmplId || '';
 }
-
 function handleTemplateAssign(newTmplId) {
-  if (!currentEvent) return;
-  var oldTmplId = currentEvent.template_id || '';
+  if (!currentEvent) return; var oldTmplId = currentEvent.template_id || '';
   if (oldTmplId && oldTmplId !== newTmplId) {
-    // Already has a different template — warn
     var oldTmpl = allTemplates.find(function(t) { return t.id === oldTmplId; });
     var newTmpl = allTemplates.find(function(t) { return t.id === newTmplId; });
     var msg = newTmplId
       ? 'This event is currently linked to "' + (oldTmpl ? oldTmpl.display_name : oldTmplId) + '". Changing it will assign the "' + (newTmpl ? newTmpl.display_name : newTmplId) + '" template instead.'
       : 'This will remove the "' + (oldTmpl ? oldTmpl.display_name : oldTmplId) + '" template link from this event.';
     showConfirmModal({
-      type: newTmplId ? 'unlock' : 'relock',
-      title: newTmplId ? 'Change Template?' : 'Remove Template?',
-      msg: msg,
+      type: newTmplId ? 'unlock' : 'relock', title: newTmplId ? 'Change Template?' : 'Remove Template?', msg: msg,
       onConfirm: function() { applyTemplateAssign(newTmplId); },
-      onCancel: function() {
-        // Revert dropdown
-        document.getElementById('f_template_id').value = oldTmplId;
-      }
+      onCancel: function() { document.getElementById('f_template_id').value = oldTmplId; }
     });
   }
-  // If assigning fresh (no old template), just let it sit — saved on Save Changes
 }
+function applyTemplateAssign(tmplId) { document.getElementById('f_template_id').value = tmplId; }
 
-function applyTemplateAssign(tmplId) {
-  document.getElementById('f_template_id').value = tmplId;
-}
-
-// ── TEMPLATE NAME PROMPT ──────────────────────────────────
-var _tmplNamePending = null; // { eventName, tmplId, matches, totalLinked }
-
+var _tmplNamePending = null;
 function showTemplateNamePrompt(eventName, tmplId, matches, totalLinked) {
   _tmplNamePending = { eventName: eventName, tmplId: tmplId, matches: matches, totalLinked: totalLinked };
-  var msg = totalLinked > 1
-    ? 'This will be linked to all ' + totalLinked + ' matching events on your calendar.'
-    : 'Give this template a name.';
-  document.getElementById('tmplNameModalMsg').textContent = msg;
+  document.getElementById('tmplNameModalMsg').textContent = totalLinked > 1 ? 'This will be linked to all ' + totalLinked + ' matching events on your calendar.' : 'Give this template a name.';
   document.getElementById('tmplNameInput').value = eventName;
   document.getElementById('tmplNameModal').classList.add('open');
-  setTimeout(function() {
-    var inp = document.getElementById('tmplNameInput');
-    inp.focus(); inp.select();
-  }, 50);
+  setTimeout(function() { var inp = document.getElementById('tmplNameInput'); inp.focus(); inp.select(); }, 50);
 }
-
-function closeTmplNameModal() {
-  document.getElementById('tmplNameModal').classList.remove('open');
-  _tmplNamePending = null;
-}
-
+function closeTmplNameModal() { document.getElementById('tmplNameModal').classList.remove('open'); _tmplNamePending = null; }
 function confirmTmplName() {
   if (!_tmplNamePending) return;
-  var customName = document.getElementById('tmplNameInput').value.trim();
-  if (!customName) { document.getElementById('tmplNameInput').focus(); return; }
+  var customName = document.getElementById('tmplNameInput').value.trim(); if (!customName) { document.getElementById('tmplNameInput').focus(); return; }
   var p = _tmplNamePending;
-  // Regenerate ID from the custom name
   var newId = customName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  // Check for duplicate
-  if (allTemplates.find(function(t) { return t.id === newId; })) {
-    document.getElementById('tmplNameInput').style.borderColor = '#dc2626';
-    document.getElementById('tmplNameInput').title = 'A template with this name already exists';
-    return;
-  }
-  closeTmplNameModal();
-  doCreateTemplateFromEvent(customName, newId, p.matches);
+  if (allTemplates.find(function(t) { return t.id === newId; })) { document.getElementById('tmplNameInput').style.borderColor = '#dc2626'; document.getElementById('tmplNameInput').title = 'A template with this name already exists'; return; }
+  closeTmplNameModal(); doCreateTemplateFromEvent(customName, newId, p.matches);
 }
 
-// ── CONFIRM MODAL (scaffold for next step: lock/unlock) ────
 var confirmCallback = null;
+var confirmCancelCallback = null;
 function showConfirmModal(opts) {
-  // opts: { type: 'unlock'|'relock', title, msg, onConfirm }
   var iconEl = document.getElementById('confirmIcon');
   iconEl.className = 'confirm-modal-icon ' + (opts.type || 'unlock');
   iconEl.innerHTML = opts.type === 'relock'
@@ -2292,28 +1861,18 @@ function showConfirmModal(opts) {
     : '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M7 9V6.5a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.2" fill="currentColor"/></svg>';
   document.getElementById('confirmTitle').textContent = opts.title || '';
   document.getElementById('confirmMsg').textContent = opts.msg || '';
-  confirmCallback = opts.onConfirm || null;
-  confirmCancelCallback = opts.onCancel || null;
+  confirmCallback = opts.onConfirm || null; confirmCancelCallback = opts.onCancel || null;
   document.getElementById('confirmModal').classList.add('open');
 }
-var confirmCancelCallback = null;
 function closeConfirmModal() {
   document.getElementById('confirmModal').classList.remove('open');
   if (confirmCancelCallback) confirmCancelCallback();
   confirmCallback = null; confirmCancelCallback = null;
 }
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('confirmOkBtn').addEventListener('click', function() {
-    if (confirmCallback) confirmCallback();
-    closeConfirmModal();
-  });
-});
 
-// ── UTILITIES ──────────────────────────────────────────────
 var toastTimer;
 function showToast(msg, type) {
-  clearTimeout(toastTimer);
-  var t = document.getElementById('toast');
+  clearTimeout(toastTimer); var t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   document.getElementById('toastIcon').textContent = type === 'success' ? '\u2713' : '\u2717';
   t.className = 'show ' + (type||'');
