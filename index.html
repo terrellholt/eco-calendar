@@ -821,7 +821,7 @@ function parseDate(dateStr, monthStr) {
 
 function fetchEvents() {
   // visible=eq.true ensures hidden events never appear on the public calendar
-  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&visible=eq.true&order=date.asc&limit=2000';
+  var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,chart_ticker,chart_range,entity:entity_id!left(logo_url,hero_url,why_it_matters,impacted_assets,measures,frequency)&visible=eq.true&order=date.asc&limit=2000';
   return fetch(url, { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } })
   .then(function(r) { return r.json(); })
   .then(function(rows) {
