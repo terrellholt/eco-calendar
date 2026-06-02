@@ -934,10 +934,19 @@ function loadEvents() {
   supaFetch('/rest/v1/Master%20Calendar?select=*&order=date.asc,display_order.asc.nullslast&limit=2000')
     .then(function(data) {
       allEvents = Array.isArray(data) ? data : [];
-      // DIAGNOSTIC
-      console.log('RAW DATA TYPE:', typeof data, Array.isArray(data));
-      console.log('RAW DATA (first item):', JSON.stringify(data && data[0]));
-      console.log('ALL KEYS in first row:', data && data[0] ? Object.keys(data[0]) : 'no data');
+      // DIAGNOSTIC - write to page
+      if (data && data[0]) {
+        var ev0 = data[0];
+        var diagDiv = document.createElement('div');
+        diagDiv.style.cssText = 'position:fixed;top:60px;left:0;right:0;background:#1a1a1a;color:#e8c547;padding:12px 20px;font-size:11px;font-family:monospace;z-index:9999;border-bottom:2px solid #e8c547;';
+        diagDiv.innerHTML = '<strong>FIRST ROW DEBUG:</strong> event=' + JSON.stringify(ev0.event) + 
+          ' | category=' + JSON.stringify(ev0.category) + 
+          ' | impact=' + JSON.stringify(ev0.impact) +
+          ' | visible=' + JSON.stringify(ev0.visible) +
+          ' | date=' + JSON.stringify(ev0.date) +
+          ' | total_rows=' + data.length;
+        document.body.appendChild(diagDiv);
+      }
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
       document.getElementById('statusText').textContent = allEvents.length + ' events loaded';
       populateCats(); filterTable();
@@ -1062,6 +1071,7 @@ var EYE_OPEN = '<svg viewBox="0 0 16 16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7
 var EYE_CLOSED = '<svg viewBox="0 0 16 16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><line x1="2" y1="2" x2="14" y2="14"/></svg>';
 
 function renderTable() {
+  try {
   var tb = document.getElementById('tableBody');
   if (!filteredEvents.length) {
     tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>';
@@ -1105,6 +1115,7 @@ function renderTable() {
   });
   tb.innerHTML = html;
   attachDragHandlers();
+  } catch(err) { console.error('RENDERTABLE ERROR:', err.message, err.stack); document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="color:red;padding:20px">JS ERROR: ' + err.message + '</td></tr>'; }
 }
 
 function toggleRowVisibility(idx) {
