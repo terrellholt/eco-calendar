@@ -268,6 +268,25 @@
   .btn-confirm-ok:hover { background: #2a2a2a; }
   @media (max-width: 700px) { .tmpl-shell { flex-direction: column; } .tmpl-list-pane { width: 100%; min-height: 180px; } }
   @media (max-width: 560px) { .ep-row.c2, .ep-row.c3 { grid-template-columns: 1fr; } .impact-row { flex-wrap: wrap; } }
+/* ── Lock / Override System ─────────────────────────────────────── */
+  .ep-label-row { display: flex; align-items: center; justify-content: space-between; }
+  .lock-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: none; border: none; cursor: pointer; padding: 2px 6px;
+    border-radius: 5px; font-size: 10px; font-family: var(--sans);
+    font-weight: 600; letter-spacing: 0.03em; transition: all 0.15s;
+    line-height: 1;
+  }
+  .lock-btn.locked { color: #aaa; }
+  .lock-btn.locked:hover { background: #f5f5f0; color: #555; }
+  .lock-btn.unlocked { color: #ea7000; background: rgba(234,112,0,0.08); }
+  .lock-btn.unlocked:hover { background: rgba(234,112,0,0.15); }
+  .lock-btn svg { flex-shrink: 0; }
+  .ep-field.tmpl-locked .ep-input,
+  .ep-field.tmpl-locked .asset-wrap,
+  .ep-field.tmpl-locked .impact-row { opacity: 0.55; pointer-events: none; }
+  .ep-field.tmpl-locked .ep-label { color: #aaa; }
+  .tmpl-source-hint { font-size: 10px; font-family: var(--mono); color: #bbb; letter-spacing: 0.03em; margin-top: 2px; }
 </style>
 </head>
 <body>
