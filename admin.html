@@ -572,7 +572,8 @@
         </div>
         <div class="ep-row c2">
           <div class="ep-field">
-            <label class="ep-label">Frequency</label>
+            <div class="ep-label-row"><label class="ep-label">Frequency</label><button class="lock-btn locked" id="lock_frequency" onclick="toggleLock('frequency')"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4.5" width="6" height="4.5" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 4.5V3a1.5 1.5 0 0 1 3 0v1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> Shared</button></div>
+              <select class="ep-input" id="f_frequency">
             <select class="ep-input" id="f_frequency">
               <option value="">&mdash; not set &mdash;</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>
               <option value="roughly every six weeks">Roughly every six weeks</option><option value="quarterly">Quarterly</option>
