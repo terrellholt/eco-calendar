@@ -1705,7 +1705,25 @@ function saveTemplate() {
       .then(function() {
         Object.assign(currentTemplate, payload);
         var idx = allTemplates.findIndex(function(t){ return t.id === currentTemplate.id; }); if (idx > -1) allTemplates[idx] = currentTemplate;
-        renderTemplateList(); statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved'; showToast('Template saved', 'success'); btn.disabled = false;
+        renderTemplateList(); statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved'; showToast('Template saved \u2014 pushing to linked events\u2026', 'success'); btn.disabled = false;
+        var linkedEvents = allEvents.filter(function(e) { return e.template_id === currentTemplate.id; });
+        var sharedFields = ['category','impact_level','source_url','impacted_assets','frequency','measures','why_it_matters','logo_url','hero_image_url','hero_position'];
+        var fieldMap = { impact_level: 'impact', hero_image_url: 'hero_url' };
+        var pushPromises = linkedEvents.map(function(e) {
+          var overrides = e.template_overrides || {};
+          var update = {};
+          sharedFields.forEach(function(tf) {
+            var evField = fieldMap[tf] || tf;
+            if (!overrides.hasOwnProperty(evField)) { update[evField] = payload[tf] !== undefined ? payload[tf] : null; }
+          });
+          if (!Object.keys(update).length) return Promise.resolve();
+          return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + e.id, { method: 'PATCH', body: JSON.stringify(update) })
+            .then(function() { Object.assign(e, update); });
+        });
+        Promise.all(pushPromises).then(function() {
+          showToast('Template saved \u2014 ' + linkedEvents.length + ' event' + (linkedEvents.length === 1 ? '' : 's') + ' updated', 'success');
+          renderTable();
+        }).catch(function(err) { showToast('Template saved but push failed: ' + err.message, 'error'); });
       })
       .catch(function(err) { statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message; showToast('Save failed: ' + err.message, 'error'); btn.disabled = false; });
   }
