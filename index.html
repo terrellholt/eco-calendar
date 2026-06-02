@@ -1025,7 +1025,7 @@ function openModal(id) {
   if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:16px;border-right:1px solid #e5e5e0;margin-right:16px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
   if (ev.ticker) { meta += '<span class="modal-tag"><span class="modal-tag-label">Ticker</span>' + ev.ticker + '</span>'; }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag"><span class="modal-tag-label">Also Known As</span>' + ev.aka + '</span>'; }
-  if (ev.impactedAssets) { meta += '<span class="modal-tag modal-tag-wide"><span class="modal-tag-label">Impacted Assets</span>' + ev.impactedAssets + '</span>'; }
+  if (ev.impactedAssets) { meta += '<span class="modal-tag modal-tag-wide" style="padding-top:12px;border-top:1px solid #f0f0ec;margin-top:8px"><span class="modal-tag-label">Impacted Assets</span>' + ev.impactedAssets + '</span>'; }
   document.getElementById('modalMeta').innerHTML = meta;
   var hasContent = ev.whyMatters || ev.measures || ev.details;
   document.getElementById('modalDiv1').style.display = hasContent ? 'block' : 'none';
