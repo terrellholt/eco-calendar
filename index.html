@@ -1034,6 +1034,20 @@ function openModal(id) {
   if (ev.measures) { ms.style.display = 'block'; document.getElementById('modalMeasures').textContent = ev.measures; } else { ms.style.display = 'none'; }
   var det = document.getElementById('modalDetailsSection');
   if (ev.details) { det.style.display = 'block'; document.getElementById('modalDetails').innerHTML = ev.details; } else { det.style.display = 'none'; }
+  var chartEl = document.getElementById('modalChart');
+var chartBar = document.getElementById('modalChartBar');
+var chartWidget = document.getElementById('modalChartWidget');
+if (ev.chartTicker) {
+  chartEl.style.display = 'block';
+  var ranges = ['1D','5D','1M','3M','6M','YTD','1Y','5Y','ALL'];
+  var activeRange = ev.chartRange || '1M';
+  chartBar.innerHTML = ranges.map(function(r) {
+    return '<button class="modal-chart-btn' + (r === activeRange ? ' active' : '') + '" onclick="loadModalChart(\'' + ev.chartTicker + '\',\'' + r + '\')">' + r + '</button>';
+  }).join('');
+  loadModalChart(ev.chartTicker, activeRange);
+} else {
+  chartEl.style.display = 'none';
+}
   var srcEl = document.getElementById('modalSource');
   var div2 = document.getElementById('modalDiv2');
   if (ev.source) { srcEl.href = ev.source; srcEl.style.display = 'inline'; div2.style.display = 'block'; } else { srcEl.style.display = 'none'; div2.style.display = 'none'; }
