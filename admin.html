@@ -1382,11 +1382,11 @@ function updateVisibleUI() { document.getElementById('visibleToggle').classList.
 
 function makeChip(val) {
   var s = document.createElement('span'); s.className = 'achip';
-  s.innerHTML = '<span>'+esc(val.toUpperCase())+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>';
+  s.innerHTML = '<span>'+esc(val)+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>';
   return s;
 }
 function addChip(val) {
-  val = val.trim().toUpperCase().replace(/,/g,''); if (!val) return;
+  val = val.trim().replace(/,/g,''); if (!val) return;
   var ex = Array.from(document.querySelectorAll('#assetWrap .achip span:first-child')).map(function(s){return s.textContent;});
   if (ex.indexOf(val) > -1) return;
   document.getElementById('assetWrap').insertBefore(makeChip(val), document.getElementById('assetInp'));
