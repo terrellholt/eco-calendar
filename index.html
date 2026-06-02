@@ -846,7 +846,8 @@ function fetchEvents() {
         whyMatters: r.why_it_matters || ent.why_it_matters || '', measures: r.measures || ent.measures || '',
         impactedAssets: r.impacted_assets || ent.impacted_assets || '', frequency: r.frequency || ent.frequency || '',
         details: r.details || '', source: r.source_url || deriveSource(r.category),
-        ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas'
+        ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas',
+chartTicker: r.chart_ticker || '', chartRange: r.chart_range || '1M'
       });
     });
   });
