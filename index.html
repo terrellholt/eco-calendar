@@ -844,7 +844,7 @@ function fetchEvents() {
         logo: (function() { var l = r.logo_url || ent.logo_url || ''; if (!l && r.ticker && TICKER_DOMAIN[r.ticker]) { l = mkLogo(TICKER_DOMAIN[r.ticker]); } if (!l) { l = deriveLogo(r.category, r.event); } return l; })(),
         hero: r.hero_url || ent.hero_url || '', heroPosition: r.hero_position || 'center',
         whyMatters: r.why_it_matters || ent.why_it_matters || '', measures: r.measures || ent.measures || '',
-        impactedAssets: ent.impacted_assets || '', frequency: r.frequency || ent.frequency || '',
+        impactedAssets: r.impacted_assets || ent.impacted_assets || '', frequency: r.frequency || ent.frequency || '',
         details: r.details || '', source: r.source_url || deriveSource(r.category),
         ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas'
       });
