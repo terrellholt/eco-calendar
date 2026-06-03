@@ -1029,7 +1029,7 @@ function openModal(id) {
   if (displayTime) { meta += '<span class="modal-tag" style="padding-right:16px;border-right:1px solid #e5e5e0;margin-right:16px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
   if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:16px;border-right:1px solid #e5e5e0;margin-right:16px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
   if (ev.ticker) { meta += '<span class="modal-tag" style="padding-right:16px;border-right:1px solid #e5e5e0;margin-right:16px"><span class="modal-tag-label">Ticker</span>' + ev.ticker + '</span>'; }
-if (ev.priceMove) { meta += '<span class="modal-tag"><span class="modal-tag-label">Expected Move</span>±' + ev.priceMove + '%</span>'; }
+if (ev.priceMove) { meta += '<span class="modal-tag"><span class="modal-tag-label">Expected Move</span>±' + ev.priceMove + '% <button class="em-info-btn" onclick="toggleEmTooltip(event)">ⓘ</button><div class="em-tooltip" style="display:none">The expected move is calculated from the ATM options straddle price closest to this event\'s date. It represents the market\'s implied ± price range by expiration.</div></span>'; }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag"><span class="modal-tag-label">Also Known As</span>' + ev.aka + '</span>'; }
   document.getElementById('modalMeta').innerHTML = meta;
   var hasContent = ev.whyMatters || ev.measures || ev.details;
