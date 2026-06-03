@@ -1633,6 +1633,7 @@ function showTemplateForm(tmpl) {
   document.getElementById('tf_region').value = tmpl ? (tmpl.region || 'Americas') : 'Americas';
   document.getElementById('tf_frequency').value = tmpl ? ((tmpl.frequency || '').toLowerCase()) : '';
   document.getElementById('tf_source_url').value = tmpl ? (tmpl.source_url || '') : '';
+  document.getElementById('tf_chart_ticker').value = tmpl ? (tmpl.chart_ticker || '') : '';
   document.getElementById('tf_measures').value = tmpl ? (tmpl.measures || '') : '';
   document.getElementById('tf_why_it_matters').value = tmpl ? (tmpl.why_it_matters || '') : '';
   tmplSelectedImpact = tmpl ? ((tmpl.impact_level || 'none').toLowerCase()) : 'none'; updateTmplImpactUI();
