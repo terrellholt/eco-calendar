@@ -1044,7 +1044,7 @@ function openModal(id) {
   var logoEl = document.getElementById('modalLogo');
   if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
   document.getElementById('modalTitle').textContent = ev.title;
-  document.getElementById('modalName').textContent = ev.name || ev.category || '';
+  document.getElementById('modalName').textContent = ev.name || '';
   var meta = '';
   var displayTime = eventTimeDisplay(ev);
   if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
