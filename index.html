@@ -1049,7 +1049,6 @@ function openModal(id) {
   document.getElementById('modalTitle').textContent = ev.title;
   document.getElementById('modalName').textContent = ev.name || ev.category || '';
   var meta = '';
-  if (ev.impact && ev.impact !== 'none') { meta += '<span class="modal-tag ' + ev.impact + '">' + impLabel(ev.impact) + '</span>'; }
   var displayTime = eventTimeDisplay(ev);
   if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
 if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
