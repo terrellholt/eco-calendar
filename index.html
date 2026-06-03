@@ -1035,7 +1035,8 @@ function openModal(id) {
   if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
 if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
 if (ev.ticker) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Ticker</span>' + ev.ticker + '</span>'; }
-if (ev.priceMove) {
+var showPriceMove = ev.priceMove && (!ev.priceMoveExpiry || !ev.date || ev.priceMoveExpiry >= ev.date);
+if (showPriceMove) {
   var expiryStr = '';
   if (ev.priceMoveExpiry) {
     var expParts = ev.priceMoveExpiry.split('-');
