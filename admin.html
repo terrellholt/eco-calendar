@@ -1446,11 +1446,18 @@ function loadTimePicker(val) {
   resetTimePicker(); if (!val) return;
   var sel = document.getElementById('timePresetSelect');
   var valLower = val.trim().toLowerCase();
-  for (var i = 0; i < PRESETS.length; i++) { if (valLower === PRESETS[i].toLowerCase()) { if (sel) sel.value = PRESETS[i]; return; } }
-  if (valLower.indexOf('before') > -1) { if (sel) sel.value = 'Before Market Open'; return; }
-  if (valLower.indexOf('after') > -1)  { if (sel) sel.value = 'After Market Close'; return; }
-  if (valLower === 'all day')           { if (sel) sel.value = 'All Day'; return; }
-  if (valLower.indexOf('undetermined') > -1 || valLower.indexOf('tbd') > -1) { if (sel) sel.value = 'Undetermined'; return; }
+  var matched = '';
+  for (var i = 0; i < PRESETS.length; i++) { if (valLower === PRESETS[i].toLowerCase()) { matched = PRESETS[i]; break; } }
+  if (!matched) {
+    if (valLower.indexOf('before') > -1) matched = 'Before Market Open';
+    else if (valLower.indexOf('after') > -1) matched = 'After Market Close';
+    else if (valLower === 'all day') matched = 'All Day';
+    else if (valLower.indexOf('undetermined') > -1 || valLower.indexOf('tbd') > -1) matched = 'Undetermined';
+  }
+  if (matched) {
+    if (sel) { sel.value = matched; sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; }
+    return;
+  }
   if (sel) sel.value = 'custom';
   document.getElementById('timeCustomRow').style.display = 'flex';
   var m = val.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?\s*([A-Z]{2,3})?/i);
@@ -1462,7 +1469,6 @@ function loadTimePicker(val) {
   }
   setTimeout(function() {
     updateCustomTimeLabel();
-    var sel = document.getElementById('timePresetSelect');
     if (sel) { sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; }
   }, 10);
 }
