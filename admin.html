@@ -1704,6 +1704,7 @@ function saveTemplate() {
     source_url: document.getElementById('tf_source_url').value.trim() || null,
     measures: document.getElementById('tf_measures').value.trim() || null,
     why_it_matters: document.getElementById('tf_why_it_matters').value.trim() || null,
+    chart_ticker: document.getElementById('tf_chart_ticker').value.trim().toUpperCase() || null,
   };
   if (isNewTemplate) {
     supaFetch('/rest/v1/event_templates', { method: 'POST', body: JSON.stringify(payload) })
