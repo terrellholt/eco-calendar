@@ -241,6 +241,12 @@ tv-ticker-tape{display:block;width:100%}
 .modal-impact-badge.high{background:rgba(220,38,38,.85);color:#fff}
 .modal-impact-badge.medium{background:rgba(234,112,0,.85);color:#fff}
 .modal-impact-badge.low{background:rgba(212,160,0,.85);color:#fff}
+@keyframes badgePulseHigh{0%,100%{box-shadow:0 0 6px rgba(220,38,38,.5)}50%{box-shadow:0 0 14px rgba(220,38,38,.9)}}
+@keyframes badgePulseMed{0%,100%{box-shadow:0 0 6px rgba(234,112,0,.5)}50%{box-shadow:0 0 14px rgba(234,112,0,.9)}}
+@keyframes badgePulseLow{0%,100%{box-shadow:0 0 6px rgba(212,160,0,.5)}50%{box-shadow:0 0 14px rgba(212,160,0,.9)}}
+.modal-impact-badge.high{animation:badgePulseHigh 2s ease-in-out infinite}
+.modal-impact-badge.medium{animation:badgePulseMed 2s ease-in-out infinite}
+.modal-impact-badge.low{animation:badgePulseLow 2s ease-in-out infinite}
   .modal-overlay.est-modal .modal-hero{border-bottom:3px solid #b8820a;opacity:0.88}
 .modal-overlay.est-modal .modal-body{background:linear-gradient(180deg,#fffbf0 0%,#fff 80px)}
 .est-disclaimer{display:none;align-items:flex-start;gap:10px;padding:11px 14px;background:rgba(184,130,10,0.10);border-left:3px solid #b8820a;margin-bottom:14px;border-radius:0 6px 6px 0;font-size:13px;color:#8a5f00;line-height:1.45}
