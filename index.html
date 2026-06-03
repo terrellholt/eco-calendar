@@ -1029,6 +1029,15 @@ function openModal(id) {
   var modalHero = document.getElementById('modalHero');
   if (ev.hero) { heroImg.src = ev.hero; heroImg.style.display = 'block'; modalHero.style.setProperty('--hero-pos', ev.heroPosition || 'center'); }
   else { heroImg.style.display = 'none'; }
+  var existingBadge = document.getElementById('modalImpactBadge');
+  if (existingBadge) { existingBadge.remove(); }
+  if (ev.impact && ev.impact !== 'none') {
+    var badge = document.createElement('div');
+    badge.id = 'modalImpactBadge';
+    badge.className = 'modal-impact-badge ' + ev.impact;
+    badge.textContent = ev.impact.charAt(0).toUpperCase() + ev.impact.slice(1) + ' Impact';
+    modalHero.appendChild(badge);
+  }
   var logoEl = document.getElementById('modalLogo');
   if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
   document.getElementById('modalTitle').textContent = ev.title;
