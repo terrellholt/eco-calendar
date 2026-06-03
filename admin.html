@@ -1881,7 +1881,37 @@ function handleTemplateAssign(newTmplId) {
     });
   }
 }
-function applyTemplateAssign(tmplId) { document.getElementById('f_template_id').value = tmplId; }
+function applyTemplateAssign(tmplId) {
+  document.getElementById('f_template_id').value = tmplId;
+  if (!tmplId) return;
+  var tmpl = allTemplates.find(function(t) { return t.id === tmplId; });
+  if (!tmpl) return;
+  var fieldMap = {
+    category: 'tf_category', impact_level: 'f_impact', source_url: 'f_source_url',
+    frequency: 'f_frequency', measures: 'f_measures', why_it_matters: 'f_why_it_matters'
+  };
+  if (tmpl.category) document.getElementById('f_category').value = tmpl.category;
+  if (tmpl.impact_level) { selectedImpact = tmpl.impact_level; updateImpactUI(); }
+  if (tmpl.source_url) document.getElementById('f_source_url').value = tmpl.source_url;
+  if (tmpl.frequency) document.getElementById('f_frequency').value = tmpl.frequency;
+  if (tmpl.measures) document.getElementById('f_measures').value = tmpl.measures;
+  if (tmpl.why_it_matters) document.getElementById('f_why_it_matters').value = tmpl.why_it_matters;
+  if (tmpl.logo_url) {
+    var lt = document.getElementById('logoThumb');
+    lt.innerHTML = '<img src="'+esc(tmpl.logo_url)+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">';
+  }
+  if (tmpl.hero_image_url) {
+    heroOffsetX = 50; heroOffsetY = 50;
+    if (tmpl.hero_position) { var pp = tmpl.hero_position.split(' '); if (pp.length >= 2) { heroOffsetX = parseFloat(pp[0])||50; heroOffsetY = parseFloat(pp[1])||50; } }
+    setupHero(tmpl.hero_image_url);
+  }
+  if (tmpl.impacted_assets) {
+    var assetWrap = document.getElementById('assetWrap'), assetInp = document.getElementById('assetInp');
+    assetWrap.querySelectorAll('.achip').forEach(function(c){c.remove()});
+    tmpl.impacted_assets.split(',').map(function(a){return a.trim();}).filter(Boolean).forEach(function(a){ assetWrap.insertBefore(makeChip(a), assetInp); });
+  }
+  initLockStates();
+}
 
 var _tmplNamePending = null;
 function showTemplateNamePrompt(eventName, tmplId, matches, totalLinked) {
