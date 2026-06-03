@@ -427,17 +427,17 @@
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:10px">
             <div class="ep-field">
-              <label class="ep-label">Expected Price Move (&#177;) <span class="opt">(optional)</span></label>
-              <div class="price-move-wrap">
-                <span class="pm-sym">&#177;</span>
-                <input type="text" class="ep-input pm-input" id="f_price_move_val" placeholder="2.5">
-                <select class="ep-input pm-type" id="f_price_move_type"><option value="percent">%</option><option value="points">pts</option><option value="range">range</option></select>
-              </div>
-              <div style="margin-top:6px">
-                <label class="ep-label" style="margin-bottom:4px;display:block">Expiry Contract Date <span class="opt">(option expiration)</span></label>
-                <input type="date" class="ep-input" id="f_price_move_expiry">
-              </div>
+              <label class="ep-label">Event Title <span style="color:#dc2626">*</span></label>
+              <input type="text" class="ep-input" id="f_title" placeholder="e.g. Federal Reserve Rate Decision">
             </div>
+            <div class="ep-row c2">
+              <div class="ep-field">
+                <label class="ep-label">Short Name <span class="opt">(mini calendar)</span></label>
+                <input type="text" class="ep-input" id="f_short_name" placeholder="e.g. FOMC Decision">
+              </div>
+              <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="ep-section" id="tmplAssignSection" style="padding:12px 20px;background:#f9f9f8;border-bottom:1px solid #f0f0ec;">
