@@ -278,7 +278,7 @@ def main():
         if result["status"] == "ok":
             log.info("  ✓  ±%.2f%%  (expiry: %s)", result["expected_move_pct"], result["nearest_expiry"])
             try:
-                patched = patch_supabase_row(row_id, result["expected_move_pct"])
+                patched = patch_supabase_row(row_id, result["expected_move_pct"], result["nearest_expiry"])
                 if not patched:
                     log.warning("  ⚠  Supabase patch returned unexpected status for id=%s", row_id)
             except Exception as e:
