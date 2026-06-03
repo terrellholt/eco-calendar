@@ -275,14 +275,19 @@ def main():
         result["event"]      = event_name
         result["event_date"] = event_date
 
-        if result["status"] == "ok":
-            log.info("  ✓  ±%.2f%%  (expiry: %s)", result["expected_move_pct"], result["nearest_expiry"])
-            try:
-                patched = patch_supabase_row(row_id, result["expected_move_pct"], result["nearest_expiry"])
-                if not patched:
-                    log.warning("  ⚠  Supabase patch returned unexpected status for id=%s", row_id)
-            except Exception as e:
-                log.warning("  ⚠  Supabase patch failed for id=%s: %s", row_id, e)
+       if result["status"] == "ok":
+            expiry_date = datetime.strptime(result["nearest_expiry"], "%Y-%m-%d").date()
+            if expiry_date < event_date:
+                log.info("  ↷  Skipping — expiry %s is before event %s", result["nearest_expiry"], event_date)
+                result["status"] = "skipped"
+            else:
+                log.info("  ✓  ±%.2f%%  (expiry: %s)", result["expected_move_pct"], result["nearest_expiry"])
+                try:
+                    patched = patch_supabase_row(row_id, result["expected_move_pct"], result["nearest_expiry"])
+                    if not patched:
+                        log.warning("  ⚠  Supabase patch returned unexpected status for id=%s", row_id)
+                except Exception as e:
+                    log.warning("  ⚠  Supabase patch failed for id=%s: %s", row_id, e)
         else:
             log.warning("  ⚠  %s", result["error"])
 
