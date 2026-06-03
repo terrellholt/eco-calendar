@@ -8,6 +8,10 @@ For each event, the script finds the options expiration CLOSEST to that
 event's specific date, so each row gets its own accurate expected move
 rather than a shared nearest-expiry value.
 
+If the closest available expiry is BEFORE the event date, the script
+clears any stale price move data for that row and skips it — the options
+market hasn't priced out to that date yet, so the number would be misleading.
+
 Formula:
     Expected Move $ = (ATM Call Ask + ATM Put Ask) × 0.85
     Expected Move % = Expected Move $ / Current Price × 100
@@ -22,6 +26,7 @@ import logging
 import urllib.request
 import urllib.error
 import urllib.parse
+import re
 from datetime import datetime, date
 
 import yfinance as yf
@@ -58,7 +63,6 @@ def parse_event_date(raw: str) -> date | None:
         return None
     raw = raw.strip()
     # Strip trailing " (est.)" or " (est)" suffix
-    import re
     raw = re.sub(r'\s*\(est\.?\)\s*$', '', raw, flags=re.IGNORECASE).strip()
     # Full ISO date or timestamp
     for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z"):
@@ -164,26 +168,30 @@ def get_expected_move(ticker: str, event_date: date) -> dict:
 
         return {
             **base,
-            "status":          "ok",
-            "current_price":   round(price, 2),
-            "atm_strike":      atm_strike,
-            "atm_call_ask":    call_ask,
-            "atm_put_ask":     put_ask,
-            "straddle_price":  round(straddle, 4),
+            "status":            "ok",
+            "current_price":     round(price, 2),
+            "atm_strike":        atm_strike,
+            "atm_call_ask":      call_ask,
+            "atm_put_ask":       put_ask,
+            "straddle_price":    round(straddle, 4),
             "expected_move_usd": em_usd,
             "expected_move_pct": em_pct,
-            "nearest_expiry":  expiry,
+            "nearest_expiry":    expiry,
         }
     except Exception as exc:
         return {**base, "error": str(exc)}
 
 
 # ── Push individual row back to Supabase ──────────────────────────────────
-def patch_supabase_row(row_id: int, em_pct: float, expiry_str: str):
+def patch_supabase_row(row_id: int, em_pct, expiry_str):
+    """
+    Write price move data to Supabase for a given row.
+    Pass em_pct=None and expiry_str=None to clear stale data.
+    """
     url = f"{SUPABASE_URL}/rest/v1/Master%20Calendar?id=eq.{row_id}"
     payload = json.dumps({
-        "price_move_val":    str(em_pct),
-        "price_move_type":   "%",
+        "price_move_val":    str(em_pct) if em_pct is not None else None,
+        "price_move_type":   "%" if em_pct is not None else None,
         "price_move_expiry": expiry_str
     }).encode("utf-8")
     req = urllib.request.Request(
@@ -215,11 +223,12 @@ def write_summary_to_sheet(spreadsheet, results):
 
     now_str   = datetime.now().strftime("%Y-%m-%d %H:%M ET")
     ok_count  = sum(1 for r in results if r["status"] == "ok")
-    err_count = len(results) - ok_count
+    skip_count = sum(1 for r in results if r["status"] == "skipped")
+    err_count = len(results) - ok_count - skip_count
 
     header_rows = [
         [f"EXPECTED MOVES — per-event expiry matching  |  Last run: {now_str}"
-         f"  |  ✓ {ok_count} succeeded   ⚠ {err_count} failed"],
+         f"  |  ✓ {ok_count} succeeded   ↷ {skip_count} skipped (expiry before event)   ⚠ {err_count} failed"],
         [],
         ["Row ID", "Event", "Ticker", "Event Date", "Matched Expiry",
          "Current Price", "ATM Strike", "Expected Move ±%", "Status"],
@@ -233,6 +242,13 @@ def write_summary_to_sheet(spreadsheet, results):
                 str(r["event_date"]), r["nearest_expiry"],
                 r["current_price"], r["atm_strike"],
                 r["expected_move_pct"], "✓"
+            ])
+        elif r["status"] == "skipped":
+            data_rows.append([
+                r["row_id"], r["event"], r["ticker"],
+                str(r["event_date"]), r.get("nearest_expiry", "—"),
+                "—", "—", "—",
+                "↷ Skipped — expiry before event date"
             ])
         else:
             data_rows.append([
@@ -257,8 +273,6 @@ def main():
         log.warning("No eligible event rows found.")
         return
 
-    # Deduplicate ticker fetches — cache options chains per ticker
-    options_cache = {}
     results = []
     total   = len(events)
 
@@ -275,11 +289,18 @@ def main():
         result["event"]      = event_name
         result["event_date"] = event_date
 
-       if result["status"] == "ok":
+        if result["status"] == "ok":
             expiry_date = datetime.strptime(result["nearest_expiry"], "%Y-%m-%d").date()
+
             if expiry_date < event_date:
+                # Expiry is before the event — number would be misleading, skip it
                 log.info("  ↷  Skipping — expiry %s is before event %s", result["nearest_expiry"], event_date)
                 result["status"] = "skipped"
+                # Clear any stale data that may already be in Supabase for this row
+                try:
+                    patch_supabase_row(row_id, None, None)
+                except Exception as e:
+                    log.warning("  ⚠  Could not clear stale data for id=%s: %s", row_id, e)
             else:
                 log.info("  ✓  ±%.2f%%  (expiry: %s)", result["expected_move_pct"], result["nearest_expiry"])
                 try:
@@ -301,13 +322,14 @@ def main():
     spreadsheet = client.open_by_key(os.environ["SPREADSHEET_ID"])
     write_summary_to_sheet(spreadsheet, results)
 
-    ok_count  = sum(1 for r in results if r["status"] == "ok")
-    err_count = len(results) - ok_count
+    ok_count   = sum(1 for r in results if r["status"] == "ok")
+    skip_count = sum(1 for r in results if r["status"] == "skipped")
+    err_count  = len(results) - ok_count - skip_count
     log.info("═" * 60)
-    log.info("Done.  %d succeeded  |  %d failed", ok_count, err_count)
+    log.info("Done.  %d succeeded  |  %d skipped  |  %d failed", ok_count, skip_count, err_count)
     log.info("═" * 60)
 
-    if ok_count == 0:
+    if ok_count == 0 and skip_count == 0:
         raise RuntimeError("All rows failed — check yfinance / Yahoo Finance status.")
 
 if __name__ == "__main__":
