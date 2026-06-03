@@ -57,12 +57,20 @@ def parse_event_date(raw: str) -> date | None:
     if not raw:
         return None
     raw = raw.strip()
+    # Strip trailing " (est.)" or " (est)" suffix
+    import re
+    raw = re.sub(r'\s*\(est\.?\)\s*$', '', raw, flags=re.IGNORECASE).strip()
     # Full ISO date or timestamp
     for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z"):
         try:
             return datetime.strptime(raw[:10], "%Y-%m-%d").date()
         except ValueError:
             pass
+    # Full text date with year e.g. "Jan 28, 2027"
+    try:
+        return datetime.strptime(raw, "%b %d, %Y").date()
+    except ValueError:
+        pass
     # Abbreviated "Mon DD" format — assume CALENDAR_YEAR
     for fmt in ("%b %d", "%b  %d"):
         try:
