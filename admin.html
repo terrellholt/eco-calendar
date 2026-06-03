@@ -1295,6 +1295,7 @@ function openEdit(idx) {
   var _displayTime = ev.display_time || resolveDisplayTime(ev);
   document.getElementById('f_price_move_val').value = ev.price_move_val || '';
   document.getElementById('f_price_move_type').value = ev.price_move_type || 'percent';
+  document.getElementById('f_price_move_expiry').value = ev.price_move_expiry || '';
   selectedImpact = (ev.impact || 'none').toLowerCase();
   if (!['high','medium','low','none'].includes(selectedImpact)) selectedImpact = 'none';
   updateImpactUI();
