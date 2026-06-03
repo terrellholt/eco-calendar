@@ -237,13 +237,10 @@ tv-ticker-tape{display:block;width:100%}
 .modal-tag.high{background:#FEF2F2;color:#dc2626}
 .modal-tag.medium{background:#FFF7ED;color:#ea7000}
 .modal-tag.low{background:#FEFCE8;color:#d4a000}
-.modal-impact-badge{position:absolute;top:12px;left:14px;z-index:5;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em}
-.modal-impact-badge.high{background:rgba(220,38,38,.85);color:#fff}
-.modal-impact-badge.medium{background:rgba(234,112,0,.85);color:#fff}
-.modal-impact-badge.low{background:rgba(212,160,0,.85);color:#fff}
-@keyframes badgePulseHigh{0%,100%{box-shadow:0 0 6px rgba(220,38,38,.5)}50%{box-shadow:0 0 14px rgba(220,38,38,.9)}}
-@keyframes badgePulseMed{0%,100%{box-shadow:0 0 6px rgba(234,112,0,.5)}50%{box-shadow:0 0 14px rgba(234,112,0,.9)}}
-@keyframes badgePulseLow{0%,100%{box-shadow:0 0 6px rgba(212,160,0,.5)}50%{box-shadow:0 0 14px rgba(212,160,0,.9)}}
+.modal-impact-badge{position:absolute;top:12px;left:14px;z-index:5;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;padding:0}
+@keyframes badgePulseHigh{0%,100%{color:#ff4444;text-shadow:0 0 8px #ff0000,0 0 20px #ff0000,0 0 40px #ff4444}50%{color:#ff8888;text-shadow:0 0 12px #ff0000,0 0 30px #ff0000,0 0 60px #ff4444}}
+@keyframes badgePulseMed{0%,100%{color:#ff8c00;text-shadow:0 0 8px #ff6600,0 0 20px #ff6600,0 0 40px #ff8c00}50%{color:#ffb347;text-shadow:0 0 12px #ff6600,0 0 30px #ff6600,0 0 60px #ff8c00}}
+@keyframes badgePulseLow{0%,100%{color:#ffd700;text-shadow:0 0 8px #ffcc00,0 0 20px #ffcc00,0 0 40px #ffd700}50%{color:#ffec6e;text-shadow:0 0 12px #ffcc00,0 0 30px #ffcc00,0 0 60px #ffd700}}
 .modal-impact-badge.high{animation:badgePulseHigh 2s ease-in-out infinite}
 .modal-impact-badge.medium{animation:badgePulseMed 2s ease-in-out infinite}
 .modal-impact-badge.low{animation:badgePulseLow 2s ease-in-out infinite}
