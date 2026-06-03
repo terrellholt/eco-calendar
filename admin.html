@@ -1223,6 +1223,7 @@ function openNewEvent() {
   setupHero('');
   document.getElementById('logoThumb').innerHTML = '<div class="logo-thumb-empty">No logo</div>';
   ['f_title','f_short_name','f_ticker','f_aka','f_source_url','f_measures','f_why_it_matters','f_details','f_notes','f_price_move_val'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('f_price_move_expiry').value = '';
   document.getElementById('f_frequency').value = '';
   document.getElementById('f_price_move_type').value = 'percent';
   document.getElementById('f_category').value = '';
