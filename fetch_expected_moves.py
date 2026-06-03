@@ -179,11 +179,12 @@ def get_expected_move(ticker: str, event_date: date) -> dict:
 
 
 # ── Push individual row back to Supabase ──────────────────────────────────
-def patch_supabase_row(row_id: int, em_pct: float):
+def patch_supabase_row(row_id: int, em_pct: float, expiry_str: str):
     url = f"{SUPABASE_URL}/rest/v1/Master%20Calendar?id=eq.{row_id}"
     payload = json.dumps({
-        "price_move_val":  str(em_pct),
-        "price_move_type": "%"
+        "price_move_val":    str(em_pct),
+        "price_move_type":   "%",
+        "price_move_expiry": expiry_str
     }).encode("utf-8")
     req = urllib.request.Request(
         url,
