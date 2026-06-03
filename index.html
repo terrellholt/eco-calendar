@@ -865,7 +865,8 @@ function fetchEvents() {
         details: r.details || '', source: r.source_url || deriveSource(r.category),
         ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas',
 chartTicker: r.chart_ticker || '', chartRange: r.chart_range || '1M',
-priceMove: r.price_move_val || ''
+priceMove: r.price_move_val || '',
+priceMoveExpiry: r.price_move_expiry || ''
       });
     });
   });
