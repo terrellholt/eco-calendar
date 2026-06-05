@@ -1049,7 +1049,7 @@ function openModal(id) {
   document.getElementById('modalTitle').textContent = ev.title;
 document.getElementById('modalName').textContent = ev.name || '';
 if (ev.ticker) {
-  document.getElementById('modalTickerBadge').querySelector('span').textContent = ev.ticker;
+  document.getElementById('modalTickerBadge').innerHTML = '<span class="modal-tag-label">Ticker</span><span style="font-size:13px;color:#333;">' + ev.ticker + '</span>';
   document.getElementById('modalTickerBadge').style.display = 'block';
 } else {
   document.getElementById('modalTickerBadge').style.display = 'none';
