@@ -1044,12 +1044,31 @@ function openModal(id) {
   var logoEl = document.getElementById('modalLogo');
   if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
   document.getElementById('modalTitle').textContent = ev.title;
-  document.getElementById('modalName').textContent = ev.name || '';
+document.getElementById('modalName').textContent = ev.name || '';
+if (ev.ticker) {
+  document.getElementById('modalTickerBadge').textContent = ev.ticker;
+  document.getElementById('modalTickerBadge').style.display = 'inline-block';
+} else {
+  document.getElementById('modalTickerBadge').style.display = 'none';
+}
   var meta = '';
+// Date always first
+var dateLabel = '';
+if (ev.date) {
+  var dp = ev.date.split('-');
+  var dObj = new Date(parseInt(dp[0]), parseInt(dp[1])-1, parseInt(dp[2]));
+  var mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  dateLabel = mNames[dObj.getMonth()] + ' ' + dObj.getDate() + ', ' + dObj.getFullYear();
+  if (ev.endDate) {
+    var ep = ev.endDate.split('-');
+    var eObj = new Date(parseInt(ep[0]), parseInt(ep[1])-1, parseInt(ep[2]));
+    dateLabel += ' – ' + mNames[eObj.getMonth()] + ' ' + eObj.getDate() + ', ' + eObj.getFullYear();
+  }
+}
+if (dateLabel) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Date</span>' + dateLabel + '</span>'; }
   var displayTime = eventTimeDisplay(ev);
   if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
 if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
-if (ev.ticker) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Ticker</span>' + ev.ticker + '</span>'; }
 var showPriceMove = ev.priceMove && (!ev.priceMoveExpiry || !ev.date || ev.priceMoveExpiry >= ev.date);
 if (showPriceMove) {
   var expiryStr = '';
