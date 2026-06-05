@@ -1083,7 +1083,7 @@ if (showPriceMove) {
       expiryStr = ' by ' + expMonths[expDate.getMonth()] + ' ' + expDate.getDate() + ', ' + expDate.getFullYear() + ' expiry';
     }
   }
-  meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Expected Move</span><button class="em-info-btn"
+  meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Expected Move</span><button class="em-info-btn" onclick="toggleEmTooltip(event)">ⓘ</button> ±' + ev.priceMove + '%' + expiryStr + '<div class="em-tooltip" style="display:none">The expected move is calculated from the ATM options straddle price closest to this event\'s date. It represents the market\'s implied ± price range by expiration.</div></span>';
 }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag"><span class="modal-tag-label">Also Known As</span>' + ev.aka + '</span>'; }
   document.getElementById('modalMeta').innerHTML = meta;
