@@ -1048,8 +1048,8 @@ function openModal(id) {
   document.getElementById('modalTitle').textContent = ev.title;
 document.getElementById('modalName').textContent = ev.name || '';
 if (ev.ticker) {
-  document.getElementById('modalTickerBadge').textContent = ev.ticker;
-  document.getElementById('modalTickerBadge').style.display = 'inline-block';
+  document.getElementById('modalTickerBadge').querySelector('span').textContent = ev.ticker;
+  document.getElementById('modalTickerBadge').style.display = 'block';
 } else {
   document.getElementById('modalTickerBadge').style.display = 'none';
 }
