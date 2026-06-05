@@ -856,7 +856,8 @@ function fetchEvents() {
     rows.forEach(function(r) {
       if (!r.date && !r.month) { return; }
       var parsed = parseDate(r.date, r.month);
-      if (!parsed.start) { return; }
+if (!parsed.start) { return; }
+if (r.end_date && !parsed.end) { parsed.end = String(r.end_date).substring(0, 10); }
       var impact = (r.impact || '').toLowerCase();
       if (impact !== 'high' && impact !== 'medium' && impact !== 'low') { impact = 'none'; }
       var showMini = true;
