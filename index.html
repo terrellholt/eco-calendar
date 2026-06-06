@@ -1024,7 +1024,7 @@ function renderWeek() {
     var colCls = 'day-col' + (isPastDay ? ' past-week-day' : '');
     var monthFull = MONTHS[d.getMonth()];
     return '<div class="' + colCls + '"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-date-row"><div class="day-month">' + monthFull + '</div><div class="day-num">' + d.getDate() + '</div></div></div><div class="day-events">' + cards + '</div></div>';
-  }).join('');
+  }).join('');document.getElementById('weekGrid').insertAdjacentHTML('afterend', renderDurationLane());
 }
 
 function cardHtml(ev) {
@@ -1148,6 +1148,8 @@ function closeModal() { var overlay = document.getElementById('overlay'); overla
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
 
 function renderDurationLane() {
+  var oldLane = document.querySelector('.duration-lane');
+if (oldLane) { oldLane.remove(); }
   var today = new Date(); today.setHours(0,0,0,0);
   var weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
   var multiDay = events.filter(function(ev) {
