@@ -1178,7 +1178,8 @@ if (oldLane) { oldLane.remove(); }
     var leftArrow = startsBeforeWeek ? '<span class="dl-arrow" style="left:3px">&larr;</span>' : '';
     var rightArrow = endsAfterWeek ? '<span class="dl-arrow" style="right:3px">&rarr;</span>' : '';
     var leftEdge = startsBeforeWeek ? '3px' : 'calc(' + leftPct + '% + 4px)';
-    var rightEdge = endsAfterWeek ? '3px' : 'calc(' + rightPct + '% + 4px)';
+var rightEdge = endsAfterWeek ? '3px' : 'calc(' + rightPct + '% + 4px)';
+if (!startsBeforeWeek && !endsAfterWeek && startCol === endCol) { rightEdge = 'calc(' + rightPct + '% - 56px)'; endsAfterWeek = true; }
     return '<div class="duration-lane-row">' +
       '<div class="dl-col-lines">' +
         '<div class="dl-col-line"></div><div class="dl-col-line"></div><div class="dl-col-line"></div>' +
