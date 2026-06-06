@@ -58,30 +58,22 @@ tv-ticker-tape{display:block;width:100%}
 .mgrid-evt+.mgrid-evt{border-top:1px solid rgba(0,0,0,.07);padding-top:1px;margin-top:1px}
 .mgrid-evt.high{color:#dc2626}.mgrid-evt.medium{color:#ea7000}.mgrid-evt.low{color:#d4a000}.mgrid-evt.none{color:#6b7280}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-
-/* WEEK NAV */
 .week-nav{padding:7px 20px 7px 46px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e0;background:#fff;flex-shrink:0;gap:10px}
 .week-nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .week-title-block{margin-right:2px;min-width:260px}
 .week-title{font-size:14px;font-weight:600;line-height:1.2}
 .week-sub{font-size:10px;color:#999;margin-top:1px}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
-
-/* NAV PILLS (Prev / Today / Next) - same design as filter-pills */
 .nav-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .nav-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .nav-pill:hover{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .nav-pill.today-pill.active{color:#2563eb;font-weight:600}
 .nav-pill.today-pill.active:hover{background:#fff;color:#1d4ed8;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-
-/* FILTER PILLS */
 .filter-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .filter-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .filter-pill:hover{color:#333}
 .filter-pill.active{background:#fff;color:#1a1a1a;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .filter-pill.active.pill-estimated{color:#b8820a}
-
-/* TIMEZONE */
 .tz-wrap{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;transition:background .12s}
 .tz-wrap:hover{background:#f5f5f0}
 .tz-globe{width:13px;height:13px;stroke:#666;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
@@ -96,16 +88,12 @@ tv-ticker-tape{display:block;width:100%}
 .tz-opt-time{font-size:11px;color:#aaa;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tz-opt-check{font-size:12px;color:#2563eb;width:14px;text-align:right}
 .tz-container{position:relative}
-
-/* FILTER BUTTON */
 .filter-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid #e0e0db;background:#fff;cursor:pointer;font-size:12px;color:#333;transition:all .12s;white-space:nowrap;position:relative}
 .filter-btn:hover{background:#f5f5f0}
 .filter-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .filter-btn.active{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
 .filter-btn.active svg{stroke:#1d4ed8}
 .filter-badge{position:absolute;top:-4px;right:-4px;background:#2563eb;color:#fff;font-size:9px;font-weight:700;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
-
-/* FILTER PANEL */
 .filter-panel{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:0.5px solid #e0e0db;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:440px;overflow:hidden;animation:fpIn .15s ease}
 @keyframes fpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .fp-header{padding:10px 14px;border-bottom:0.5px solid #e5e5e0;display:flex;justify-content:space-between;align-items:center}
@@ -145,8 +133,6 @@ tv-ticker-tape{display:block;width:100%}
 .btn-apply:hover{background:#1d4ed8}
 .btn-cancel-fp{padding:5px 14px;border-radius:6px;background:#fff;color:#555;font-size:12px;border:0.5px solid #e0e0db;cursor:pointer;transition:background .1s}
 .btn-cancel-fp:hover{background:#f5f5f0}
-
-/* WEEK GRID */
 .week-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);overflow-y:auto}
 .day-col{border-right:1px solid #e5e5e0;display:flex;flex-direction:column}
 .day-col:last-child{border-right:none}
@@ -165,15 +151,12 @@ tv-ticker-tape{display:block;width:100%}
 .day-col.past-week-day .day-month{color:#bbb}
 .day-col.past-week-day .ecard{opacity:0.55;pointer-events:none}
 .day-events{padding:6px;display:flex;flex-direction:column;gap:5px;flex:1}
-
-/* EVENT CARDS */
 .ecard{border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:90px;justify-content:center;position:relative}
 .ecard:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.1)}
 .ecard.high{background:#FEF2F2;border-color:#FECACA}
 .ecard.medium{background:#FFF7ED;border-color:#FED7AA}
 .ecard.low{background:#FEFCE8;border-color:#FEF08A}
 .ecard.none{background:#fff;border-color:#e5e5e0}
-/* Estimated event visual treatment */
 .ecard.est-event{border:2px dashed #c8930a !important}
 .card-top-row{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:5px}
 .card-time{font-size:10px;color:#999;font-weight:500}
@@ -181,12 +164,8 @@ tv-ticker-tape{display:block;width:100%}
 .card-impact.high{color:#dc2626}.card-impact.medium{color:#ea7000}.card-impact.low{color:#d4a000}.card-impact.none{color:#999}
 .card-logo{width:calc(100% - 10px);height:auto;max-height:80px;object-fit:contain;margin:4px auto 6px;display:block}
 .card-title{font-size:11px;font-weight:600;color:#1a1a1a;line-height:1.3;text-align:center}
-
-/* NO RESULTS */
 .no-results{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:8px;color:#bbb;font-size:13px}
 .no-results svg{width:28px;height:28px;stroke:#ddd;fill:none;stroke-width:1.5;stroke-linecap:round}
-
-/* MARKETS PAGE */
 .markets-page{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f5f0}
 .world-clock{background:#fff;border-bottom:1px solid #e5e5e0;padding:0;display:flex;align-items:stretch;overflow:hidden;flex-shrink:0}
 .clock-city{flex:1;display:flex;align-items:center;justify-content:center;gap:var(--clk-gap,4px);border-left:1px solid #e5e5e0;padding:8px var(--clk-pad,4px);min-width:0}
@@ -204,8 +183,6 @@ tv-ticker-tape{display:block;width:100%}
 .markets-sidebar-header{padding:14px 16px 10px;border-bottom:1px solid #f0f0ec;flex-shrink:0}
 .markets-sidebar-title{font-size:14px;font-weight:600;color:#1a1a1a}
 .markets-sidebar-body{flex:1;overflow-y:auto}
-
-/* CONTACT PAGE */
 .contact-page{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 40px;overflow-y:auto;background:#fff}
 .contact-form{width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px}
 .contact-field{display:flex;flex-direction:column;gap:8px}
@@ -216,8 +193,6 @@ tv-ticker-tape{display:block;width:100%}
 .contact-field textarea{min-height:180px;resize:vertical;line-height:1.5}
 .contact-submit{font-size:15px;font-weight:600;color:#2563eb;background:#fff;border:1.5px solid #2563eb;padding:12px 28px;border-radius:10px;cursor:pointer;width:fit-content;transition:all .15s}
 .contact-submit:hover{background:#eff6ff}
-
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
@@ -231,7 +206,7 @@ tv-ticker-tape{display:block;width:100%}
 .modal-title{font-size:17px;font-weight:700;color:#1a1a1a;line-height:1.25}
 .modal-name{font-size:12px;color:#888;margin-top:2px}
 .modal-meta{display:flex;flex-wrap:wrap;gap:0;margin-top:6px;margin-bottom:16px}
-.modal-tag{font-size:13px;font-weight:400;padding:3px 0;background:transparent;color:#333;text-transform:none;border:none}  
+.modal-tag{font-size:13px;font-weight:400;padding:3px 0;background:transparent;color:#333;text-transform:none;border:none}
 .modal-tag-label{font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:2px}
 .modal-tag-wide{width:100%}
 .modal-tag.high{background:#FEF2F2;color:#dc2626}
@@ -244,7 +219,7 @@ tv-ticker-tape{display:block;width:100%}
 .modal-impact-badge.high{animation:badgePulseHigh 2s ease-in-out infinite}
 .modal-impact-badge.medium{animation:badgePulseMed 2s ease-in-out infinite}
 .modal-impact-badge.low{animation:badgePulseLow 2s ease-in-out infinite}
-  .modal-overlay.est-modal .modal-hero{border-bottom:3px solid #b8820a;opacity:0.88}
+.modal-overlay.est-modal .modal-hero{border-bottom:3px solid #b8820a;opacity:0.88}
 .modal-overlay.est-modal .modal-body{background:linear-gradient(180deg,#fffbf0 0%,#fff 80px)}
 .est-disclaimer{display:none;align-items:flex-start;gap:10px;padding:11px 14px;background:rgba(184,130,10,0.10);border-left:3px solid #b8820a;margin-bottom:14px;border-radius:0 6px 6px 0;font-size:13px;color:#8a5f00;line-height:1.45}
 .modal-overlay.est-modal .est-disclaimer{display:flex}
@@ -258,7 +233,6 @@ tv-ticker-tape{display:block;width:100%}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
 .load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;color:#dc2626;font-size:13px}
-  /* DURATION LANE */
 .duration-lane{border-top:1px solid #e5e5e0;background:#fafaf8}
 .duration-lane-title{font-size:9px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.06em;padding:5px 10px 4px;border-bottom:1px solid #f0f0ec}
 .duration-lane-body{position:relative;display:grid;grid-template-columns:repeat(7,1fr);padding:6px 0}
@@ -272,7 +246,7 @@ tv-ticker-tape{display:block;width:100%}
 .dl-bar.dl-started{border-left:none;border-radius:0 4px 4px 0;padding-left:14px}
 .dl-bar.dl-started.dl-continues{border-left:none;border-right:none;border-radius:0}
 .dl-arrow{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;color:#999;line-height:1;font-weight:500}
-  .modal-chart{margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid #f0f0ec}
+.modal-chart{margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid #f0f0ec}
 .modal-chart-bar{display:flex;gap:4px;padding:6px 8px;background:#f8f8f6;border-bottom:1px solid #f0f0ec}
 .modal-chart-btn{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:none;background:transparent;cursor:pointer;color:#999}
 .modal-chart-btn.active{background:#1a1a1a;color:#fff}
@@ -337,14 +311,12 @@ tv-ticker-tape{display:block;width:100%}
             <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated ~</button>
             <button class="filter-pill" id="pill-all" onclick="setFilter('all')">All</button>
           </div>
-
           <div style="position:relative" id="filterContainer">
             <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel(event)" title="Filter events">
               <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
               Filters
               <span class="filter-badge" id="filterBadge" style="display:none">0</span>
             </button>
-
             <div class="filter-panel" id="filterPanel" style="display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:400">
               <div class="fp-header">
                 <span class="fp-title">Filter events</span>
@@ -402,7 +374,6 @@ tv-ticker-tape{display:block;width:100%}
               </div>
             </div>
           </div>
-
           <div class="tz-container" id="tzContainer">
             <div class="tz-wrap" onclick="toggleTzDropdown(event)" title="Change timezone">
               <svg class="tz-globe" viewBox="0 0 24 24">
@@ -465,7 +436,6 @@ tv-ticker-tape{display:block;width:100%}
         <button class="contact-submit">Submit</button>
       </div>
     </div>
-    </div>
   </div>
 </div>
 
@@ -473,17 +443,17 @@ tv-ticker-tape{display:block;width:100%}
   <div class="modal" id="modal">
     <div class="modal-hero" id="modalHero">
       <img id="modalHeroImg" src="" alt="" style="display:none">
-   </div>
+    </div>
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-body">
-    <div class="modal-logo-row">
-  <img class="modal-logo" id="modalLogo" src="" alt="" style="display:none">
-  <div style="flex:1">
-    <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-name" id="modalName"></div>
-  </div>
-  <div id="modalTickerBadge" style="display:none;align-self:flex-start;margin-left:10px;text-align:right;padding:3px 0"><span class="modal-tag-label">Ticker</span><span style="font-size:13px;color:#333"></span></div>
-</div>
+      <div class="modal-logo-row">
+        <img class="modal-logo" id="modalLogo" src="" alt="" style="display:none">
+        <div style="flex:1">
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-name" id="modalName"></div>
+        </div>
+        <div id="modalTickerBadge" style="display:none;align-self:flex-start;margin-left:10px;text-align:right;padding:3px 0"><span class="modal-tag-label">Ticker</span><span style="font-size:13px;color:#333"></span></div>
+      </div>
       <div class="est-disclaimer">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px">
           <path d="M8 1.5L14.5 14H1.5L8 1.5Z" stroke="#b8820a" stroke-width="1.3" stroke-linejoin="round"/>
@@ -524,7 +494,6 @@ tv-ticker-tape{display:block;width:100%}
 var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempnanR6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNjkwMTgsImV4cCI6MjA5Mzk0NTAxOH0.sZA4DPrmldh2XlfpCoNffsnmZKr6IjWusEv_ezAOqaI';
 var LOGO_KEY = 'pk_dv5qQv9ARyGf3wnFfd-oeA';
-
 var MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MONTHS_SH = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 var DAYS      = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -535,7 +504,6 @@ var MMAP = {
   Jan:'01',Feb:'02',Mar:'03',Apr:'04',Jun:'06',Jul:'07',
   Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'
 };
-
 var weekStart   = getWeekStart(new Date());
 var filterMode  = 'confirmed';
 var TICKER_DOMAIN = {
@@ -558,7 +526,6 @@ var openMonths  = {};
 var allExpanded = false;
 var sidebarOpen = true;
 var events      = [];
-
 var fpState = {
   impact: { high: true, med: true, low: true },
   tabs: {
@@ -569,11 +536,7 @@ var fpState = {
   zones: { 'Americas': true, 'Europe': false, 'Middle East & Africa': false, 'Asia Pacific': false, 'Global': true }
 };
 var fpPending = JSON.parse(JSON.stringify(fpState));
-
-(function() {
-  var t = new Date();
-  openMonths[t.getFullYear() + '-' + t.getMonth()] = true;
-}());
+(function() { var t = new Date(); openMonths[t.getFullYear() + '-' + t.getMonth()] = true; }());
 
 var TZ_LIST = [
   { group: 'Americas' },
@@ -598,7 +561,6 @@ var TZ_LIST = [
   { group: 'Universal' },
   { iana: 'UTC',                 label: 'UTC',                        short: 'UTC' },
 ];
-
 var userLocalTz = (function() {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'; }
   catch(e) { return 'America/New_York'; }
@@ -613,7 +575,6 @@ function tzShort(iana) {
   } catch(e) {}
   return iana.split('/').pop();
 }
-
 function utcToLocalTime(isoUtc, tzIana) {
   if (!isoUtc || isoUtc.length < 10) { return ''; }
   if (isoUtc.length === 10) { return ''; }
@@ -624,12 +585,10 @@ function utcToLocalTime(isoUtc, tzIana) {
     return timeStr + ' ' + tzShort(tzIana);
   } catch(e) { return ''; }
 }
-
 function eventTimeDisplay(ev) {
   if (ev.utcDatetime) { var converted = utcToLocalTime(ev.utcDatetime, selectedTz); if (converted) { return converted; } }
   return ev.time || '';
 }
-
 function buildTzDropdown() {
   var html = '';
   var now = new Date();
@@ -643,7 +602,6 @@ function buildTzDropdown() {
   });
   document.getElementById('tzDropdown').innerHTML = html;
 }
-
 function toggleTzDropdown(e) {
   e.stopPropagation();
   var dd = document.getElementById('tzDropdown');
@@ -651,21 +609,18 @@ function toggleTzDropdown(e) {
   document.querySelectorAll('.tz-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
   if (!isOpen) { buildTzDropdown(); dd.classList.add('open'); }
 }
-
 function selectTz(iana) {
   selectedTz = iana;
   document.getElementById('tzLabel').textContent = tzShort(iana);
   document.getElementById('tzDropdown').classList.remove('open');
   renderWeek();
 }
-
 document.addEventListener('click', function(e) {
   var tzCont = document.getElementById('tzContainer');
   if (tzCont && !tzCont.contains(e.target)) { var dd = document.getElementById('tzDropdown'); if (dd) { dd.classList.remove('open'); } }
   var fpCont = document.getElementById('filterContainer');
   if (fpCont && !fpCont.contains(e.target)) { var fp = document.getElementById('filterPanel'); if (fp) { fp.style.display = 'none'; } }
 });
-
 document.getElementById('tzLabel').textContent = tzShort(selectedTz);
 
 function toggleFilterPanel(e) {
@@ -675,17 +630,14 @@ function toggleFilterPanel(e) {
   else { fpPending = JSON.parse(JSON.stringify(fpState)); syncPanelUI(); fp.style.display = 'block'; }
 }
 function closeFilterPanel() { document.getElementById('filterPanel').style.display = 'none'; }
-
 function syncPanelUI() {
   ['high','med','low'].forEach(function(k) { var el = document.getElementById('fchip-' + k); if (el) { el.classList.toggle('on', !!fpPending.impact[k]); } });
   document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) { var tab = el.getAttribute('data-tab'); var box = el.querySelector('.cbox'); if (box && tab !== null) { box.classList.toggle('on', fpPending.tabs[tab] !== false); } });
   document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) { var zone = el.getAttribute('data-zone'); if (zone !== null) { el.classList.toggle('on', !!fpPending.zones[zone]); } });
 }
-
 function fpTogChip(el, key) { fpPending.impact[key] = !fpPending.impact[key]; el.classList.toggle('on', fpPending.impact[key]); }
 function fpTogCheck(el) { var tab = el.getAttribute('data-tab'); var box = el.querySelector('.cbox'); fpPending.tabs[tab] = !fpPending.tabs[tab]; if (box) { box.classList.toggle('on', fpPending.tabs[tab]); } }
 function fpTogZone(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !fpPending.zones[zone]; el.classList.toggle('on', fpPending.zones[zone]); }
-
 function fpSetAll(group, on) {
   if (group === 'impact') {
     ['high','med','low'].forEach(function(k) { fpPending.impact[k] = !!on; var el = document.getElementById('fchip-' + k); if (el) { el.classList.toggle('on', !!on); } });
@@ -695,9 +647,7 @@ function fpSetAll(group, on) {
     document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !!on; el.classList.toggle('on', !!on); });
   }
 }
-
 function fpApply() { fpState = JSON.parse(JSON.stringify(fpPending)); updateFilterBadge(); closeFilterPanel(); renderWeek(); }
-
 function fpReset() {
   fpPending.impact = { high: true, med: true, low: true };
   Object.keys(fpPending.tabs).forEach(function(k) { fpPending.tabs[k] = true; });
@@ -707,7 +657,6 @@ function fpReset() {
   updateFilterBadge();
   renderWeek();
 }
-
 function updateFilterBadge() {
   var count = 0;
   ['high','med','low'].forEach(function(k) { if (!fpState.impact[k]) count++; });
@@ -718,7 +667,6 @@ function updateFilterBadge() {
   if (count > 0) { badge.style.display = 'flex'; badge.textContent = count; btn.classList.add('active'); }
   else { badge.style.display = 'none'; btn.classList.remove('active'); }
 }
-
 function eventPassesFilter(ev) {
   var imp = ev.impact || 'none';
   if (imp === 'high' && !fpState.impact.high) { return false; }
@@ -730,7 +678,6 @@ function eventPassesFilter(ev) {
   if (!allZonesOff) { var evZone = ev.region || 'Americas'; if (!fpState.zones[evZone]) { return false; } }
   return true;
 }
-
 function categoryToTab(cat, title) {
   if (!cat) { return null; }
   var c = cat.toLowerCase();
@@ -747,7 +694,6 @@ function categoryToTab(cat, title) {
   if (c.indexOf('stock split') > -1 || c.indexOf('split') > -1) { return 'Stock Splits'; }
   return null;
 }
-
 function setFilter(mode) {
   filterMode = mode;
   var labels = { confirmed: 'Confirmed', estimated: 'Estimated \u007e', all: 'All' };
@@ -760,17 +706,14 @@ function setFilter(mode) {
   buildSidebar();
   renderWeek();
 }
-
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.rail-icon').forEach(function(r) { r.classList.remove('active'); });
   document.getElementById('page-' + name).classList.add('active');
   document.getElementById('rail-' + name).classList.add('active');
 }
-
 function ds(d) { return d.toISOString().split('T')[0]; }
 function getWeekStart(d) { var dt = new Date(d); dt.setHours(0,0,0,0); dt.setDate(dt.getDate() - dt.getDay()); return dt; }
-
 function impCls(v) {
   v = (v || 'none').toLowerCase();
   if (v === 'high') { return 'high'; } if (v === 'medium') { return 'medium'; } if (v === 'low') { return 'low'; }
@@ -782,7 +725,6 @@ function impLabel(v) {
   return '';
 }
 function mkLogo(domain) { if (!domain) { return ''; } return 'https://img.logo.dev/' + domain + '?token=' + LOGO_KEY + '&size=200'; }
-
 function deriveName(cat, evt) {
   if (!cat) { return ''; }
   if (cat === 'Market Holiday' || cat === 'Early Close') { return 'NYSE / NASDAQ'; }
@@ -796,7 +738,6 @@ function deriveName(cat, evt) {
   }
   return '';
 }
-
 function deriveLogo(cat, evt) {
   if (!cat) { return ''; }
   if (cat === 'Market Holiday' || cat === 'Early Close') { return mkLogo('nyse.com'); }
@@ -810,7 +751,6 @@ function deriveLogo(cat, evt) {
   }
   return '';
 }
-
 function deriveSource(cat) {
   if (!cat) { return ''; }
   if (cat === 'Market Holiday' || cat === 'Early Close') { return 'https://www.nyse.com'; }
@@ -818,7 +758,6 @@ function deriveSource(cat) {
   if (cat === 'Economic Release') { return 'https://www.bls.gov/schedule'; }
   return '';
 }
-
 function deriveTime(notes) {
   if (!notes) { return ''; }
   if (notes.indexOf('8:30 AM') > -1) { return '8:30 AM ET'; }
@@ -827,7 +766,6 @@ function deriveTime(notes) {
   if (notes.indexOf('1:00 PM') > -1) { return '1:00 PM ET'; }
   return '';
 }
-
 function parseDate(dateStr, monthStr) {
   if (!dateStr) { return { start: '', end: '' }; }
   dateStr = String(dateStr).trim();
@@ -859,9 +797,7 @@ function parseDate(dateStr, monthStr) {
   }
   return { start: '2027-' + m + '-' + num.padStart(2,'0'), end: '' };
 }
-
 function fetchEvents() {
-  // visible=eq.true ensures hidden events never appear on the public calendar
   var url = SUPA_URL + '/rest/v1/Master%20Calendar?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,chart_ticker,chart_range,price_move_val,price_move_expiry&visible=eq.true&order=date.asc&limit=2000';
   return fetch(url, { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } })
   .then(function(r) { return r.json(); })
@@ -870,8 +806,8 @@ function fetchEvents() {
     rows.forEach(function(r) {
       if (!r.date && !r.month) { return; }
       var parsed = parseDate(r.date, r.month);
-if (!parsed.start) { return; }
-if (r.end_date && !parsed.end) { parsed.end = String(r.end_date).substring(0, 10); }
+      if (!parsed.start) { return; }
+      if (r.end_date && !parsed.end) { parsed.end = String(r.end_date).substring(0, 10); }
       var impact = (r.impact || '').toLowerCase();
       if (impact !== 'high' && impact !== 'medium' && impact !== 'low') { impact = 'none'; }
       var showMini = true;
@@ -889,14 +825,12 @@ if (r.end_date && !parsed.end) { parsed.end = String(r.end_date).substring(0, 10
         impactedAssets: r.impacted_assets || ent.impacted_assets || '', frequency: r.frequency || ent.frequency || '',
         details: r.details || '', source: r.source_url || deriveSource(r.category),
         ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas',
-chartTicker: r.chart_ticker || '', chartRange: r.chart_range || '1M',
-priceMove: r.price_move_val || '',
-priceMoveExpiry: r.price_move_expiry || ''
+        chartTicker: r.chart_ticker || '', chartRange: r.chart_range || '1M',
+        priceMove: r.price_move_val || '', priceMoveExpiry: r.price_move_expiry || ''
       });
     });
   });
 }
-
 function buildSidebar() {
   var today = new Date(); today.setHours(0,0,0,0);
   var wEnd = new Date(weekStart); wEnd.setDate(wEnd.getDate() + 6);
@@ -922,7 +856,6 @@ function buildSidebar() {
     }
   }
 }
-
 function buildMonthGrid(y, mi, today, wStart, wEnd) {
   var firstDay = new Date(y, mi, 1);
   var lastDay = new Date(y, mi+1, 0);
@@ -952,11 +885,9 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
   if (rem > 0) { for (var i = 0; i < 7 - rem; i++) { html += '<div class="mgrid-cell other-month"></div>'; } }
   return html + '</div>';
 }
-
 function handleMonthClick(el) { toggleMonth(el.getAttribute('data-key'), parseInt(el.getAttribute('data-y')), parseInt(el.getAttribute('data-mi'))); }
 function handleDateClick(el) { jumpToDate(el.getAttribute('data-date')); }
 function handleCardClick(el) { openModal(parseInt(el.getAttribute('data-id'))); }
-
 function toggleMonth(key, y, mi) {
   if (openMonths[key]) { delete openMonths[key]; } else { openMonths[key] = true; }
   allExpanded = Object.keys(openMonths).length >= 24;
@@ -994,7 +925,6 @@ function positionArrow() {
     arrow.style.top = (wr.top - ar.top + 10) + 'px';
   }
 }
-
 function renderWeek() {
   var today = new Date(); today.setHours(0,0,0,0);
   var days = [];
@@ -1024,9 +954,64 @@ function renderWeek() {
     var colCls = 'day-col' + (isPastDay ? ' past-week-day' : '');
     var monthFull = MONTHS[d.getMonth()];
     return '<div class="' + colCls + '"><div class="' + hdrCls + '"><div class="day-name">' + DAYS[i] + '</div><div class="day-date-row"><div class="day-month">' + monthFull + '</div><div class="day-num">' + d.getDate() + '</div></div></div><div class="day-events">' + cards + '</div></div>';
-  }).join('');document.getElementById('weekGrid').insertAdjacentHTML('afterend', renderDurationLane());
+  }).join('');
+  renderDurationLane();
 }
-
+function renderDurationLane() {
+  var oldLane = document.querySelector('.duration-lane');
+  if (oldLane) { oldLane.remove(); }
+  var multiDay = events.filter(function(ev) {
+    if (!ev.endDate) { return false; }
+    if (filterMode === 'confirmed' && ev.isEstimated) { return false; }
+    if (filterMode === 'estimated' && !ev.isEstimated) { return false; }
+    if (!eventPassesFilter(ev)) { return false; }
+    var weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+    var evStart = new Date(ev.date + 'T12:00:00');
+    var evEnd = new Date(ev.endDate + 'T12:00:00');
+    return evEnd >= weekStart && evStart <= weekEnd;
+  });
+  if (multiDay.length === 0) { return; }
+  var weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+  var laneDiv = document.createElement('div');
+  laneDiv.className = 'duration-lane';
+  laneDiv.innerHTML = '<div class="duration-lane-title">Multi-Day Events</div>';
+  multiDay.forEach(function(ev) {
+    var evStart = new Date(ev.date + 'T12:00:00');
+    var evEnd = new Date(ev.endDate + 'T12:00:00');
+    var startCol = Math.max(0, Math.round((evStart - weekStart) / 86400000));
+    var endCol   = Math.min(6, Math.round((evEnd - weekStart) / 86400000));
+    var startsBeforeWeek = evStart < weekStart;
+    var endsAfterWeek   = evEnd > weekEnd;
+    var colSpan = endCol - startCol + 1;
+    var pct = function(n) { return (n / 7 * 100).toFixed(4) + '%'; };
+    var rowDiv = document.createElement('div');
+    rowDiv.className = 'duration-lane-row';
+    rowDiv.innerHTML = '<div class="dl-col-lines">' + [0,1,2,3,4,5,6].map(function() { return '<div class="dl-col-line"></div>'; }).join('') + '</div>';
+    var barDiv = document.createElement('div');
+    barDiv.className = 'dl-bar' + (endsAfterWeek ? ' dl-continues' : '') + (startsBeforeWeek ? ' dl-started' : '');
+    barDiv.style.left = pct(startCol);
+    barDiv.style.width = pct(colSpan);
+    barDiv.innerHTML = '<span>' + ev.title + '</span>';
+    rowDiv.appendChild(barDiv);
+    if (startsBeforeWeek) {
+      var arrL = document.createElement('span');
+      arrL.className = 'dl-arrow';
+      arrL.style.left = pct(startCol);
+      arrL.textContent = '\u2190';
+      rowDiv.appendChild(arrL);
+    }
+    if (endsAfterWeek) {
+      var arrR = document.createElement('span');
+      arrR.className = 'dl-arrow';
+      arrR.style.right = '0';
+      arrR.textContent = '\u2192';
+      rowDiv.appendChild(arrR);
+    }
+    laneDiv.appendChild(rowDiv);
+  });
+  var grid = document.getElementById('weekGrid');
+  if (grid && grid.parentNode) { grid.parentNode.insertBefore(laneDiv, grid.nextSibling); }
+}
 function cardHtml(ev) {
   var cls = impCls(ev.impact);
   if (ev.isEstimated) { cls += ' est-event'; }
@@ -1038,7 +1023,6 @@ function cardHtml(ev) {
   var topRow = '<div class="card-top-row"><span class="card-time">' + (displayTime || '') + '</span>' + (label ? '<span class="card-impact ' + impactCls + '">' + label + '</span>' : '') + '</div>';
   return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + topRow + logoHtml + '<div class="card-title">' + ev.title + '</div></div>';
 }
-
 function openModal(id) {
   var ev = null;
   for (var i = 0; i < events.length; i++) { if (events[i].id === id) { ev = events[i]; break; } }
@@ -1061,44 +1045,43 @@ function openModal(id) {
   var logoEl = document.getElementById('modalLogo');
   if (ev.logo) { logoEl.src = ev.logo; logoEl.style.display = 'block'; } else { logoEl.style.display = 'none'; }
   document.getElementById('modalTitle').textContent = ev.title;
-document.getElementById('modalName').textContent = ev.name || '';
-if (ev.ticker) {
-  document.getElementById('modalTickerBadge').innerHTML = '<span class="modal-tag-label">Ticker</span><span style="font-size:13px;color:#333;">' + ev.ticker + '</span>';
-  document.getElementById('modalTickerBadge').style.display = 'block';
-} else {
-  document.getElementById('modalTickerBadge').style.display = 'none';
-}
-  var meta = '';
-// Date always first
-var dateLabel = '';
-if (ev.date) {
-  var dp = ev.date.split('-');
-  var dObj = new Date(parseInt(dp[0]), parseInt(dp[1])-1, parseInt(dp[2]));
-  var mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  dateLabel = mNames[dObj.getMonth()] + ' ' + dObj.getDate() + ', ' + dObj.getFullYear();
-  if (ev.endDate) {
-    var ep = ev.endDate.split('-');
-    var eObj = new Date(parseInt(ep[0]), parseInt(ep[1])-1, parseInt(ep[2]));
-    dateLabel += ' – ' + mNames[eObj.getMonth()] + ' ' + eObj.getDate() + ', ' + eObj.getFullYear();
+  document.getElementById('modalName').textContent = ev.name || '';
+  if (ev.ticker) {
+    document.getElementById('modalTickerBadge').innerHTML = '<span class="modal-tag-label">Ticker</span><span style="font-size:13px;color:#333;">' + ev.ticker + '</span>';
+    document.getElementById('modalTickerBadge').style.display = 'block';
+  } else {
+    document.getElementById('modalTickerBadge').style.display = 'none';
   }
-}
-if (dateLabel) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Date</span>' + dateLabel + '</span>'; }
-  var displayTime = eventTimeDisplay(ev);
-  if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
-if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
-var showPriceMove = ev.priceMove && (!ev.priceMoveExpiry || !ev.date || ev.priceMoveExpiry >= ev.date);
-if (showPriceMove) {
-  var expiryStr = '';
-  if (ev.priceMoveExpiry) {
-    var expParts = ev.priceMoveExpiry.split('-');
-    if (expParts.length === 3) {
-      var expDate = new Date(parseInt(expParts[0]), parseInt(expParts[1])-1, parseInt(expParts[2]));
-      var expMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      expiryStr = ' by ' + expMonths[expDate.getMonth()] + ' ' + expDate.getDate() + ', ' + expDate.getFullYear() + ' expiry';
+  var meta = '';
+  var dateLabel = '';
+  if (ev.date) {
+    var dp = ev.date.split('-');
+    var dObj = new Date(parseInt(dp[0]), parseInt(dp[1])-1, parseInt(dp[2]));
+    var mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    dateLabel = mNames[dObj.getMonth()] + ' ' + dObj.getDate() + ', ' + dObj.getFullYear();
+    if (ev.endDate) {
+      var ep = ev.endDate.split('-');
+      var eObj = new Date(parseInt(ep[0]), parseInt(ep[1])-1, parseInt(ep[2]));
+      dateLabel += ' \u2013 ' + mNames[eObj.getMonth()] + ' ' + eObj.getDate() + ', ' + eObj.getFullYear();
     }
   }
-  meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Expected Move</span><button class="em-info-btn" onclick="toggleEmTooltip(event)">ⓘ</button> ±' + ev.priceMove + '%' + expiryStr + '<div class="em-tooltip" style="display:none">The expected move is calculated from the ATM options straddle price closest to this event\'s date. It represents the market\'s implied ± price range by expiration.</div></span>';
-}
+  if (dateLabel) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Date</span>' + dateLabel + '</span>'; }
+  var displayTime = eventTimeDisplay(ev);
+  if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
+  if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
+  var showPriceMove = ev.priceMove && (!ev.priceMoveExpiry || !ev.date || ev.priceMoveExpiry >= ev.date);
+  if (showPriceMove) {
+    var expiryStr = '';
+    if (ev.priceMoveExpiry) {
+      var expParts = ev.priceMoveExpiry.split('-');
+      if (expParts.length === 3) {
+        var expDate = new Date(parseInt(expParts[0]), parseInt(expParts[1])-1, parseInt(expParts[2]));
+        var expMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        expiryStr = ' by ' + expMonths[expDate.getMonth()] + ' ' + expDate.getDate() + ', ' + expDate.getFullYear() + ' expiry';
+      }
+    }
+    meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Expected Move</span><button class="em-info-btn" onclick="toggleEmTooltip(event)">ⓘ</button> \u00b1' + ev.priceMove + '%' + expiryStr + '<div class="em-tooltip" style="display:none">The expected move is calculated from the ATM options straddle price closest to this event\'s date. It represents the market\'s implied \u00b1 price range by expiration.</div></span>';
+  }
   if (ev.aka && ev.aka !== ev.category) { meta += '<span class="modal-tag"><span class="modal-tag-label">Also Known As</span>' + ev.aka + '</span>'; }
   document.getElementById('modalMeta').innerHTML = meta;
   var hasContent = ev.whyMatters || ev.measures || ev.details;
@@ -1112,24 +1095,25 @@ if (showPriceMove) {
   var ias = document.getElementById('modalAssetsSection');
   if (ev.impactedAssets) { ias.style.display = 'block'; document.getElementById('modalAssets').textContent = ev.impactedAssets; } else { ias.style.display = 'none'; }
   var chartEl = document.getElementById('modalChart');
-var chartBar = document.getElementById('modalChartBar');
-var chartWidget = document.getElementById('modalChartWidget');
-if (ev.chartTicker) {
-  chartEl.style.display = 'block';
-  var ranges = ['1D','5D','1M','3M','6M','YTD','1Y','5Y','ALL'];
-  var activeRange = ev.chartRange || '1M';
-  chartBar.innerHTML = ranges.map(function(r) {
-    return '<button class="modal-chart-btn' + (r === activeRange ? ' active' : '') + '" onclick="loadModalChart(\'' + ev.chartTicker + '\',\'' + r + '\')">' + r + '</button>';
-  }).join('');
-  loadModalChart(ev.chartTicker, activeRange);
-} else {
-  chartEl.style.display = 'none';
-}
+  var chartBar = document.getElementById('modalChartBar');
+  var chartWidget = document.getElementById('modalChartWidget');
+  if (ev.chartTicker) {
+    chartEl.style.display = 'block';
+    var ranges = ['1D','5D','1M','3M','6M','YTD','1Y','5Y','ALL'];
+    var activeRange = ev.chartRange || '1M';
+    chartBar.innerHTML = ranges.map(function(r) {
+      return '<button class="modal-chart-btn' + (r === activeRange ? ' active' : '') + '" onclick="loadModalChart(\'' + ev.chartTicker + '\',\'' + r + '\')">' + r + '</button>';
+    }).join('');
+    loadModalChart(ev.chartTicker, activeRange);
+  } else {
+    chartEl.style.display = 'none';
+  }
   var srcEl = document.getElementById('modalSource');
   var div2 = document.getElementById('modalDiv2');
   if (ev.source) { srcEl.href = ev.source; srcEl.style.display = 'inline'; div2.style.display = 'block'; } else { srcEl.style.display = 'none'; div2.style.display = 'none'; }
   overlay.classList.add('open');
-}function loadModalChart(ticker, range) {
+}
+function loadModalChart(ticker, range) {
   var w = document.getElementById('modalChartWidget');
   w.innerHTML = '<div class="tradingview-widget-container" style="height:300px"><div class="tradingview-widget-container__widget" style="height:300px"></div></div>';
   var s = document.createElement('script');
@@ -1139,23 +1123,17 @@ if (ev.chartTicker) {
   s.innerHTML = JSON.stringify({symbol:ticker,interval:range==='1D'?'5':'D',range:range,width:'100%',height:300,theme:'light',style:'1',locale:'en',allow_symbol_change:false,save_image:false,hide_top_toolbar:true,hide_legend:true,backgroundColor:'#ffffff'});
   w.querySelector('.tradingview-widget-container__widget').appendChild(s);
   document.querySelectorAll('#modalChartBar .modal-chart-btn').forEach(function(b) { b.classList.toggle('active', b.textContent === range); });
-}function toggleEmTooltip(e) {
+}
+function toggleEmTooltip(e) {
   e.stopPropagation();
   var tooltip = e.target.nextElementSibling;
   tooltip.style.display = tooltip.style.display === 'none' ? 'block' : 'none';
 }
 function closeModal() { var overlay = document.getElementById('overlay'); overlay.classList.remove('open'); overlay.classList.remove('est-modal'); }
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
-
-function renderDurationLane() {
-  var oldLane = document.querySelector('.duration-lane');
-  if (oldLane) { oldLane.remove(); }
-  return '';
-}
 function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar(); renderWeek(); }
 function nextWeek() { weekStart.setDate(weekStart.getDate() + 7); buildSidebar(); renderWeek(); }
 function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
-
 function updateClocks() {
   var opt = {hour:'2-digit', minute:'2-digit', hour12:true};
   var zones = {'time-ny':'America/New_York','time-lon':'Europe/London','time-fra':'Europe/Berlin','time-riy':'Asia/Riyadh','time-mum':'Asia/Kolkata','time-sha':'Asia/Shanghai','time-tok':'Asia/Tokyo','time-syd':'Australia/Sydney'};
@@ -1163,7 +1141,6 @@ function updateClocks() {
 }
 setInterval(updateClocks, 1000);
 updateClocks();
-
 (function() {
   var clock = document.getElementById('worldClock');
   if (!clock || !window.ResizeObserver) { return; }
@@ -1181,7 +1158,6 @@ updateClocks();
   ro.observe(clock);
   applyScale(clock.offsetWidth);
 }());
-
 fetchEvents().then(function() {
   buildSidebar(); renderWeek(); setTimeout(positionArrow, 50);
 }).catch(function(err) {
