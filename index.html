@@ -233,15 +233,15 @@ tv-ticker-tape{display:block;width:100%}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
 .load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;color:#dc2626;font-size:13px}
-.duration-lane{border-top:1px solid #e5e5e0;background:#fafaf8}
-.duration-lane-title{font-size:9px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.06em;padding:5px 10px 4px;border-bottom:1px solid #f0f0ec}
-.duration-lane-body{position:relative;display:grid;grid-template-columns:repeat(7,1fr);padding:6px 0}
-.duration-lane-row{position:relative;height:28px}
+.duration-lane{border-top:3px solid #d0d0cc;background:#f0f0ec}
+.duration-lane-title{font-size:10px;font-weight:700;color:#888;letter-spacing:.02em;padding:7px 14px 6px;border-bottom:1px solid #ddddd8;background:#e8e8e4}
+.duration-lane-body{position:relative;display:grid;grid-template-columns:repeat(7,1fr);padding:8px 0}
+.duration-lane-row{position:relative;height:32px}
 .dl-col-lines{display:grid;grid-template-columns:repeat(7,1fr);height:100%;position:absolute;top:0;left:0;width:100%;pointer-events:none}
-.dl-col-line{border-right:1px solid #ececea}
+.dl-col-line{border-right:1px solid #d8d8d4}
 .dl-col-line:last-child{border-right:none}
-.dl-bar{position:absolute;top:50%;transform:translateY(-50%);height:22px;min-width:60px;background:#fff;border:.5px solid #d0d0cc;border-radius:4px;display:flex;align-items:center;padding:0 7px;box-sizing:border-box;overflow:hidden;white-space:nowrap}
-.dl-bar span{font-size:10px;font-weight:600;color:#444;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-bar{position:absolute;top:50%;transform:translateY(-50%);height:24px;min-width:60px;background:#fff;border:1.5px solid #b0b0aa;border-radius:5px;display:flex;align-items:center;padding:0 10px;box-sizing:border-box;overflow:hidden;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.dl-bar span{font-size:11px;font-weight:600;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dl-bar.dl-continues{border-right:none;border-radius:4px 0 0 4px}
 .dl-bar.dl-started{border-left:none;border-radius:0 4px 4px 0;padding-left:14px}
 .dl-bar.dl-started.dl-continues{border-left:none;border-right:none;border-radius:0}
