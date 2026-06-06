@@ -1147,6 +1147,51 @@ if (ev.chartTicker) {
 function closeModal() { var overlay = document.getElementById('overlay'); overlay.classList.remove('open'); overlay.classList.remove('est-modal'); }
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
 
+function renderDurationLane() {
+  var today = new Date(); today.setHours(0,0,0,0);
+  var weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+  var multiDay = events.filter(function(ev) {
+    if (!ev.endDate || ev.endDate === ev.date) { return false; }
+    if (filterMode === 'confirmed' && ev.isEstimated) { return false; }
+    if (filterMode === 'estimated' && !ev.isEstimated) { return false; }
+    var evStart = new Date(ev.date + 'T12:00:00');
+    var evEnd = new Date(ev.endDate + 'T12:00:00');
+    return evStart <= weekEnd && evEnd >= weekStart;
+  });
+  if (multiDay.length === 0) { return ''; }
+  var weekStartMs = weekStart.getTime();
+  var weekEndMs = weekEnd.getTime();
+  var rows = multiDay.map(function(ev) {
+    var evStart = new Date(ev.date + 'T12:00:00');
+    var evEnd = new Date(ev.endDate + 'T12:00:00');
+    var startsBeforeWeek = evStart < weekStart;
+    var endsAfterWeek = evEnd > weekEnd;
+    var startCol = startsBeforeWeek ? 0 : evStart.getDay();
+    var endCol = endsAfterWeek ? 6 : evEnd.getDay();
+    var leftPct = (startCol / 7 * 100).toFixed(4);
+    var rightPct = ((6 - endCol) / 7 * 100).toFixed(4);
+    var barCls = 'dl-bar';
+    if (startsBeforeWeek) { barCls += ' dl-started'; }
+    if (endsAfterWeek) { barCls += ' dl-continues'; }
+    var leftArrow = startsBeforeWeek ? '<span class="dl-arrow" style="left:3px">&larr;</span>' : '';
+    var rightArrow = endsAfterWeek ? '<span class="dl-arrow" style="right:3px">&rarr;</span>' : '';
+    var leftEdge = startsBeforeWeek ? '3px' : 'calc(' + leftPct + '% + 4px)';
+    var rightEdge = endsAfterWeek ? '3px' : 'calc(' + rightPct + '% + 4px)';
+    return '<div class="duration-lane-row">' +
+      '<div class="dl-col-lines">' +
+        '<div class="dl-col-line"></div><div class="dl-col-line"></div><div class="dl-col-line"></div>' +
+        '<div class="dl-col-line"></div><div class="dl-col-line"></div><div class="dl-col-line"></div>' +
+        '<div class="dl-col-line"></div>' +
+      '</div>' +
+      leftArrow +
+      '<div class="' + barCls + '" style="left:' + leftEdge + ';right:' + rightEdge + ';">' +
+        '<span>' + ev.title + '</span>' +
+      '</div>' +
+      rightArrow +
+    '</div>';
+  }).join('');
+  return '<div class="duration-lane"><div class="duration-lane-title">Multi-day events</div><div class="duration-lane-body">' + rows + '</div></div>';
+}  
 function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar(); renderWeek(); }
 function nextWeek() { weekStart.setDate(weekStart.getDate() + 7); buildSidebar(); renderWeek(); }
 function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
