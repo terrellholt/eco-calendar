@@ -978,12 +978,14 @@ function renderDurationLane() {
   multiDay.forEach(function(ev) {
     var evStart = new Date(ev.date + 'T12:00:00');
     var evEnd = new Date(ev.endDate + 'T12:00:00');
-    var startCol = Math.max(0, Math.round((evStart - weekStart) / 86400000));
-    var endCol   = Math.min(6, Math.round((evEnd - weekStart) / 86400000));
+    var startCol = Math.max(0, Math.floor((evStart - weekStart) / 86400000));
+    var endCol   = Math.min(6, Math.floor((evEnd - weekStart) / 86400000));
     var startsBeforeWeek = evStart < weekStart;
     var endsAfterWeek   = evEnd > weekEnd;
     var colSpan = endCol - startCol + 1;
     var pct = function(n) { return (n / 7 * 100).toFixed(4) + '%'; };
+    var mShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var dateRangeStr = mShort[evStart.getMonth()] + ' ' + evStart.getDate() + ' \u2013 ' + mShort[evEnd.getMonth()] + ' ' + evEnd.getDate();
     var rowDiv = document.createElement('div');
     rowDiv.className = 'duration-lane-row';
     rowDiv.innerHTML = '<div class="dl-col-lines">' + [0,1,2,3,4,5,6].map(function() { return '<div class="dl-col-line"></div>'; }).join('') + '</div>';
@@ -991,7 +993,7 @@ function renderDurationLane() {
     barDiv.className = 'dl-bar' + (endsAfterWeek ? ' dl-continues' : '') + (startsBeforeWeek ? ' dl-started' : '');
     barDiv.style.left = pct(startCol);
     barDiv.style.width = pct(colSpan);
-    barDiv.innerHTML = '<span>' + ev.title + '</span>';
+    barDiv.innerHTML = '<span>' + ev.title + '<span style="font-weight:400;color:#888;margin-left:8px;font-size:10px">' + dateRangeStr + '</span></span>';
     rowDiv.appendChild(barDiv);
     if (startsBeforeWeek) {
       var arrL = document.createElement('span');
