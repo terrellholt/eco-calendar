@@ -1150,7 +1150,8 @@ function overlayClick(e) { if (e.target === document.getElementById('overlay')) 
 function renderDurationLane() {
   var oldLane = document.querySelector('.duration-lane');
   if (oldLane) { oldLane.remove(); }
-  var weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+  return '';
+}
 function prevWeek() { weekStart.setDate(weekStart.getDate() - 7); buildSidebar(); renderWeek(); }
 function nextWeek() { weekStart.setDate(weekStart.getDate() + 7); buildSidebar(); renderWeek(); }
 function goToday() { weekStart = getWeekStart(new Date()); buildSidebar(); renderWeek(); }
