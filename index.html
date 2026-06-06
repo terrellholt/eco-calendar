@@ -257,7 +257,20 @@ tv-ticker-tape{display:block;width:100%}
 .spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
-.load-error{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;color:#dc2626;font-size:13px}
+/* DURATION LANE */
+.duration-lane{border-top:1px solid #e5e5e0;background:#fafaf8}
+.duration-lane-title{font-size:9px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.06em;padding:5px 10px 4px;border-bottom:1px solid #f0f0ec}
+.duration-lane-body{position:relative;display:grid;grid-template-columns:repeat(7,1fr);padding:6px 0}
+.duration-lane-row{position:relative;height:28px}
+.dl-col-lines{display:grid;grid-template-columns:repeat(7,1fr);height:100%;position:absolute;top:0;left:0;width:100%;pointer-events:none}
+.dl-col-line{border-right:1px solid #ececea}
+.dl-col-line:last-child{border-right:none}
+.dl-bar{position:absolute;top:50%;transform:translateY(-50%);height:22px;background:#fff;border:.5px solid #d0d0cc;border-radius:4px;display:flex;align-items:center;padding:0 7px;box-sizing:border-box;overflow:hidden;white-space:nowrap}
+.dl-bar span{font-size:10px;font-weight:600;color:#444;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-bar.dl-continues{border-right:none;border-radius:4px 0 0 4px}
+.dl-bar.dl-started{border-left:none;border-radius:0 4px 4px 0;padding-left:14px}
+.dl-bar.dl-started.dl-continues{border-left:none;border-right:none;border-radius:0}
+.dl-arrow{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;color:#999;line-height:1;font-weight:500}
   .modal-chart{margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid #f0f0ec}
 .modal-chart-bar{display:flex;gap:4px;padding:6px 8px;background:#f8f8f6;border-bottom:1px solid #f0f0ec}
 .modal-chart-btn{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:none;background:transparent;cursor:pointer;color:#999}
