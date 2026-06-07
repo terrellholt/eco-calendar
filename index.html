@@ -1102,7 +1102,7 @@ function openModal(id) {
   if (ev.chartTicker) {
     chartEl.style.display = 'block';
     var ranges = ['1D','5D','1M','3M','6M','YTD','1Y','5Y','ALL'];
-    var activeRange = ev.chartRange || '1M';
+    var activeRange = ev.chartRange || '1Y';
     chartBar.innerHTML = ranges.map(function(r) {
       return '<button class="modal-chart-btn' + (r === activeRange ? ' active' : '') + '" onclick="loadModalChart(\'' + ev.chartTicker + '\',\'' + r + '\')">' + r + '</button>';
     }).join('');
