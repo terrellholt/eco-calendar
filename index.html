@@ -282,13 +282,14 @@ tv-ticker-tape{display:block;width:100%}
   </div>
 </div>
 <script>
-(function() {
-  var feeds = [
-    { name: 'CNBC',        url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
-    { name: 'MarketWatch', url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
-    { name: 'AP',          url: 'https://feeds.apnews.com/rss/apf-business' },
-    { name: 'Reuters',     url: 'https://feeds.reuters.com/reuters/businessNews' },
-    { name: 'Bloomberg',   url: 'https://feeds.bloomberg.com/markets/news.rss' }
+var feeds = [
+    { name: 'CNBC',         url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+    { name: 'MarketWatch',  url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
+    { name: 'AP',           url: 'https://feeds.apnews.com/rss/apf-business' },
+    { name: 'Yahoo Finance',url: 'https://finance.yahoo.com/news/rssindex' },
+    { name: 'Nasdaq',       url: 'https://www.nasdaq.com/feed/rssoutbound?category=Markets' },
+    { name: 'BBC',          url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
+    { name: 'FT',           url: 'https://www.ft.com/rss/home/uk' }
   ];
   var allItems = [];
   var loaded = 0;
