@@ -283,63 +283,25 @@ tv-ticker-tape{display:block;width:100%}
 </div>
 <script>
 (function() {
-  var feeds = [
-    { name: 'CNBC',         url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
-    { name: 'MarketWatch',  url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
-    { name: 'AP',           url: 'https://feeds.apnews.com/rss/apf-business' },
-    { name: 'Yahoo Finance',url: 'https://finance.yahoo.com/news/rssindex' },
-    { name: 'Nasdaq',       url: 'https://www.nasdaq.com/feed/rssoutbound?category=Markets' },
-    { name: 'BBC',          url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
-    { name: 'FT',           url: 'https://www.ft.com/rss/home/uk' }
-  ];
-  var allItems = [];
-  var loaded = 0;
-  function parseRSS(xml) {
-    var items = [];
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(xml, 'text/xml');
-    var nodes = doc.querySelectorAll('item');
-    nodes.forEach(function(node) {
-      var title = node.querySelector('title');
-      var link = node.querySelector('link');
-      if (title && link) {
-        items.push({ title: title.textContent.trim(), link: link.textContent.trim() });
-      }
-    });
-    return items;
-  }
-  feeds.forEach(function(feed) {
-    fetch('/api/rss')
-      .then(function(r) { return r.text(); })
-      .then(function(xml) {
-        var items = parseRSS(xml);
-        items.slice(0, 8).forEach(function(item) {
-          allItems.push({ title: item.title, link: item.link, source: feed.name });
-        });
-      })
-      .catch(function() {})
-      .finally(function() {
-        loaded++;
-        if (loaded === feeds.length) { renderTicker(); }
+  fetch('/api/rss')
+    .then(function(r) { return r.json(); })
+    .then(function(items) {
+      if (!items || items.length === 0) { return; }
+      var inner = document.getElementById('newsTickerInner');
+      if (!inner) { return; }
+      var html = '';
+      var doubled = items.concat(items);
+      doubled.forEach(function(item, i) {
+        html += '<span class="ticker-item" onclick="window.open(\'' + (item.link || '').replace(/'/g, '') + '\',\'_blank\')">';
+        html += '<span style="color:#f59e0b;font-size:9px;font-weight:700;margin-right:6px">' + item.source + '</span>';
+        html += item.title + '</span>';
+        if (i < doubled.length - 1) { html += '<span class="ticker-sep">&#8226;</span>'; }
       });
-  });
-  function renderTicker() {
-    if (allItems.length === 0) { return; }
-    var inner = document.getElementById('newsTickerInner');
-    if (!inner) { return; }
-    var html = '';
-    var doubled = allItems.concat(allItems);
-    doubled.forEach(function(item, i) {
-      html += '<span class="ticker-item" onclick="window.open(\'' + item.link.replace(/'/g, '') + '\',\'_blank\')">';
-      html += '<span style="color:#f59e0b;font-size:9px;font-weight:700;margin-right:6px">' + item.source + '</span>';
-      html += item.title + '</span>';
-      if (i < doubled.length - 1) { html += '<span class="ticker-sep">&#8226;</span>'; }
-    });
-    inner.innerHTML = html;
-    var duration = Math.max(60, doubled.length * 4);
-    inner.style.animation = 'tickerScroll ' + duration + 's linear infinite';
-  }
-  setTimeout(function() { if (loaded < feeds.length) { renderTicker(); } }, 6000);
+      inner.innerHTML = html;
+      var duration = Math.max(60, doubled.length * 4);
+      inner.style.animation = 'tickerScroll ' + duration + 's linear infinite';
+    })
+    .catch(function() {});
 }());
 </script>
 
