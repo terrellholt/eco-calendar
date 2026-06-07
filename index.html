@@ -283,7 +283,6 @@ tv-ticker-tape{display:block;width:100%}
 </div>
 <script>
 (function() {
-  var RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
   var feeds = [
     { name: 'CNBC',        url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
     { name: 'MarketWatch', url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
@@ -293,15 +292,28 @@ tv-ticker-tape{display:block;width:100%}
   ];
   var allItems = [];
   var loaded = 0;
+  function parseRSS(xml) {
+    var items = [];
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(xml, 'text/xml');
+    var nodes = doc.querySelectorAll('item');
+    nodes.forEach(function(node) {
+      var title = node.querySelector('title');
+      var link = node.querySelector('link');
+      if (title && link) {
+        items.push({ title: title.textContent.trim(), link: link.textContent.trim() });
+      }
+    });
+    return items;
+  }
   feeds.forEach(function(feed) {
-    fetch(RSS2JSON + encodeURIComponent(feed.url) + '&count=8')
+    fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(feed.url))
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        if (data.items) {
-          data.items.forEach(function(item) {
-            allItems.push({ title: item.title, link: item.link, source: feed.name });
-          });
-        }
+        var items = parseRSS(data.contents || '');
+        items.slice(0, 8).forEach(function(item) {
+          allItems.push({ title: item.title, link: item.link, source: feed.name });
+        });
       })
       .catch(function() {})
       .finally(function() {
