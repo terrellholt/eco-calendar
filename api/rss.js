@@ -5,34 +5,48 @@ export default async function handler(req, res) {
   const now = Date.now();
 
   const BLOCKLIST = [
-    'opinion','editorial','commentary','analysis','explainer','here\'s why',
+    'opinion','editorial','commentary','explainer','here\'s why',
     'why you should','what to know','what you need','how to','the case for',
     'the case against','ranked','reviewed','best and worst','column','letter to',
-    'perspective','deep dive','long read','special report','investigat'
+    'perspective','deep dive','long read','special report','investigat',
+    'which is the better','which is better','here are','here\'s what',
+    'may soon','might soon','could soon','what we\'re watching','things to watch',
+    'things we\'re watching','big things','what happened this week',
+    'week ahead','what to watch','looking ahead','what investors should',
+    'should you buy','should you sell','is it time to','time to buy',
+    'time to sell','demonstrates','study finds','trial data','clinical trial',
+    'weight loss','key points','bottom line','the bottom line',
+    'buying the dip','we\'re buying','our newest','getting a better price'
+  ];
+
+  const SOURCE_BLOCKLIST = [
+    'motley fool','fool.com','seeking alpha','investopedia','thestreet',
+    'benzinga','zacks','marketbeat'
   ];
 
   const ALLOWLIST = [
-    'earnings','revenue','profit','loss','gdp','inflation','cpi','ppi','pce',
-    'jobs','unemployment','payroll','nonfarm','fed','fomc','rate','rates',
-    'interest rate','powell','treasury','yield','bond','tariff','tariffs',
-    'sanctions','trade','deficit','surplus','ipo','merger','acquisition',
-    'deal','bankruptcy','default','recession','growth','market','stocks',
-    'nasdaq','s&p','dow','oil','gold','dollar','euro','bitcoin','crypto',
-    'bank','central bank','ecb','boe','boj','imf','world bank','opec',
-    'conflict','war','sanction','geopolit','election','policy','legislation',
-    'regulation','sec','antitrust','split','buyback','dividend','guidance',
-    'forecast','outlook','downgrade','upgrade','rally','selloff','crash',
-    'surge','plunge','spike','slump','quarter','fiscal','annual'
+    'reports earnings','posted earnings','quarterly earnings','q1','q2','q3','q4',
+    'beats estimates','misses estimates','raises guidance','cuts guidance',
+    'gdp','cpi','ppi','pce','nonfarm payroll','unemployment rate','jobs report',
+    'fed raises','fed cuts','rate decision','fomc','interest rate decision',
+    'powell says','powell warns','central bank raises','central bank cuts',
+    'treasury yield','10-year yield','2-year yield',
+    'declares war','military strike','sanctions imposed','sanctions lifted',
+    'trade deal','trade war','tariff imposed','tariff raised','tariff cut',
+    'merger approved','acquisition completed','deal closed','ipo priced',
+    'bankruptcy filed','files for bankruptcy','defaults on',
+    'market closes','market opens','circuit breaker','trading halted',
+    'opec cuts','opec raises','oil supply','oil output',
+    'imf warns','world bank','g7','g20','emergency meeting',
+    'sec charges','doj charges','antitrust','fined','indicted'
   ];
 
   const feeds = [
-    { name: 'CNBC',         url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
-    { name: 'MarketWatch',  url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
-    { name: 'AP',           url: 'https://feeds.apnews.com/rss/apf-business' },
-    { name: 'Yahoo Finance',url: 'https://finance.yahoo.com/news/rssindex' },
-    { name: 'Nasdaq',       url: 'https://www.nasdaq.com/feed/rssoutbound?category=Markets' },
-    { name: 'BBC',          url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
-    { name: 'FT',           url: 'https://www.ft.com/rss/home/uk' }
+    { name: 'CNBC',        url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+    { name: 'MarketWatch', url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
+    { name: 'AP',          url: 'https://feeds.apnews.com/rss/apf-business' },
+    { name: 'BBC',         url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
+    { name: 'FT',          url: 'https://www.ft.com/rss/home/uk' }
   ];
 
   const results = await Promise.allSettled(
@@ -57,6 +71,7 @@ export default async function handler(req, res) {
 
           const t = title.toLowerCase();
           if (BLOCKLIST.some(w => t.includes(w))) continue;
+          if (SOURCE_BLOCKLIST.some(w => link.toLowerCase().includes(w))) continue;
           if (!ALLOWLIST.some(w => t.includes(w))) continue;
 
           items.push({ title: title.trim(), link: link.trim(), source: f.name });
