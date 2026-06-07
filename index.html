@@ -307,10 +307,10 @@ tv-ticker-tape{display:block;width:100%}
     return items;
   }
   feeds.forEach(function(feed) {
-    fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(feed.url))
+    fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url) + '&count=8&api_key=')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var items = parseRSS(data.contents || '');
+        var items = (data.items || []).map(function(i) { return { title: i.title, link: i.link }; });
         items.slice(0, 8).forEach(function(item) {
           allItems.push({ title: item.title, link: item.link, source: feed.name });
         });
