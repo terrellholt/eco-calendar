@@ -1,7 +1,8 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const FOUR_HOURS = 4 * 60 * 60 * 1000;
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+  const MAX_ITEMS = 15;
   const now = Date.now();
 
   const BLOCKLIST = [
@@ -14,8 +15,8 @@ export default async function handler(req, res) {
     'things we\'re watching','big things','what happened this week',
     'week ahead','what to watch','looking ahead','what investors should',
     'should you buy','should you sell','is it time to','time to buy',
-    'time to sell','demonstrates','study finds','trial data','clinical trial',
-    'weight loss','key points','bottom line','the bottom line',
+    'time to sell','demonstrates','study finds','clinical trial',
+    'weight loss','bottom line','the bottom line',
     'buying the dip','we\'re buying','our newest','getting a better price'
   ];
 
@@ -60,27 +61,38 @@ export default async function handler(req, res) {
           const link  = (m[0].match(/<link>(.*?)<\/link>/)  || m[0].match(/<guid>(.*?)<\/guid>/))?.[1];
           const pubDateStr = (m[0].match(/<pubDate>(.*?)<\/pubDate>/))?.[1];
 
-          if (!title || !link) continue;
+          if (!title || !link || !pubDateStr) continue;
 
-          if (pubDateStr) {
-            const pubTime = new Date(pubDateStr).getTime();
-            if (isNaN(pubTime) || now - pubTime > FOUR_HOURS) continue;
-          } else {
-            continue;
-          }
+          const pubTime = new Date(pubDateStr).getTime();
+          if (isNaN(pubTime) || now - pubTime > TWENTY_FOUR_HOURS) continue;
 
           const t = title.toLowerCase();
           if (BLOCKLIST.some(w => t.includes(w))) continue;
           if (SOURCE_BLOCKLIST.some(w => link.toLowerCase().includes(w))) continue;
           if (!ALLOWLIST.some(w => t.includes(w))) continue;
 
-          items.push({ title: title.trim(), link: link.trim(), source: f.name });
-          if (items.length >= 8) break;
+          items.push({ title: title.trim(), link: link.trim(), source: f.name, pubTime });
         }
         return items;
       }))
   );
 
+  // Merge all, deduplicate similar headlines, sort newest first, cap at MAX_ITEMS
   const allItems = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  res.status(200).json(allItems);
+
+  allItems.sort((a, b) => b.pubTime - a.pubTime);
+
+  const deduped = [];
+  for (const item of allItems) {
+    const words = new Set(item.title.toLowerCase().split(/\s+/).filter(w => w.length > 4));
+    const isDupe = deduped.some(existing => {
+      const existingWords = new Set(existing.title.toLowerCase().split(/\s+/).filter(w => w.length > 4));
+      const intersection = [...words].filter(w => existingWords.has(w)).length;
+      return intersection / Math.max(words.size, existingWords.size) > 0.6;
+    });
+    if (!isDupe) deduped.push(item);
+    if (deduped.length >= MAX_ITEMS) break;
+  }
+
+  res.status(200).json(deduped.map(({ pubTime, ...rest }) => rest));
 }
