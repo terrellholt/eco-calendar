@@ -309,7 +309,7 @@ tv-ticker-tape{display:block;width:100%}
     return items;
   }
   feeds.forEach(function(feed) {
-    fetch('https://corsproxy.io/?' + encodeURIComponent(feed.url))
+    fetch('/api/rss')
       .then(function(r) { return r.text(); })
       .then(function(xml) {
         var items = parseRSS(xml);
