@@ -1456,7 +1456,12 @@ function loadTimePicker(val) {
     else if (valLower.indexOf('undetermined') > -1 || valLower.indexOf('tbd') > -1) matched = 'Undetermined';
   }
   if (matched) {
-    if (sel) { sel.value = matched; sel.style.borderColor = '#4cbe85'; sel.style.color = '#16a34a'; }
+    if (sel) {
+      sel.value = matched;
+      sel.style.borderColor = '#4cbe85';
+      sel.style.color = '#16a34a';
+    }
+    setTimePresetFromSelect(matched);
     return;
   }
   if (sel) sel.value = 'custom';
