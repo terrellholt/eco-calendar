@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   const SOURCE_BLOCKLIST = [
     'motley fool','fool.com','seeking alpha','investopedia','thestreet',
-    'benzinga','zacks','marketbeat'
+    'benzinga','zacks','marketbeat','yahoo'
   ];
 
   const ALLOWLIST = [
@@ -47,7 +47,8 @@ export default async function handler(req, res) {
     { name: 'MarketWatch', url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
     { name: 'AP',          url: 'https://feeds.apnews.com/rss/apf-business' },
     { name: 'BBC',         url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
-    { name: 'FT',          url: 'https://www.ft.com/rss/home/uk' }
+    { name: 'FT',          url: 'https://www.ft.com/rss/home/uk' },
+    { name: 'Reuters',     url: 'https://finance.yahoo.com/news/rssindex' }
   ];
 
   const results = await Promise.allSettled(
@@ -86,7 +87,6 @@ export default async function handler(req, res) {
   const allStrict   = results.flatMap(r => r.status === 'fulfilled' ? r.value.strict : []);
   const allFallback = results.flatMap(r => r.status === 'fulfilled' ? r.value.fallback : []);
 
-  // Use strict items if we have any, otherwise fall back to blocklist-only filtered items
   const pool = allStrict.length > 0 ? allStrict : allFallback;
 
   pool.sort((a, b) => b.pubTime - a.pubTime);
