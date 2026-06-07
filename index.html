@@ -273,6 +273,61 @@ tv-ticker-tape{display:block;width:100%}
     <tv-ticker-tape symbols="FOREXCOM:SPXUSD,AMEX:TLT,INDEX:DXY,BITSTAMP:BTCUSD,OANDA:XAUUSD" theme="dark"></tv-ticker-tape>
   </div>
 </div>
+<div class="news-ticker" id="newsTicker">
+  <div class="news-ticker-label">&#9679; Breaking</div>
+  <div class="news-ticker-track">
+    <div class="news-ticker-inner" id="newsTickerInner">
+      <span class="ticker-item" style="color:#555">Loading headlines...</span>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  var feeds = [
+    { name: 'CNBC',        url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+    { name: 'MarketWatch', url: 'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines' },
+    { name: 'AP',          url: 'https://feeds.apnews.com/rss/apf-business' },
+    { name: 'Reuters',     url: 'https://feeds.reuters.com/reuters/businessNews' },
+    { name: 'Bloomberg',   url: 'https://feeds.bloomberg.com/markets/news.rss' }
+  ];
+  var allItems = [];
+  var loaded = 0;
+  feeds.forEach(function(feed) {
+    fetch(RSS2JSON + encodeURIComponent(feed.url) + '&count=8')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.items) {
+          data.items.forEach(function(item) {
+            allItems.push({ title: item.title, link: item.link, source: feed.name });
+          });
+        }
+      })
+      .catch(function() {})
+      .finally(function() {
+        loaded++;
+        if (loaded === feeds.length) { renderTicker(); }
+      });
+  });
+  function renderTicker() {
+    if (allItems.length === 0) { return; }
+    var inner = document.getElementById('newsTickerInner');
+    if (!inner) { return; }
+    var html = '';
+    var doubled = allItems.concat(allItems);
+    doubled.forEach(function(item, i) {
+      html += '<span class="ticker-item" onclick="window.open(\'' + item.link.replace(/'/g, '') + '\',\'_blank\')">';
+      html += '<span style="color:#f59e0b;font-size:9px;font-weight:700;margin-right:6px">' + item.source + '</span>';
+      html += item.title + '</span>';
+      if (i < doubled.length - 1) { html += '<span class="ticker-sep">&#8226;</span>'; }
+    });
+    inner.innerHTML = html;
+    var duration = Math.max(60, doubled.length * 4);
+    inner.style.animation = 'tickerScroll ' + duration + 's linear infinite';
+  }
+  setTimeout(function() { if (loaded < feeds.length) { renderTicker(); } }, 6000);
+}());
+</script>
 
 <div class="app">
   <div class="icon-rail">
