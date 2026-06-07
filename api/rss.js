@@ -54,7 +54,8 @@ export default async function handler(req, res) {
     feeds.map(f => fetch(f.url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
       .then(r => r.text())
       .then(xml => {
-        const items = [];
+        const strict = [];
+        const fallback = [];
         const matches = xml.matchAll(/<item[\s\S]*?<\/item>/g);
         for (const m of matches) {
           const title = (m[0].match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || m[0].match(/<title>(.*?)<\/title>/))?.[1];
@@ -69,21 +70,29 @@ export default async function handler(req, res) {
           const t = title.toLowerCase();
           if (BLOCKLIST.some(w => t.includes(w))) continue;
           if (SOURCE_BLOCKLIST.some(w => link.toLowerCase().includes(w))) continue;
-          if (!ALLOWLIST.some(w => t.includes(w))) continue;
 
-          items.push({ title: title.trim(), link: link.trim(), source: f.name, pubTime });
+          const item = { title: title.trim(), link: link.trim(), source: f.name, pubTime };
+
+          if (ALLOWLIST.some(w => t.includes(w))) {
+            strict.push(item);
+          } else {
+            fallback.push(item);
+          }
         }
-        return items;
+        return { strict, fallback };
       }))
   );
 
-  // Merge all, deduplicate similar headlines, sort newest first, cap at MAX_ITEMS
-  const allItems = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
+  const allStrict   = results.flatMap(r => r.status === 'fulfilled' ? r.value.strict : []);
+  const allFallback = results.flatMap(r => r.status === 'fulfilled' ? r.value.fallback : []);
 
-  allItems.sort((a, b) => b.pubTime - a.pubTime);
+  // Use strict items if we have any, otherwise fall back to blocklist-only filtered items
+  const pool = allStrict.length > 0 ? allStrict : allFallback;
+
+  pool.sort((a, b) => b.pubTime - a.pubTime);
 
   const deduped = [];
-  for (const item of allItems) {
+  for (const item of pool) {
     const words = new Set(item.title.toLowerCase().split(/\s+/).filter(w => w.length > 4));
     const isDupe = deduped.some(existing => {
       const existingWords = new Set(existing.title.toLowerCase().split(/\s+/).filter(w => w.length > 4));
