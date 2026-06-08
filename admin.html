@@ -2001,7 +2001,7 @@ function initLockStates() {
     var btn = document.getElementById('lock_' + f);
     var field = btn ? btn.closest('.ep-field') : null;
     if (!btn) return;
-    if (!hasTmpl) { btn.style.display = 'none'; return; }
+    if (!hasTmpl) { btn.style.display = 'none'; if (field) field.classList.remove('tmpl-locked'); return; }
     btn.style.display = '';
     var isOverridden = overrides.hasOwnProperty(f);
     lockedFields[f] = !isOverridden;
