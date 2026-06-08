@@ -1645,6 +1645,12 @@ function showTemplateForm(tmpl) {
   document.getElementById('tf_frequency').value = tmpl ? ((tmpl.frequency || '').toLowerCase()) : '';
   document.getElementById('tf_source_url').value = tmpl ? (tmpl.source_url || '') : '';
   document.getElementById('tf_chart_ticker').value = tmpl ? (tmpl.chart_ticker || '') : '';
+  document.getElementById('tf_aka').value = tmpl ? (tmpl.aka || '') : '';
+  document.getElementById('tf_ticker').value = tmpl ? (tmpl.ticker || '') : '';
+  document.getElementById('tf_source_tz').value = tmpl ? (tmpl.source_tz || 'America/New_York') : 'America/New_York';
+  document.getElementById('tf_time_preset').value = tmpl ? (tmpl.display_time || '') : '';
+  document.getElementById('tf_details').value = tmpl ? (tmpl.details || '') : '';
+  document.getElementById('tf_notes').value = tmpl ? (tmpl.notes || '') : '';
   document.getElementById('tf_measures').value = tmpl ? (tmpl.measures || '') : '';
   document.getElementById('tf_why_it_matters').value = tmpl ? (tmpl.why_it_matters || '') : '';
   tmplSelectedImpact = tmpl ? ((tmpl.impact_level || 'none').toLowerCase()) : 'none'; updateTmplImpactUI();
