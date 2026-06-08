@@ -1723,6 +1723,12 @@ function saveTemplate() {
     measures: document.getElementById('tf_measures').value.trim() || null,
     why_it_matters: document.getElementById('tf_why_it_matters').value.trim() || null,
     chart_ticker: document.getElementById('tf_chart_ticker').value.trim().toUpperCase() || null,
+    aka: document.getElementById('tf_aka').value.trim() || null,
+    ticker: document.getElementById('tf_ticker').value.trim() || null,
+    source_tz: document.getElementById('tf_source_tz').value || null,
+    display_time: document.getElementById('tf_time_preset').value || null,
+    details: document.getElementById('tf_details').value.trim() || null,
+    notes: document.getElementById('tf_notes').value.trim() || null,
   };
   if (isNewTemplate) {
     supaFetch('/rest/v1/event_templates', { method: 'POST', body: JSON.stringify(payload) })
