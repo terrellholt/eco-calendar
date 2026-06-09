@@ -66,8 +66,7 @@ tv-ticker-tape{display:block;width:100%}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .nav-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .nav-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
-.nav-pill:first-child,.nav-pill:last-child{font-size:15px;line-height:1}
-.nav-pill:first-child,.nav-pill:last-child{font-size:16px;font-weight:300;line-height:1;padding:2px 9px}
+.nav-pill:first-child,.nav-pill:last-child{font-size:15px;font-weight:300;line-height:1}
 .nav-pill:hover{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .nav-pill.today-pill.active{color:#2563eb;font-weight:600}
 .nav-pill.today-pill.active:hover{background:#fff;color:#1d4ed8;box-shadow:0 1px 3px rgba(0,0,0,.1)}
@@ -257,7 +256,7 @@ tv-ticker-tape{display:block;width:100%}
 @keyframes emPulse{0%,100%{opacity:1;text-shadow:0 0 6px rgba(37,99,235,0.4)}50%{opacity:0.55;text-shadow:0 0 12px rgba(37,99,235,0.8)}}
 .em-tooltip{position:absolute;background:#1a1a1a;color:#fff;font-size:12px;line-height:1.5;padding:10px 13px;border-radius:8px;max-width:260px;z-index:300;margin-top:10px;box-shadow:0 4px 16px rgba(0,0,0,.2)}
 .em-tooltip::before{content:'';position:absolute;top:-6px;left:3px;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid #1a1a1a}
-  .news-ticker{background:#000;border-bottom:1px solid #222;height:28px;display:flex;align-items:center;overflow:hidden;flex-shrink:0;position:relative}
+.news-ticker{background:#000;border-bottom:1px solid #222;height:28px;display:flex;align-items:center;overflow:hidden;flex-shrink:0;position:relative}
 .news-ticker-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 12px;white-space:nowrap;flex-shrink:0;border-right:1px solid #333;height:100%;display:flex;align-items:center;animation:badgePulseHigh 2s ease-in-out infinite}
 .news-ticker-track{display:flex;align-items:center;overflow:hidden;flex:1;height:100%}
 .news-ticker-inner{display:flex;align-items:center;gap:0;white-space:nowrap;animation:tickerScroll 120s linear infinite}
@@ -1041,14 +1040,15 @@ function renderDurationLane() {
       var arrL = document.createElement('span');
       arrL.className = 'dl-arrow';
       arrL.style.left = pct(startCol);
+      arrL.style.fontSize = '15px';
       arrL.textContent = '\u2039';
-arrL.style.fontSize = '15px';
       rowDiv.appendChild(arrL);
     }
     if (endsAfterWeek) {
       var arrR = document.createElement('span');
       arrR.className = 'dl-arrow';
       arrR.style.right = '0';
+      arrR.style.fontSize = '15px';
       arrR.textContent = '\u203a';
       rowDiv.appendChild(arrR);
     }
