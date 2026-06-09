@@ -1037,7 +1037,9 @@ function renderDurationLane() {
     barDiv.innerHTML = '<span>' + ev.title + '<span style="font-weight:400;color:#888;margin-left:8px;font-size:10px">' + dateRangeStr + '</span></span>';
     rowDiv.appendChild(barDiv);
     if (startsBeforeWeek) {
-      var arrL = document.createElement('span');
+      arrL.className = 'dl-arrow';
+arrL.style.fontSize = '16px';
+arrL.style.fontWeight = '300';
       arrL.className = 'dl-arrow';
       arrL.style.left = pct(startCol);
       arrL.textContent = '\u2039';
