@@ -1578,7 +1578,7 @@ function saveChanges() {
         writebackToSheet(currentEvent.sync_id, {
           event: payload.event||'', short_name: payload.short_name||'', date: payload.date||'',
           end_date: payload.end_date||'', hero_url: payload.hero_url||'', hero_position: payload.hero_position||'',
-          logo_url: payload.logo_url||'', display_time: payload.display_time||'', ticker: payload.ticker||'',
+          logo_url: payload.logo_url||'', time: payload.display_time||'', ticker: payload.ticker||'',
           aka: payload.aka||'', source_url: payload.source_url||'', category: payload.category||'',
           region: payload.region||'', source_tz: payload.source_tz||'', impact: payload.impact||'',
           show_mini: payload.show_in_monthly ? 'TRUE' : 'FALSE', is_estimated: payload.is_estimated ? 'TRUE' : 'FALSE',
