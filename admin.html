@@ -1576,8 +1576,19 @@ function saveChanges() {
       .then(function() {
         Object.assign(currentEvent, payload);
         writebackToSheet(currentEvent.sync_id, {
-          event: payload.event||'', short_name: payload.short_name||'', hero_url: payload.hero_url||'',
+          event: payload.event||'', short_name: payload.short_name||'', date: payload.date||'',
+          end_date: payload.end_date||'', hero_url: payload.hero_url||'', hero_position: payload.hero_position||'',
           logo_url: payload.logo_url||'', display_time: payload.display_time||'', ticker: payload.ticker||'',
+          aka: payload.aka||'', source_url: payload.source_url||'', category: payload.category||'',
+          region: payload.region||'', source_tz: payload.source_tz||'', impact: payload.impact||'',
+          show_mini: payload.show_in_monthly ? 'TRUE' : 'FALSE', is_estimated: payload.is_estimated ? 'TRUE' : 'FALSE',
+          visible: payload.visible ? 'TRUE' : 'FALSE', frequency: payload.frequency||'',
+          measures: payload.measures||'', why_it_matters: payload.why_it_matters||'', details: payload.details||'',
+          notes: payload.notes||'', impacted_assets: payload.impacted_assets||'',
+          price_move_val: payload.price_move_val||'', price_move_type: payload.price_move_type||'',
+          price_move_expiry: payload.price_move_expiry||'', chart_ticker: payload.chart_ticker||'',
+          chart_range: payload.chart_range||'',
+        });
           aka: payload.aka||'', source_url: payload.source_url||'', category: payload.category||'',
           region: payload.region||'', source_tz: payload.source_tz||'', impact: payload.impact||'',
           show_mini: payload.show_in_monthly ? 'TRUE' : 'FALSE', is_estimated: payload.is_estimated ? 'TRUE' : 'FALSE',
