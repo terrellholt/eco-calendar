@@ -737,7 +737,7 @@ function categoryToTab(cat, title) {
 }
 function setFilter(mode) {
   filterMode = mode;
-  var labels = { confirmed: 'Confirmed', estimated: 'Estimated \u007e', all: 'All' };
+  var labels = { confirmed: 'Confirmed', estimated: 'Unconfirmed', all: 'All' };
   ['confirmed','estimated','all'].forEach(function(m) {
     var el = document.getElementById('pill-' + m);
     if (!el) { return; }
