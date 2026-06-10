@@ -1729,7 +1729,7 @@ function saveTemplate() {
     aka: document.getElementById('tf_aka').value.trim() || null,
     ticker: document.getElementById('tf_ticker').value.trim() || null,
     source_tz: document.getElementById('tf_source_tz').value || null,
-    display_time: document.getElementById('tf_time_preset').value || null,
+    display_time: (function(){ var sel = document.getElementById('tf_time_preset'); if (!sel || !sel.value) return null; if (sel.value === 'custom') { var h = document.getElementById('tf_time_hour').value, m = document.getElementById('tf_time_min').value, ap = document.getElementById('tf_time_ampm').value, tz = document.getElementById('tf_time_tz').value; return h + ':' + m + ' ' + ap + ' ' + tz; } return sel.value; })(),
     details: document.getElementById('tf_details').value.trim() || null,
     notes: document.getElementById('tf_notes').value.trim() || null,
   };
