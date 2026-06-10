@@ -1589,14 +1589,6 @@ function saveChanges() {
           price_move_expiry: payload.price_move_expiry||'', chart_ticker: payload.chart_ticker||'',
           chart_range: payload.chart_range||'',
         });
-          aka: payload.aka||'', source_url: payload.source_url||'', category: payload.category||'',
-          region: payload.region||'', source_tz: payload.source_tz||'', impact: payload.impact||'',
-          show_mini: payload.show_in_monthly ? 'TRUE' : 'FALSE', is_estimated: payload.is_estimated ? 'TRUE' : 'FALSE',
-          visible: payload.visible ? 'TRUE' : 'FALSE', end_date: payload.end_date||'', frequency: payload.frequency||'',
-          measures: payload.measures||'', why_it_matters: payload.why_it_matters||'', details: payload.details||'',
-          notes: payload.notes||'', impacted_assets: payload.impacted_assets||'', price_move: payload.price_move_val||'',
-          price_move_type: payload.price_move_type||'', chart_ticker: payload.chart_ticker||'', chart_range: payload.chart_range||'',
-        });
         statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved';
         showToast('Changes saved', 'success'); renderTable(); btn.disabled = false;
         setTimeout(closeEdit, 800);
