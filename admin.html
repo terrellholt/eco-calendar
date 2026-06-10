@@ -1770,6 +1770,24 @@ function saveTemplate() {
             .then(function() { Object.assign(e, update); });
         });
         Promise.all(pushPromises).then(function() {
+          linkedEvents.forEach(function(e) {
+            if (!e.sync_id) return;
+            writebackToSheet(e.sync_id, {
+              event: e.event||'', short_name: e.short_name||'', date: e.date||'',
+              end_date: e.end_date||'', hero_url: e.hero_url||'', logo_url: e.logo_url||'',
+              time: e.display_time||'', ticker: e.ticker||'', aka: e.aka||'',
+              source_url: e.source_url||'', category: e.category||'', region: e.region||'',
+              source_tz: e.source_tz||'', impact: e.impact||'',
+              show_mini: e.show_in_monthly ? 'TRUE' : 'FALSE',
+              is_estimated: e.is_estimated ? 'TRUE' : 'FALSE',
+              visible: e.visible ? 'TRUE' : 'FALSE', frequency: e.frequency||'',
+              measures: e.measures||'', why_it_matters: e.why_it_matters||'',
+              details: e.details||'', notes: e.notes||'',
+              impacted_asset_1: e.impacted_assets||'',
+              price_move_val: e.price_move_val||'', price_move_type: e.price_move_type||'',
+              chart_ticker: e.chart_ticker||'', chart_range: e.chart_range||'',
+            });
+          });
           showToast('Template saved \u2014 ' + linkedEvents.length + ' event' + (linkedEvents.length === 1 ? '' : 's') + ' updated', 'success');
           renderTable();
         }).catch(function(err) { showToast('Template saved but push failed: ' + err.message, 'error'); });
