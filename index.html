@@ -349,7 +349,7 @@ tv-ticker-tape{display:block;width:100%}
         <div class="week-nav-right">
           <div class="filter-pills">
             <button class="filter-pill active" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed Events</button>
-            <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Estimated ~</button>
+            var labels = { confirmed: 'Confirmed', estimated: 'Estimated \u007e', all: 'All' };
             <button class="filter-pill" id="pill-all" onclick="setFilter('all')">All</button>
           </div>
           <div style="position:relative" id="filterContainer">
