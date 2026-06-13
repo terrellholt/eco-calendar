@@ -458,9 +458,8 @@ tv-ticker-tape{display:block;width:100%}
       </div>
       <div class="markets-body">
         <div class="markets-main">
-          <div style="display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db;width:fit-content;margin:10px 0 0 10px;flex-shrink:0">
-            <button class="mkt-tab-btn nav-pill active" data-view="overview" onclick="switchMarketView('overview')">Market Overview</button>
-            <button class="mkt-tab-btn nav-pill" data-view="yields" onclick="switchMarketView('yields')">Bond Yields</button>
+         <div style="position:relative;height:0;overflow:visible;z-index:10">
+            <button class="mkt-tab-btn" data-view="yields" onclick="switchMarketView('yields')" style="position:absolute;top:11px;left:320px;background:none;border:none;cursor:pointer;font-size:14px;font-weight:400;color:#555;padding:0 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">Bond Yields</button>
           </div>
           <div class="market-overview-wrap" id="tvOverviewWrap">
             <div class="tradingview-widget-container">
