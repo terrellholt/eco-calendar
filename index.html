@@ -458,13 +458,26 @@ tv-ticker-tape{display:block;width:100%}
       </div>
       <div class="markets-body">
         <div class="markets-main">
-          <div class="market-overview-wrap">
+          <div style="display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db;width:fit-content;margin:10px 0 0 10px;flex-shrink:0">
+            <button class="mkt-tab-btn nav-pill active" data-view="overview" onclick="switchMarketView('overview')">Market Overview</button>
+            <button class="mkt-tab-btn nav-pill" data-view="yields" onclick="switchMarketView('yields')">Bond Yields</button>
+          </div>
+          <div class="market-overview-wrap" id="tvOverviewWrap">
             <div class="tradingview-widget-container">
               <div class="tradingview-widget-container__widget"></div>
               <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js?v=3" async>
               {"colorTheme":"light","dateRange":"1W","locale":"en","isTransparent":false,"autosize":true,"showSymbolLogo":true,"showChart":true,"support_host":"https://www.tradingview.com","tabs":[{"title":"Indices","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"INDEX:NKY","d":"Japan 225"},{"s":"INDEX:DEU40","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]},{"title":"Forex","symbols":[{"s":"INDEX:DXY","d":"U.S. Dollar Index"},{"s":"FX:EURUSD","d":"Euro / USD"},{"s":"FX:GBPUSD","d":"GBP / USD"},{"s":"FX:USDCHF","d":"USD / Swiss Franc"},{"s":"FX:USDJPY","d":"USD / Japanese Yen"}]},{"title":"Crypto","symbols":[{"s":"COINBASE:BTCUSD","d":"Bitcoin"},{"s":"COINBASE:ETHUSD","d":"Ethereum"},{"s":"COINBASE:SOLUSD","d":"Solana"},{"s":"COINBASE:XRPUSD","d":"XRP"}]},{"title":"Precious Metals","symbols":[{"s":"OANDA:XAUUSD","d":"Gold"},{"s":"OANDA:XAGUSD","d":"Silver"},{"s":"OANDA:XCUUSD","d":"Copper"},{"s":"OANDA:XPDUSD","d":"Palladium"}]}]}
               </script>
             </div>
+          </div>
+          <div class="yield-heatmap-wrap" id="yieldHeatmap">
+            <div class="yh-loading" id="yhLoading">Loading yield data...</div>
+            <table class="yh-table" id="yhTable" style="display:none">
+              <thead><tr>
+                <th>Country</th><th>1M</th><th>3M</th><th>6M</th><th>1Y</th><th>2Y</th><th>3Y</th><th>5Y</th><th>7Y</th><th>10Y</th><th>30Y</th>
+              </tr></thead>
+              <tbody id="yhBody"></tbody>
+            </table>
           </div>
         </div>
         <div class="markets-sidebar">
@@ -1182,6 +1195,68 @@ function toggleEmTooltip(e) {
   e.stopPropagation();
   var tooltip = e.target.nextElementSibling;
   tooltip.style.display = tooltip.style.display === 'none' ? 'block' : 'none';
+}
+function switchMarketView(view) {
+  var tv = document.getElementById('tvOverviewWrap');
+  var yh = document.getElementById('yieldHeatmap');
+  var btns = document.querySelectorAll('.mkt-tab-btn');
+  if (view === 'yields') {
+    tv.style.display = 'none';
+    yh.classList.add('active');
+    if (!yh.getAttribute('data-loaded')) { loadYieldHeatmap(); yh.setAttribute('data-loaded','1'); }
+  } else {
+    tv.style.display = '';
+    yh.classList.remove('active');
+  }
+  btns.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-view') === view); });
+}
+var FRED_KEY = 'e9ce1763cea9bf802976749a22966411';
+var FRED_SERIES = {
+  '1M':'DTB4WK','3M':'DTB3','6M':'DTB6','1Y':'DTB1YR',
+  '2Y':'DGS2','3Y':'DGS3','5Y':'DGS5','7Y':'DGS7','10Y':'DGS10','30Y':'DGS30'
+};
+var MATURITIES = ['1M','3M','6M','1Y','2Y','3Y','5Y','7Y','10Y','30Y'];
+function loadYieldHeatmap() {
+  var promises = MATURITIES.map(function(mat) {
+    var sid = FRED_SERIES[mat];
+    var url = 'https://api.stlouisfed.org/fred/series/observations?series_id=' + sid + '&api_key=' + FRED_KEY + '&limit=1&sort_order=desc&file_type=json';
+    return fetch(url).then(function(r) { return r.json(); }).then(function(d) {
+      var obs = d.observations && d.observations[0];
+      return { mat: mat, val: obs && obs.value !== '.' ? parseFloat(obs.value) : null };
+    }).catch(function() { return { mat: mat, val: null }; });
+  });
+  Promise.all(promises).then(function(results) {
+    var vals = {};
+    results.forEach(function(r) { vals[r.mat] = r.val; });
+    var allVals = results.map(function(r) { return r.val; }).filter(function(v) { return v !== null; });
+    var min = Math.min.apply(null, allVals);
+    var max = Math.max.apply(null, allVals);
+    function cellColor(v) {
+      if (v === null) { return '#f5f5f0'; }
+      var t = max === min ? 0.5 : (v - min) / (max - min);
+      var r = Math.round(220 - t * 186);
+      var g = Math.round(252 - t * 89);
+      var b = Math.round(220 - t * 146);
+      return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    function textColor(v) {
+      if (v === null) { return '#aaa'; }
+      var t = max === min ? 0.5 : (v - min) / (max - min);
+      return t > 0.5 ? '#1a3a1a' : '#1a1a1a';
+    }
+    var row = '<tr><td>\u1F1FA\u1F1F8 USA</td>';
+    MATURITIES.forEach(function(mat) {
+      var v = vals[mat];
+      var bg = cellColor(v);
+      var tc = textColor(v);
+      var txt = v !== null ? v.toFixed(2) + '%' : '\u2014';
+      row += '<td><span class="yh-cell-inner" style="background:' + bg + ';color:' + tc + '">' + txt + '</span></td>';
+    });
+    row += '</tr>';
+    document.getElementById('yhBody').innerHTML = row;
+    document.getElementById('yhLoading').style.display = 'none';
+    document.getElementById('yhTable').style.display = 'table';
+  });
 }
 function closeModal() { var overlay = document.getElementById('overlay'); overlay.classList.remove('open'); overlay.classList.remove('est-modal'); }
 function overlayClick(e) { if (e.target === document.getElementById('overlay')) { closeModal(); } }
