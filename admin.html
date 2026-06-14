@@ -1069,7 +1069,7 @@ function filterTable() {
     var evVisible = e.visible !== false && e.visible !== 'FALSE';
     if (vis === 'visible' && !evVisible) return false;
     if (vis === 'hidden' && evVisible) return false;
-    if (region && (ev.region || '') !== region) return false;
+    if (region && (e.region || '') !== region) return false;
     return true;
   });
   filteredEvents.sort(function(a,b) {
