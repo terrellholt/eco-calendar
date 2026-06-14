@@ -1056,6 +1056,7 @@ function filterTable() {
   var cat = document.getElementById('catFilter').value;
   var enr = document.getElementById('enrichFilter').value;
   var vis = document.getElementById('visFilter').value;
+  var region = document.getElementById('regionFilter').value;
   filteredEvents = allEvents.filter(function(e) {
     if (q && (e.event||'').toLowerCase().indexOf(q) === -1 && (e.category||'').toLowerCase().indexOf(q) === -1) return false;
     if (imp && (e.impact||'none').toLowerCase() !== imp) return false;
