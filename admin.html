@@ -1628,7 +1628,7 @@ function tmplOverlayClick(e) { if (e.target === document.getElementById('tmplOve
 function loadTemplates() {
   document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty"><span class="spinner" style="width:14px;height:14px;border-width:1.5px"></span></div>';
   supaFetch('/rest/v1/event_templates?select=*&order=display_name.asc')
-    .then(function(data) { allTemplates = Array.isArray(data) ? data : []; renderTemplateList(); populateBulkTmplSelect(); })
+    .then(function(data) { allTemplates = Array.isArray(data) ? data : []; var si = document.getElementById('tmplSearchInp'); if (si) si.value = ''; renderTemplateList(); populateBulkTmplSelect(); })
     .catch(function(err) { document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty" style="color:#e05555">' + err.message + '</div>'; });
 }
 
