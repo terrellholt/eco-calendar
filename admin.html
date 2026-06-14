@@ -1632,11 +1632,20 @@ function loadTemplates() {
     .catch(function(err) { document.getElementById('tmplListBody').innerHTML = '<div class="tmpl-list-empty" style="color:#e05555">' + err.message + '</div>'; });
 }
 
-function renderTemplateList() {
+function filterTemplateList() {
+  var q = (document.getElementById('tmplSearchInp').value || '').toLowerCase();
+  var filtered = q ? allTemplates.filter(function(t) {
+    return (t.display_name||'').toLowerCase().indexOf(q) > -1 || (t.category||'').toLowerCase().indexOf(q) > -1;
+  }) : allTemplates;
+  renderTemplateList(filtered);
+}
+
+function renderTemplateList(list) {
+  list = list || allTemplates;
   var body = document.getElementById('tmplListBody');
-  if (!allTemplates.length) { body.innerHTML = '<div class="tmpl-list-empty">No templates yet.<br>Click <strong>New</strong> to create one.</div>'; return; }
+  if (!list.length) { body.innerHTML = '<div class="tmpl-list-empty">No templates match.</div>'; return; }
   var impColors = { high: '#dc2626', medium: '#ea7000', low: '#d4a000', none: '#aaa' };
-  body.innerHTML = allTemplates.map(function(t) {
+  body.innerHTML = list.map(function(t) {
     var dotColor = impColors[(t.impact_level||'none').toLowerCase()] || '#aaa';
     var isActive = currentTemplate && currentTemplate.id === t.id;
     return '<div class="tmpl-item' + (isActive ? ' active' : '') + '" onclick="selectTemplate(\'' + esc(t.id) + '\')">'
