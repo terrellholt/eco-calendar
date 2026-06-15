@@ -714,7 +714,7 @@ function fpApply() { fpState = JSON.parse(JSON.stringify(fpPending)); updateFilt
 function fpReset() {
   fpPending.impact = { high: true, med: true, low: true };
   Object.keys(fpPending.tabs).forEach(function(k) { fpPending.tabs[k] = true; });
-  fpPending.zones = { 'Americas': true, 'Europe': false, 'Middle East & Africa': false, 'Asia Pacific': false, 'Global': true };
+  fpPending.zones = { 'Americas': true, 'Europe': true, 'Middle East & Africa': true, 'Asia Pacific': true, 'International Orgs': true };
   syncPanelUI();
   fpState = JSON.parse(JSON.stringify(fpPending));
   updateFilterBadge();
