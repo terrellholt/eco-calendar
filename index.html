@@ -761,7 +761,13 @@ function categoryToTab(cat, title) {
   if (c.indexOf('stock split') > -1 || c.indexOf('split') > -1) { return 'Stock Splits'; }
   return null;
 }
-function setFilter(mode) {
+function setRegion(r) {
+  activeRegion = r;
+  document.getElementById('pill-region-us').classList.toggle('active', r === 'us');
+  document.getElementById('pill-region-eu').classList.toggle('active', r === 'eu');
+  fetchEvents().then(function() { buildSidebar(); renderWeek(); });
+}
+  function setFilter(mode) {
   filterMode = mode;
   var labels = { confirmed: 'Confirmed', estimated: 'Unconfirmed', all: 'All' };
   ['confirmed','estimated','all'].forEach(function(m) {
