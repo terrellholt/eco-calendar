@@ -743,7 +743,7 @@ function eventPassesFilter(ev) {
   var anyTabOff = Object.keys(fpState.tabs).some(function(k) { return !fpState.tabs[k]; });
   if (anyTabOff) { var cat = ev.category || ''; var tabKey = categoryToTab(cat, ev.title); if (tabKey && fpState.tabs[tabKey] === false) { return false; } }
   var allZonesOff = !Object.keys(fpState.zones).some(function(k) { return fpState.zones[k]; });
-  if (!allZonesOff) { var evZone = ev.region || 'Americas'; if (evZone !== 'Global' && evZone !== 'International Orgs' && !fpState.zones[evZone]) { return false; } }
+  if (!allZonesOff) { var evZone = ev.region || 'Americas'; if (evZone === 'Global') { return true; } if (!fpState.zones[evZone]) { return false; } }
   return true;
 }
 function categoryToTab(cat, title) {
