@@ -731,7 +731,7 @@ function updateFilterBadge() {
   var count = 0;
   ['high','med','low'].forEach(function(k) { if (!fpState.impact[k]) count++; });
   Object.keys(fpState.tabs).forEach(function(k) { if (!fpState.tabs[k]) count++; });
-  ['Europe','Middle East & Africa','Asia Pacific'].forEach(function(z) { if (fpState.zones[z]) count++; });
+  Object.keys(fpState.zones).forEach(function(z) { if (!fpState.zones[z]) count++; });
   var badge = document.getElementById('filterBadge');
   var btn = document.getElementById('filterBtn');
   if (count > 0) { badge.style.display = 'flex'; badge.textContent = count; btn.classList.add('active'); }
