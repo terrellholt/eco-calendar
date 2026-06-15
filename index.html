@@ -710,7 +710,14 @@ function fpSetAll(group, on) {
     document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !!on; el.classList.toggle('on', !!on); });
   }
 }
-function fpApply() { fpState = JSON.parse(JSON.stringify(fpPending)); updateFilterBadge(); closeFilterPanel(); renderWeek(); }
+function fpApply() {
+  fpState = JSON.parse(JSON.stringify(fpPending));
+  var newRegion = fpState.zones['Europe'] && !fpState.zones['Americas'] ? 'eu' : 'us';
+  if (newRegion !== activeRegion) { activeRegion = newRegion; fetchEvents().then(function() { buildSidebar(); renderWeek(); }); }
+  else { renderWeek(); }
+  updateFilterBadge();
+  closeFilterPanel();
+}
 function fpReset() {
   fpPending.impact = { high: true, med: true, low: true };
   Object.keys(fpPending.tabs).forEach(function(k) { fpPending.tabs[k] = true; });
