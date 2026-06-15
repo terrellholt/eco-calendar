@@ -712,9 +712,7 @@ function fpSetAll(group, on) {
 }
 function fpApply() {
   fpState = JSON.parse(JSON.stringify(fpPending));
-  var newRegion = fpState.zones['Europe'] && !fpState.zones['Americas'] ? 'eu' : 'us';
-  if (newRegion !== activeRegion) { activeRegion = newRegion; fetchEvents().then(function() { buildSidebar(); renderWeek(); }); }
-  else { renderWeek(); }
+  renderWeek();
   updateFilterBadge();
   closeFilterPanel();
 }
