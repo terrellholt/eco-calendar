@@ -765,6 +765,8 @@ function setRegion(r) {
   activeRegion = r;
   document.getElementById('pill-region-us').classList.toggle('active', r === 'us');
   document.getElementById('pill-region-eu').classList.toggle('active', r === 'eu');
+  var zoneSection = document.querySelector('#fp-zone-row').closest('.fp-sec');
+  if (zoneSection) { zoneSection.style.display = r === 'eu' ? 'none' : ''; }
   fetchEvents().then(function() { buildSidebar(); renderWeek(); });
 }
   function setFilter(mode) {
