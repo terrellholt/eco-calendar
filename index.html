@@ -417,9 +417,10 @@ tv-ticker-tape{display:block;width:100%}
               </div>
               <div class="fp-footer">
                 <button class="btn-reset" onclick="fpReset()">Remove filters</button>
-                <div style="display:flex;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span id="fpZoneWarning" style="display:none;color:#dc2626;font-size:11px;font-weight:600">No filters selected</span>
                   <button class="btn-cancel-fp" onclick="closeFilterPanel()">Cancel</button>
-                  <button class="btn-apply" onclick="fpApply()">Apply filters</button>
+                  <button class="btn-apply" id="btnApply" onclick="fpApply()">Apply filters</button>
                 </div>
               </div>
             </div>
