@@ -707,8 +707,10 @@ function fpSetAll(group, on) {
     ['high','med','low'].forEach(function(k) { fpPending.impact[k] = !!on; var el = document.getElementById('fchip-' + k); if (el) { el.classList.toggle('on', !!on); } });
   } else if (group === 'tab') {
     document.querySelectorAll('#fp-tab-list .citem').forEach(function(el) { var tab = el.getAttribute('data-tab'); fpPending.tabs[tab] = !!on; var box = el.querySelector('.cbox'); if (box) { box.classList.toggle('on', !!on); } });
+    var anyTabOn = !!on; document.getElementById('fpZoneWarning').style.display = anyTabOn ? 'none' : 'inline'; document.getElementById('btnApply').disabled = !anyTabOn; document.getElementById('btnApply').style.opacity = anyTabOn ? '1' : '0.4';
   } else if (group === 'zone') {
     document.querySelectorAll('#fp-zone-row .zchip').forEach(function(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !!on; el.classList.toggle('on', !!on); });
+    var anyZoneOn = !!on; document.getElementById('fpZoneWarning').style.display = anyZoneOn ? 'none' : 'inline'; document.getElementById('btnApply').disabled = !anyZoneOn; document.getElementById('btnApply').style.opacity = anyZoneOn ? '1' : '0.4';
   }
 }
 function fpApply() {
