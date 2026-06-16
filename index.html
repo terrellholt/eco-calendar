@@ -701,7 +701,7 @@ function syncPanelUI() {
 }
 function fpTogChip(el, key) { fpPending.impact[key] = !fpPending.impact[key]; el.classList.toggle('on', fpPending.impact[key]); }
 function fpTogCheck(el) { var tab = el.getAttribute('data-tab'); var box = el.querySelector('.cbox'); fpPending.tabs[tab] = !fpPending.tabs[tab]; if (box) { box.classList.toggle('on', fpPending.tabs[tab]); } var anyOn = Object.keys(fpPending.tabs).some(function(k){ return fpPending.tabs[k]; }); document.getElementById('fpZoneWarning').style.display = anyOn ? 'none' : 'inline'; document.getElementById('btnApply').disabled = !anyOn; document.getElementById('btnApply').style.opacity = anyOn ? '1' : '0.4'; }
-function fpTogZone(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !fpPending.zones[zone]; el.classList.toggle('on', fpPending.zones[zone]); }
+function fpTogZone(el) { var zone = el.getAttribute('data-zone'); fpPending.zones[zone] = !fpPending.zones[zone]; el.classList.toggle('on', fpPending.zones[zone]); var anyOn = Object.keys(fpPending.zones).some(function(k){ return fpPending.zones[k]; }); document.getElementById('fpZoneWarning').style.display = anyOn ? 'none' : 'inline'; document.getElementById('btnApply').disabled = !anyOn; document.getElementById('btnApply').style.opacity = anyOn ? '1' : '0.4'; }
 function fpSetAll(group, on) {
   if (group === 'impact') {
     ['high','med','low'].forEach(function(k) { fpPending.impact[k] = !!on; var el = document.getElementById('fchip-' + k); if (el) { el.classList.toggle('on', !!on); } });
