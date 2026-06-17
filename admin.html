@@ -319,6 +319,8 @@
   .bc-tmpl { font-size: 8px; font-weight: 700; color: var(--blue); background: rgba(91,141,238,.1); border: 1px solid rgba(91,141,238,.25); border-radius: 3px; padding: 1px 4px; }
   .bc-title { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.3; }
   .bc-cat { font-size: 9px; color: var(--text3); margin-top: 2px; }
+  .bc-top-left { display: flex; align-items: center; gap: 5px; min-width: 0; }
+  .bc-logo { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; background: #fff; padding: 2px; flex-shrink: 0; box-sizing: border-box; }
   @media (max-width: 900px) { .board-grid { grid-template-columns: repeat(2,1fr); } }
   .board-card.board-dragging { opacity: .35; }
   .board-card.bc-pending { box-shadow: inset 0 0 0 1.5px var(--accent); }
@@ -330,6 +332,30 @@
   .board-multiday-col { border-right: 1px solid var(--border); }
   .board-multiday-col:last-child { border-right: none; }
   .board-multiday-bar { position: absolute; top: 50%; transform: translateY(-50%); height: 22px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 5px; display: flex; align-items: center; padding: 0 8px; font-size: 10px; font-weight: 600; color: var(--text2); white-space: nowrap; overflow: hidden; box-sizing: border-box; }
+  .board-shell { display: flex; gap: 14px; align-items: flex-start; }
+  .board-sidebar { width: 230px; flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; max-height: 760px; display: flex; flex-direction: column; }
+  .board-sidebar-header { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: flex-end; flex-shrink: 0; }
+  .board-sidebar-btn { font-size: 11px; font-family: var(--sans); font-weight: 600; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; transition: all .15s; }
+  .board-sidebar-btn:hover { background: var(--surface3); color: var(--text); }
+  .board-sidebar-nav { overflow-y: auto; flex: 1; }
+  .board-main { flex: 1; min-width: 0; }
+  .board-month-label { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; cursor: pointer; font-size: 12px; color: var(--text2); transition: background .12s; user-select: none; }
+  .board-month-label:hover { background: var(--surface2); }
+  .board-month-label.active-board-month { font-weight: 700; color: var(--accent); }
+  .board-month-label .board-chevron { font-size: 10px; color: var(--text3); transition: transform .2s; }
+  .board-month-label.open .board-chevron { transform: rotate(90deg); }
+  .board-month-grid-wrap { display: none; border-bottom: 1px solid var(--border); }
+  .board-month-grid-wrap.visible { display: block; }
+  .board-mgrid-head { display: grid; grid-template-columns: repeat(7,1fr); background: var(--surface2); }
+  .board-mgrid-head span { font-size: 8px; font-weight: 600; color: var(--text3); text-align: center; padding: 3px 0; text-transform: uppercase; }
+  .board-mgrid-body { display: grid; grid-template-columns: repeat(7,1fr); }
+  .board-mgrid-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; color: var(--text2); transition: background .1s; }
+  .board-mgrid-cell:nth-child(7n) { border-right: none; }
+  .board-mgrid-cell:hover { background: var(--surface2); }
+  .board-mgrid-cell.other-month { background: transparent; color: var(--text3); pointer-events: none; opacity: .3; }
+  .board-mgrid-cell.in-board-week { background: rgba(232,197,71,0.12); color: var(--accent); font-weight: 700; }
+  .board-mgrid-cell.board-today-cell { color: var(--accent); font-weight: 800; box-shadow: inset 0 0 0 1px var(--accent); }
+  @media (max-width: 900px) { .board-shell { flex-direction: column; } .board-sidebar { width: 100%; max-height: 240px; } }
 </style>
 </head>
 <body>
@@ -451,14 +477,24 @@
 </div>
 
 <div class="board-wrap" id="boardWrap" style="display:none">
-  <div class="board-nav">
-    <button class="board-nav-btn" onclick="prevBoardWeek()">&#8249; Prior</button>
-    <button class="board-nav-btn" onclick="goBoardToday()">Today</button>
-    <button class="board-nav-btn" onclick="nextBoardWeek()">Next &#8250;</button>
-    <span class="board-week-label" id="boardWeekLabel"></span>
+  <div class="board-shell">
+    <div class="board-sidebar" id="boardSidebar">
+      <div class="board-sidebar-header">
+        <button class="board-sidebar-btn" id="boardExpandAllBtn" onclick="toggleAllBoardMonths()">Expand All</button>
+      </div>
+      <div class="board-sidebar-nav" id="boardMonthNav"></div>
+    </div>
+    <div class="board-main">
+      <div class="board-nav">
+        <button class="board-nav-btn" onclick="prevBoardWeek()">&#8249; Prior</button>
+        <button class="board-nav-btn" onclick="goBoardToday()">Today</button>
+        <button class="board-nav-btn" onclick="nextBoardWeek()">Next &#8250;</button>
+        <span class="board-week-label" id="boardWeekLabel"></span>
+      </div>
+      <div class="board-grid" id="boardGrid"></div>
+      <div class="board-multiday-lane" id="boardMultiDayLane" style="display:none"></div>
+    </div>
   </div>
-  <div class="board-grid" id="boardGrid"></div>
-  <div class="board-multiday-lane" id="boardMultiDayLane" style="display:none"></div>
 </div>
 
 <!-- EVENT EDIT OVERLAY -->
@@ -1006,9 +1042,72 @@ var orderChanges = {};
 var adminView = 'table';
 var boardWeekStart = getBoardWeekStart(new Date());
 var boardDragIdx = null, boardDragSrcDate = null;
+var openBoardMonths = {};
+var boardAllExpanded = false;
+(function() { var t = new Date(); openBoardMonths[t.getFullYear() + '-' + t.getMonth()] = true; }());
 function queueChange(id, fields) {
   if (!orderChanges[id]) orderChanges[id] = {};
   Object.keys(fields).forEach(function(k) { if (fields[k] !== undefined) orderChanges[id][k] = fields[k]; });
+}
+function buildBoardSidebar() {
+  var today = new Date(); today.setHours(0,0,0,0);
+  var wEnd = new Date(boardWeekStart); wEnd.setDate(wEnd.getDate() + 6);
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var html = '';
+  [2026,2027].forEach(function(y) {
+    MONTHS.forEach(function(m, mi) {
+      var key = y + '-' + mi;
+      var isOpen = !!openBoardMonths[key];
+      var isAct = boardWeekStart.getFullYear() === y && boardWeekStart.getMonth() === mi;
+      var cls = 'board-month-label' + (isAct ? ' active-board-month' : '') + (isOpen ? ' open' : '');
+      html += '<div class="' + cls + '" data-key="' + key + '" data-y="' + y + '" data-mi="' + mi + '" onclick="handleBoardMonthClick(this)">';
+      html += '<span>' + m + ' <span style="font-size:9px;color:var(--text3)">' + y + '</span></span><span class="board-chevron">&#8250;</span></div>';
+      html += '<div class="board-month-grid-wrap' + (isOpen ? ' visible' : '') + '" id="bmg-' + key + '">' + buildBoardMonthGrid(y, mi, today, boardWeekStart, wEnd) + '</div>';
+    });
+  });
+  document.getElementById('boardMonthNav').innerHTML = html;
+  var btn = document.getElementById('boardExpandAllBtn');
+  if (btn) btn.textContent = boardAllExpanded ? 'Collapse All' : 'Expand All';
+}
+function buildBoardMonthGrid(y, mi, today, wStart, wEnd) {
+  var DAYS_SH = ['S','M','T','W','T','F','S'];
+  var firstDay = new Date(y, mi, 1);
+  var lastDay = new Date(y, mi + 1, 0);
+  var startDow = firstDay.getDay();
+  var html = '<div class="board-mgrid-head">';
+  DAYS_SH.forEach(function(d) { html += '<span>' + d + '</span>'; });
+  html += '</div><div class="board-mgrid-body">';
+  for (var i = 0; i < startDow; i++) { html += '<div class="board-mgrid-cell other-month"></div>'; }
+  for (var d = 1; d <= lastDay.getDate(); d++) {
+    var date = new Date(y, mi, d);
+    var dateStr = bds(date);
+    var isTod = date.getTime() === today.getTime();
+    var inWk = date >= wStart && date <= wEnd;
+    var cls = 'board-mgrid-cell';
+    if (isTod) cls += ' board-today-cell';
+    if (inWk) cls += ' in-board-week';
+    html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleBoardDateClick(this)">' + d + '</div>';
+  }
+  var rem = (startDow + lastDay.getDate()) % 7;
+  if (rem > 0) { for (var j = 0; j < 7 - rem; j++) { html += '<div class="board-mgrid-cell other-month"></div>'; } }
+  return html + '</div>';
+}
+function handleBoardMonthClick(el) {
+  var key = el.getAttribute('data-key'), y = parseInt(el.getAttribute('data-y')), mi = parseInt(el.getAttribute('data-mi'));
+  if (openBoardMonths[key]) { delete openBoardMonths[key]; } else { openBoardMonths[key] = true; }
+  boardWeekStart = getBoardWeekStart(new Date(y, mi, 1));
+  buildBoardSidebar(); renderBoard();
+}
+function handleBoardDateClick(el) {
+  var dateStr = el.getAttribute('data-date');
+  boardWeekStart = getBoardWeekStart(new Date(dateStr + 'T12:00:00'));
+  buildBoardSidebar(); renderBoard();
+}
+function toggleAllBoardMonths() {
+  boardAllExpanded = !boardAllExpanded;
+  if (boardAllExpanded) { [2026,2027].forEach(function(y) { for (var mi = 0; mi < 12; mi++) { openBoardMonths[y+'-'+mi] = true; } }); }
+  else { openBoardMonths = {}; var t = new Date(); openBoardMonths[t.getFullYear() + '-' + t.getMonth()] = true; }
+  buildBoardSidebar();
 }
 var allTemplates = [];
 var currentTemplate = null;
@@ -1229,9 +1328,9 @@ function renderTable() {
 
 function getBoardWeekStart(d) { var dt = new Date(d); dt.setHours(0,0,0,0); dt.setDate(dt.getDate() - dt.getDay()); return dt; }
 function bds(d) { var y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0'); return y + '-' + m + '-' + day; }
-function prevBoardWeek() { boardWeekStart.setDate(boardWeekStart.getDate() - 7); renderBoard(); }
-function nextBoardWeek() { boardWeekStart.setDate(boardWeekStart.getDate() + 7); renderBoard(); }
-function goBoardToday() { boardWeekStart = getBoardWeekStart(new Date()); renderBoard(); }
+function prevBoardWeek() { boardWeekStart.setDate(boardWeekStart.getDate() - 7); renderBoard(); buildBoardSidebar(); }
+function nextBoardWeek() { boardWeekStart.setDate(boardWeekStart.getDate() + 7); renderBoard(); buildBoardSidebar(); }
+function goBoardToday() { boardWeekStart = getBoardWeekStart(new Date()); renderBoard(); buildBoardSidebar(); }
 
 function switchView(view) {
   adminView = view;
@@ -1239,7 +1338,7 @@ function switchView(view) {
   document.getElementById('boardWrap').style.display = view === 'board' ? '' : 'none';
   document.getElementById('viewBtnTable').classList.toggle('active', view === 'table');
   document.getElementById('viewBtnBoard').classList.toggle('active', view === 'board');
-  if (view === 'board') { renderBoard(); } else { renderTable(); }
+  if (view === 'board') { renderBoard(); buildBoardSidebar(); } else { renderTable(); }
 }
 
 function boardCardHtml(idx) {
@@ -1251,8 +1350,10 @@ function boardCardHtml(idx) {
   var hiddenCls = !evVisible ? ' bc-hidden' : '';
   var pendingCls = orderChanges[ev.id] ? ' bc-pending' : '';
   var dispTime = resolveDisplayTime(ev);
+  var logo = ev.logo_url || '';
+  var logoHtml = logo ? '<img class="bc-logo" src="' + esc(logo) + '" alt="" onerror="this.style.display=\'none\'">' : '';
   return '<div class="board-card imp-' + imp + hiddenCls + pendingCls + '" draggable="true" data-idx="' + idx + '" data-id="' + ev.id + '" onclick="openEdit(' + idx + ')">'
-    + '<div class="bc-top">' + (dispTime ? '<span class="bc-time">' + esc(dispTime) + '</span>' : '<span></span>') + '<span class="bc-badges">' + estBadge + tmplBadge + '</span></div>'
+    + '<div class="bc-top"><div class="bc-top-left">' + logoHtml + (dispTime ? '<span class="bc-time">' + esc(dispTime) + '</span>' : '') + '</div><span class="bc-badges">' + estBadge + tmplBadge + '</span></div>'
     + '<div class="bc-title">' + esc(ev.event || '') + '</div>'
     + '<div class="bc-cat">' + esc(ev.category || '') + '</div>'
     + '</div>';
