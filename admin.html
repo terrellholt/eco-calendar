@@ -331,7 +331,7 @@
   .board-multiday-col:last-child { border-right: none; }
   .board-multiday-bar { position: absolute; top: 50%; transform: translateY(-50%); height: 22px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 5px; display: flex; align-items: center; padding: 0 8px; font-size: 10px; font-weight: 600; color: var(--text2); white-space: nowrap; overflow: hidden; box-sizing: border-box; }
   .board-shell { display: flex; gap: 14px; align-items: flex-start; }
-  .board-sidebar { width: 230px; flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; max-height: 760px; display: flex; flex-direction: column; }
+  .board-sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; max-height: 760px; display: flex; flex-direction: column; }
   .board-sidebar-header { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: flex-end; flex-shrink: 0; }
   .board-sidebar-btn { font-size: 11px; font-family: var(--sans); font-weight: 600; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; transition: all .15s; }
   .board-sidebar-btn:hover { background: var(--surface3); color: var(--text); }
@@ -347,12 +347,22 @@
   .board-mgrid-head { display: grid; grid-template-columns: repeat(7,1fr); background: var(--surface2); }
   .board-mgrid-head span { font-size: 8px; font-weight: 600; color: var(--text3); text-align: center; padding: 3px 0; text-transform: uppercase; }
   .board-mgrid-body { display: grid; grid-template-columns: repeat(7,1fr); }
-  .board-mgrid-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; color: var(--text2); transition: background .1s; }
+  .board-mgrid-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 54px; padding: 3px 3px 2px; display: flex; flex-direction: column; cursor: pointer; transition: background .1s; overflow: hidden; }
   .board-mgrid-cell:nth-child(7n) { border-right: none; }
   .board-mgrid-cell:hover { background: var(--surface2); }
-  .board-mgrid-cell.other-month { background: transparent; color: var(--text3); pointer-events: none; opacity: .3; }
-  .board-mgrid-cell.in-board-week { background: rgba(232,197,71,0.12); color: var(--accent); font-weight: 700; }
-  .board-mgrid-cell.board-today-cell { color: var(--accent); font-weight: 800; box-shadow: inset 0 0 0 1px var(--accent); }
+  .board-mgrid-cell.other-month { background: transparent; pointer-events: none; opacity: .25; }
+  .board-mgrid-cell.in-board-week { background: rgba(232,197,71,0.08); }
+  .board-mgrid-cell.board-today-cell { box-shadow: inset 0 0 0 1px var(--accent); }
+  .board-mgrid-date { font-size: 9px; font-weight: 600; color: var(--text3); margin-bottom: 2px; line-height: 1; flex-shrink: 0; }
+  .board-mgrid-cell.board-today-cell .board-mgrid-date { color: var(--accent); font-weight: 800; }
+  .board-mgrid-evts { display: flex; flex-direction: column; gap: 0; flex: 1; overflow: hidden; }
+  .board-mgrid-evt { font-size: 7.5px; font-weight: 600; line-height: 1.25; padding: 1px 1px; word-break: break-word; white-space: normal; overflow-wrap: break-word; cursor: pointer; }
+  .board-mgrid-evt:hover { text-decoration: underline; }
+  .board-mgrid-evt + .board-mgrid-evt { border-top: 1px solid var(--border); padding-top: 1px; margin-top: 1px; }
+  .board-mgrid-evt-high { color: var(--high); }
+  .board-mgrid-evt-medium { color: var(--med); }
+  .board-mgrid-evt-low { color: var(--low); }
+  .board-mgrid-evt-none { color: var(--text2); }
   @media (max-width: 900px) { .board-shell { flex-direction: column; } .board-sidebar { width: 100%; max-height: 240px; } }
 </style>
 </head>
@@ -530,13 +540,7 @@
               <label class="ep-label">Event Title <span style="color:#dc2626">*</span></label>
               <input type="text" class="ep-input" id="f_title" placeholder="e.g. Federal Reserve Rate Decision">
             </div>
-            <div class="ep-row c2">
-              <div class="ep-field">
-                <label class="ep-label">Short Name <span class="opt">(mini calendar)</span></label>
-                <input type="text" class="ep-input" id="f_short_name" placeholder="e.g. FOMC Decision">
-              </div>
-              <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
-            </div>
+            <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="f_ticker" placeholder="e.g. AAPL"></div>
           </div>
         </div>
       </div>
@@ -662,10 +666,14 @@
             <div><div class="toggle-label">Estimated Event</div><div class="toggle-sub">Date unconfirmed &mdash; applies amber dashed visual on calendar &amp; event card</div></div>
           </div>
         </div>
-        <div style="margin-bottom:14px">
-          <div class="toggle-row" onclick="toggleMonthly()">
+        <div style="margin-bottom:14px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">
+          <div class="toggle-row" onclick="toggleMonthly()" style="flex:1;min-width:220px">
             <div class="toggle-track" id="monthlyToggle"><div class="toggle-thumb"></div></div>
             <div><div class="toggle-label">Show in monthly calendar view</div><div class="toggle-sub">Multi-day banner &mdash; only top events should be enabled</div></div>
+          </div>
+          <div class="ep-field" style="flex:1;min-width:180px;max-width:240px">
+            <label class="ep-label">Short Name <span class="opt">(mini calendar)</span></label>
+            <input type="text" class="ep-input" id="f_short_name" placeholder="e.g. FOMC Decision">
           </div>
         </div>
         <div style="margin-bottom:14px">
@@ -1084,6 +1092,15 @@ function queueChange(id, fields) {
   if (!orderChanges[id]) orderChanges[id] = {};
   Object.keys(fields).forEach(function(k) { if (fields[k] !== undefined) orderChanges[id][k] = fields[k]; });
 }
+function isShownInMonthly(ev) { return ev.show_in_monthly !== false && ev.show_in_monthly !== 0 && ev.show_in_monthly !== 'FALSE'; }
+function openEditById(id) {
+  var idx = filteredEvents.findIndex(function(e) { return String(e.id) === String(id); });
+  if (idx > -1) { openEdit(idx); return; }
+  var ev = allEvents.find(function(e) { return String(e.id) === String(id); });
+  if (!ev) return;
+  filteredEvents.push(ev);
+  openEdit(filteredEvents.length - 1);
+}
 function buildBoardSidebar() {
   var today = new Date(); today.setHours(0,0,0,0);
   var wEnd = new Date(boardWeekStart); wEnd.setDate(wEnd.getDate() + 6);
@@ -1121,7 +1138,16 @@ function buildBoardMonthGrid(y, mi, today, wStart, wEnd) {
     var cls = 'board-mgrid-cell';
     if (isTod) cls += ' board-today-cell';
     if (inWk) cls += ' in-board-week';
-    html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleBoardDateClick(this)">' + d + '</div>';
+    var dayEvts = allEvents.filter(function(e) { return parseCalendarDate(e.date) === dateStr && isShownInMonthly(e); }).slice(0, 3);
+    var evtHtml = dayEvts.map(function(e) {
+      var imp = (e.impact || 'none').toLowerCase();
+      var label = esc(e.short_name || e.event || '');
+      return '<div class="board-mgrid-evt board-mgrid-evt-' + imp + '" onclick="event.stopPropagation();openEditById(\'' + e.id + '\')" title="' + label + '">' + label + '</div>';
+    }).join('');
+    html += '<div class="' + cls + '" data-date="' + dateStr + '" onclick="handleBoardDateClick(this)">'
+      + '<div class="board-mgrid-date">' + d + '</div>'
+      + '<div class="board-mgrid-evts">' + evtHtml + '</div>'
+      + '</div>';
   }
   var rem = (startDow + lastDay.getDate()) % 7;
   if (rem > 0) { for (var j = 0; j < 7 - rem; j++) { html += '<div class="board-mgrid-cell other-month"></div>'; } }
