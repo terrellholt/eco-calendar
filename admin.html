@@ -306,21 +306,19 @@
   .board-day.board-today .board-day-name, .board-day.board-today .board-day-num { color: var(--accent); }
   .board-day-body { flex: 1; padding: 6px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; }
   .board-empty { font-size: 11px; color: var(--text3); font-family: var(--mono); text-align: center; padding: 14px 4px; }
-  .board-card { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--border2); border-radius: 6px; padding: 6px 8px; cursor: pointer; transition: background .12s; }
+  .board-card { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--border2); border-radius: 6px; padding: 6px 8px; cursor: pointer; transition: background .12s; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 64px; justify-content: center; }
   .board-card:hover { background: var(--surface3); }
   .board-card.imp-high { border-left-color: var(--high); }
   .board-card.imp-medium { border-left-color: var(--med); }
   .board-card.imp-low { border-left-color: var(--low); }
   .board-card.bc-hidden { opacity: .45; }
-  .bc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .bc-top { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .bc-time { font-size: 9px; font-family: var(--mono); color: var(--text3); }
   .bc-badges { display: flex; gap: 3px; }
   .bc-est { font-size: 8px; font-weight: 700; color: #b8820a; background: rgba(184,130,10,.12); border: 1px solid rgba(184,130,10,.3); border-radius: 3px; padding: 1px 4px; }
   .bc-tmpl { font-size: 8px; font-weight: 700; color: var(--blue); background: rgba(91,141,238,.1); border: 1px solid rgba(91,141,238,.25); border-radius: 3px; padding: 1px 4px; }
-  .bc-title { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.3; }
-  .bc-cat { font-size: 9px; color: var(--text3); margin-top: 2px; }
-  .bc-top-left { display: flex; align-items: center; gap: 5px; min-width: 0; }
-  .bc-logo { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; background: #fff; padding: 2px; flex-shrink: 0; box-sizing: border-box; }
+  .bc-title { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.3; text-align: center; }
+  .bc-logo { width: calc(100% - 16px); max-height: 42px; object-fit: contain; margin: 2px auto 5px; display: block; background: #fff; border-radius: 5px; padding: 4px; box-sizing: border-box; }
   @media (max-width: 900px) { .board-grid { grid-template-columns: repeat(2,1fr); } }
   .board-card.board-dragging { opacity: .35; }
   .board-card.bc-pending { box-shadow: inset 0 0 0 1.5px var(--accent); }
@@ -418,7 +416,11 @@
 </div>
 
 <div class="toolbar">
-  <div class="search-wrap">
+  <div class="view-toggle">
+    <button class="view-toggle-btn active" id="viewBtnTable" onclick="switchView('table')">Table</button>
+    <button class="view-toggle-btn" id="viewBtnBoard" onclick="switchView('board')">Board</button>
+  </div>
+  <div class="search-wrap" id="searchWrap">
     <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9 9L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
     <input type="text" id="searchInput" placeholder="Search events&hellip;" oninput="filterTable()">
   </div>
@@ -440,10 +442,6 @@
   <select class="fsel" id="visFilter" onchange="filterTable()">
     <option value="">All Visibility</option><option value="visible">Visible only</option><option value="hidden">Hidden only</option>
   </select>
-  <div class="view-toggle">
-    <button class="view-toggle-btn active" id="viewBtnTable" onclick="switchView('table')">Table</button>
-    <button class="view-toggle-btn" id="viewBtnBoard" onclick="switchView('board')">Board</button>
-  </div>
   <span class="count-badge" id="countBadge"></span>
   <button class="btn-new-event" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="openTemplateManager()">
   <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="1" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="7" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="7" width="4" height="4" rx="0.7" stroke="currentColor" stroke-width="1.3"/></svg>
@@ -1027,6 +1025,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
 var SUPA_URL = 'https://pkzjgjtzljjjohiybnud.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrempnanR6bGpqam9oaXlibnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNjkwMTgsImV4cCI6MjA5Mzk0NTAxOH0.sZA4DPrmldh2XlfpCoNffsnmZKr6IjWusEv_ezAOqaI';
+var LOGO_KEY = 'pk_dv5qQv9ARyGf3wnFfd-oeA';
+var TICKER_DOMAIN = {
+  'AAPL':'apple.com','MSFT':'microsoft.com','GOOGL':'google.com','GOOG':'google.com',
+  'AMZN':'amazon.com','META':'meta.com','NVDA':'nvidia.com','TSLA':'tesla.com',
+  'NFLX':'netflix.com','ADBE':'adobe.com','CRM':'salesforce.com','CSCO':'cisco.com',
+  'INTC':'intel.com','AMD':'amd.com','MU':'micron.com','AVGO':'broadcom.com',
+  'KLAC':'kla.com','QCOM':'qualcomm.com','JPM':'jpmorganchase.com',
+  'BAC':'bankofamerica.com','WFC':'wellsfargo.com','GS':'goldmansachs.com',
+  'MS':'morganstanley.com','C':'citi.com','BLK':'blackrock.com','V':'visa.com',
+  'MA':'mastercard.com','PYPL':'paypal.com','AXP':'americanexpress.com',
+  'UNH':'unitedhealthgroup.com','LLY':'lilly.com','JNJ':'jnj.com','MRK':'merck.com',
+  'ABBV':'abbvie.com','XOM':'exxonmobil.com','CVX':'chevron.com',
+  'CAT':'caterpillar.com','BA':'boeing.com','LMT':'lockheedmartin.com','RTX':'rtx.com',
+  'DAL':'delta.com','WMT':'walmart.com','COST':'costco.com','NKE':'nike.com',
+  'DIS':'disney.com','BRK.B':'berkshirehathaway.com','BRK.A':'berkshirehathaway.com',
+  'F':'ford.com','GM':'gm.com','LULU':'lululemon.com','PGR':'progressive.com'
+};
+function mkLogo(domain) { if (!domain) return ''; return 'https://img.logo.dev/' + domain + '?token=' + LOGO_KEY + '&size=200'; }
+function deriveLogo(cat, evt) {
+  if (!cat) return '';
+  if (cat === 'Market Holiday' || cat === 'Early Close') return mkLogo('nyse.com');
+  if (cat === 'Fed / FOMC' || cat === 'Central Bank') return mkLogo('federalreserve.gov');
+  if (cat === 'Economic Release') {
+    var e = evt || '';
+    if (e.indexOf('CPI') > -1 || e.indexOf('PPI') > -1 || e.indexOf('Jobs') > -1 || e.indexOf('NFP') > -1) return mkLogo('bls.gov');
+    if (e.indexOf('GDP') > -1 || e.indexOf('PCE') > -1) return mkLogo('bea.gov');
+    if (e.indexOf('ISM') > -1) return mkLogo('ismworld.org');
+    if (e.indexOf('Housing') > -1) return mkLogo('census.gov');
+  }
+  return '';
+}
+function resolveLogo(ev) {
+  var l = ev.logo_url || '';
+  if (!l && ev.ticker && TICKER_DOMAIN[ev.ticker]) l = mkLogo(TICKER_DOMAIN[ev.ticker]);
+  if (!l) l = deriveLogo(ev.category, ev.event);
+  return l;
+}
 var allEvents = [], filteredEvents = [], currentEvent = null;
 var sortCol = 'date', sortDir = 1;
 var selectedImpact = 'none';
@@ -1336,6 +1371,7 @@ function switchView(view) {
   adminView = view;
   document.getElementById('tableWrap').style.display = view === 'table' ? '' : 'none';
   document.getElementById('boardWrap').style.display = view === 'board' ? '' : 'none';
+  document.getElementById('searchWrap').style.display = view === 'table' ? '' : 'none';
   document.getElementById('viewBtnTable').classList.toggle('active', view === 'table');
   document.getElementById('viewBtnBoard').classList.toggle('active', view === 'board');
   if (view === 'board') { renderBoard(); buildBoardSidebar(); } else { renderTable(); }
@@ -1350,12 +1386,12 @@ function boardCardHtml(idx) {
   var hiddenCls = !evVisible ? ' bc-hidden' : '';
   var pendingCls = orderChanges[ev.id] ? ' bc-pending' : '';
   var dispTime = resolveDisplayTime(ev);
-  var logo = ev.logo_url || '';
+  var logo = resolveLogo(ev);
   var logoHtml = logo ? '<img class="bc-logo" src="' + esc(logo) + '" alt="" onerror="this.style.display=\'none\'">' : '';
   return '<div class="board-card imp-' + imp + hiddenCls + pendingCls + '" draggable="true" data-idx="' + idx + '" data-id="' + ev.id + '" onclick="openEdit(' + idx + ')">'
-    + '<div class="bc-top"><div class="bc-top-left">' + logoHtml + (dispTime ? '<span class="bc-time">' + esc(dispTime) + '</span>' : '') + '</div><span class="bc-badges">' + estBadge + tmplBadge + '</span></div>'
+    + '<div class="bc-top">' + (dispTime ? '<span class="bc-time">' + esc(dispTime) + '</span>' : '<span></span>') + '<span class="bc-badges">' + estBadge + tmplBadge + '</span></div>'
+    + logoHtml
     + '<div class="bc-title">' + esc(ev.event || '') + '</div>'
-    + '<div class="bc-cat">' + esc(ev.category || '') + '</div>'
     + '</div>';
 }
 
