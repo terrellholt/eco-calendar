@@ -649,9 +649,18 @@ function utcToLocalTime(isoUtc, tzIana) {
     return timeStr + ' ' + tzShort(tzIana);
   } catch(e) { return ''; }
 }
+function normalizeTimeLabel(t) {
+  if (!t) { return ''; }
+  var s = t.toString().trim();
+  var key = s.toLowerCase();
+  if (key === 'bmo') { return 'Before Market Open'; }
+  if (key === 'amc') { return 'After Market Close'; }
+  if (key === 'true' || key === 'false') { return ''; }
+  return s;
+}
 function eventTimeDisplay(ev) {
   if (ev.utcDatetime) { var converted = utcToLocalTime(ev.utcDatetime, selectedTz); if (converted) { return converted; } }
-  return ev.time || '';
+  return normalizeTimeLabel(ev.time);
 }
 function buildTzDropdown() {
   var html = '';
