@@ -890,7 +890,7 @@ var url = SUPA_URL + '/rest/v1/' + table + '?select=id,event,short_name,date,mon
     events = [];
     rows.forEach(function(r) {
       if (!r.date && !r.month) { return; }
-if (String(r.visible).toLowerCase() === 'false') { return; }
+      if (String(r.visible).toLowerCase() === 'false') { return; }
       var parsed = parseDate(r.date, r.month);
       if (!parsed.start) { return; }
       if (r.end_date && !parsed.end) { parsed.end = String(r.end_date).substring(0, 10); }
