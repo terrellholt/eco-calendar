@@ -159,7 +159,8 @@ tv-ticker-tape{display:block;width:100%}
 .ecard.low{background:#fff;border-color:#FEF08A}
 .ecard.none{background:#fff;border-color:#e5e5e0}
 .ecard.est-event{background:#fff}
-.ecard.est-event::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.55);border-radius:7px;pointer-events:none}
+.ecard.est-event::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.55);border-radius:7px;pointer-events:none;transition:opacity .15s}
+.ecard.est-event:hover::after{opacity:0}
 .card-top-row{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:5px}
 .card-time{font-size:10px;color:#999;font-weight:500}
 .card-impact{font-size:10px;font-weight:500}
