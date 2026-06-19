@@ -309,9 +309,9 @@
   .board-card { background: var(--surface2); border: 1px solid var(--border); border-right: 3px solid var(--border2); border-radius: 6px; padding: 6px 8px; cursor: pointer; transition: background .12s; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 64px; justify-content: center; position: relative; }
 .board-card.bc-estimated::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); opacity: .4; border-radius: 5px; pointer-events: none; }
   .board-card:hover { background: var(--surface3); }
-  .board-card.imp-high { border-left-color: var(--high); }
-  .board-card.imp-medium { border-left-color: var(--med); }
-  .board-card.imp-low { border-left-color: var(--low); }
+  .board-card.imp-high { border-right-color: var(--high); }
+.board-card.imp-medium { border-right-color: var(--med); }
+.board-card.imp-low { border-right-color: var(--low); }
   .board-card.bc-hidden { opacity: .45; }
   .bc-top { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .bc-time { font-size: 9px; font-family: var(--mono); color: var(--text3); }
