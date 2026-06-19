@@ -1408,7 +1408,7 @@ function boardCardHtml(idx) {
   var ev = filteredEvents[idx];
   var imp = (ev.impact || 'none').toLowerCase();
   var evVisible = ev.visible !== false && ev.visible !== 'FALSE';
-  var estBadge = ev.is_estimated ? '<span class="bc-est">EST</span>' : '';
+  var estBadge = '';
   var tmplBadge = ev.template_id ? '<span class="bc-tmpl">T</span>' : '';
   var estCls = ev.is_estimated ? ' bc-estimated' : '';
   var hiddenCls = !evVisible ? ' bc-hidden' : '';
