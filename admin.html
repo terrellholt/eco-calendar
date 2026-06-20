@@ -2207,7 +2207,7 @@ function saveTemplate() {
       .then(function(result) {
         var newTmpl = (Array.isArray(result) ? result[0] : result) || payload;
         allTemplates.push(newTmpl); allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
-        currentTemplate = newTmpl; isNewTemplate = false; renderTemplateList();
+        currentTemplate = newTmpl; isNewTemplate = false; renderTemplateList(); populateBulkTmplSelect();
         document.getElementById('tmplPanelTitle').textContent = 'Edit Template';
         document.getElementById('tmplDeleteBtn').style.display = 'inline-flex';
         document.getElementById('tf_id').readOnly = true;
