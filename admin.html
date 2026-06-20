@@ -1398,7 +1398,7 @@ function renderTable() {
       ? '<td class="td-drag"><div class="drag-handle active" title="Drag to reorder within this date">&#8801;</div></td>'
       : '<td class="td-drag"><div class="drag-handle"></div></td>';
     var reorderedClass = orderChanges[ev.id] != null ? ' reordered' : '';
-    var evVisible = ev.visible !== false && ev.visible !== 'FALSE';
+    var evVisible = String(ev.visible).toLowerCase() !== 'false';
     var hiddenClass = !evVisible ? ' row-hidden' : '';
     var visBtnClass = !evVisible ? ' hidden-event' : '';
     var visTitle = evVisible ? 'Click to hide from website' : 'Click to show on website';
