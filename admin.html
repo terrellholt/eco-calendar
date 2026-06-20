@@ -1587,7 +1587,7 @@ function renderBoardMultiDayLane(days) {
 
 function toggleRowVisibility(idx) {
   var ev = filteredEvents[idx];
-  var newVisible = !(ev.visible !== false && ev.visible !== 'FALSE');
+  var newVisible = String(ev.visible).toLowerCase() === 'false';
   ev.visible = newVisible;
   var master = allEvents.find(function(e) { return e.id === ev.id; });
   if (master) master.visible = newVisible;
