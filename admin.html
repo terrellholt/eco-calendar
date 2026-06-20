@@ -1221,9 +1221,9 @@ function writebackToSheet(syncId, fields) {
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
-  supaFetch('/rest/v1/Master%20Calendar?select=*&order=date.asc,display_order.asc.nullslast&limit=2000')
+  loadAllEventPages([], 0)
     .then(function(data) {
-      allEvents = Array.isArray(data) ? data.filter(function(r){ return r.event != null && r.event !== ''; }) : [];
+      allEvents = data.filter(function(r){ return r.event != null && r.event !== ''; });
 
       document.getElementById('statusDot').style.cssText = 'background:#4cbe85;box-shadow:0 0 8px #4cbe85';
       document.getElementById('statusText').textContent = allEvents.length + ' events loaded';
@@ -1240,6 +1240,19 @@ function loadEvents() {
       document.getElementById('statusDot').style.cssText = 'background:#e05555';
       document.getElementById('statusText').textContent = 'connection error';
       document.getElementById('tableState').innerHTML = '<div style="color:#e05555;font-family:monospace;font-size:12px">' + err.message + '</div>';
+    });
+}
+
+function loadAllEventPages(acc, offset) {
+  var pageSize = 1000;
+  return supaFetch('/rest/v1/Master%20Calendar?select=*&order=date.asc,display_order.asc.nullslast&limit=' + pageSize + '&offset=' + offset)
+    .then(function(data) {
+      var page = Array.isArray(data) ? data : [];
+      acc = acc.concat(page);
+      if (page.length === pageSize) {
+        return loadAllEventPages(acc, offset + pageSize);
+      }
+      return acc;
     });
 }
 
