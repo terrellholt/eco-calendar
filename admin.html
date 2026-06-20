@@ -1327,7 +1327,7 @@ function filterTable() {
     if (enr === 'missing' && hero && why) return false;
     if (enr === 'has-hero' && !hero) return false;
     if (enr === 'has-why' && !why) return false;
-    var evVisible = e.visible !== false && e.visible !== 'FALSE';
+    var evVisible = String(e.visible).toLowerCase() !== 'false';
     if (vis === 'visible' && !evVisible) return false;
     if (vis === 'hidden' && evVisible) return false;
     if (region && (e.region || '') !== region) return false;
