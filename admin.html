@@ -2158,20 +2158,57 @@ function renderTmplLinkedEvents(tmpl) {
   var linked = allEvents.filter(function(e) { return e.template_id === tmpl.id; })
     .sort(function(a, b) { return String(a.date||'').localeCompare(String(b.date||'')); });
   if (!linked.length) { box.innerHTML = '<div style="font-size:12px;color:var(--text3);font-family:var(--mono)">No events use this template yet.</div>'; return; }
-  box.innerHTML = '<div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:2px">' + linked.length + ' event' + (linked.length===1?'':'s') + '</div>' +
+  var header = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">'
+    + '<span style="font-size:11px;color:var(--text3);font-family:var(--mono)">' + linked.length + ' event' + (linked.length===1?'':'s') + '</span>'
+    + '<button onclick="unlinkAllFromTemplate(\'' + esc(tmpl.id) + '\')" style="font-size:11px;font-family:var(--sans);color:#dc2626;background:#fff;border:1px solid #fecaca;border-radius:5px;padding:3px 9px;cursor:pointer">Unlink all</button>'
+    + '</div>';
+  box.innerHTML = header +
     linked.map(function(e) {
       var ov = e.template_overrides && Object.keys(e.template_overrides).length;
       var ovBadge = ov ? '<span style="font-size:9px;font-weight:700;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px">OVERRIDE</span>' : '';
       var d = formatTableDate(e.date, e.end_date);
-      return '<div onclick="jumpToEventFromTemplate(\'' + esc(String(e.id)) + '\')" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
-        + '<span style="color:var(--text)">' + esc(e.event) + ovBadge + '</span>'
+      var id = esc(String(e.id));
+      return '<div style="display:flex;align-items:center;gap:6px;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:12px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+        + '<div onclick="jumpToEventFromTemplate(\'' + id + '\')" style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;min-width:0">'
+        + '<span style="color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(e.event) + ovBadge + '</span>'
         + '<span style="color:var(--text3);font-family:var(--mono);white-space:nowrap">' + esc(d) + (e.region ? ' &middot; ' + esc(e.region) : '') + '</span>'
+        + '</div>'
+        + '<button title="Unlink from this template" onclick="unlinkEventFromTemplate(\'' + id + '\')" style="flex-shrink:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:13px;line-height:1" onmouseover="this.style.color=\'#dc2626\';this.style.borderColor=\'#fecaca\'" onmouseout="this.style.color=\'var(--text3)\';this.style.borderColor=\'var(--border)\'">&#10005;</button>'
         + '</div>';
     }).join('');
 }
 function jumpToEventFromTemplate(id) {
   closeTemplateManager();
   openEditById(id);
+}
+function unlinkEventFromTemplate(id) {
+  var ev = allEvents.find(function(e) { return String(e.id) === String(id); });
+  if (!ev) return;
+  if (!confirm('Unlink "' + (ev.event || id) + '" from this template?\n\nThe event keeps its current values but will no longer be controlled by the template.')) return;
+  supaFetch('/rest/v1/Master%20Calendar?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: JSON.stringify({ template_id: null, template_overrides: {} }) })
+    .then(function() {
+      ev.template_id = null; ev.template_overrides = {};
+      renderTmplLinkedEvents(currentTemplate);
+      if (typeof renderTable === 'function') renderTable();
+      showToast('Event unlinked', 'success');
+    })
+    .catch(function(err) { showToast('Unlink failed: ' + err.message, 'error'); });
+}
+function unlinkAllFromTemplate(tmplId) {
+  var linked = allEvents.filter(function(e) { return e.template_id === tmplId; });
+  if (!linked.length) return;
+  if (!confirm('Unlink all ' + linked.length + ' events from this template?\n\nEach event keeps its current values but will no longer be controlled by the template.')) return;
+  var calls = linked.map(function(e) {
+    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + encodeURIComponent(e.id), { method: 'PATCH', body: JSON.stringify({ template_id: null, template_overrides: {} }) })
+      .then(function() { e.template_id = null; e.template_overrides = {}; });
+  });
+  Promise.all(calls)
+    .then(function() {
+      renderTmplLinkedEvents(currentTemplate);
+      if (typeof renderTable === 'function') renderTable();
+      showToast(linked.length + ' events unlinked', 'success');
+    })
+    .catch(function(err) { showToast('Some unlinks failed: ' + err.message, 'error'); renderTmplLinkedEvents(currentTemplate); });
 }
 
 function autoGenTmplId() {
