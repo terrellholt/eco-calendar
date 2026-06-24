@@ -906,6 +906,10 @@
             <div class="ep-field"><label class="ep-label">Why it Matters</label><textarea class="ep-input" id="tf_why_it_matters" rows="3" placeholder="Why this event matters to markets&hellip;"></textarea></div>
             <div class="ep-field" style="margin-bottom:14px"><label class="ep-label">Details <span class="opt">(custom content)</span></label><textarea class="ep-input" id="tf_details" rows="3" placeholder="Add any additional details or notes&hellip;"></textarea></div>
 <div class="ep-field"><label class="ep-label">Internal Notes <span class="opt">(admin only)</span></label><textarea class="ep-input" id="tf_notes" rows="2" placeholder="Notes visible only in admin panel&hellip;"></textarea></div>
+            <div class="ep-section" id="tmplLinkedSection" style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
+              <label class="ep-label">Linked Events <span class="opt">(controlled by this template)</span></label>
+              <div id="tmplLinkedEvents" style="display:flex;flex-direction:column;gap:4px;margin-top:8px"></div>
+            </div>
           </div>
         </div>
         <div class="ep-footer">
@@ -2144,6 +2148,30 @@ function showTemplateForm(tmpl) {
   else { document.getElementById('tf_display_name').removeEventListener('input', autoGenTmplId); }
   document.getElementById('tmplStatus').textContent = '';
   document.getElementById('tmplSaveBtn').disabled = false;
+  renderTmplLinkedEvents(tmpl);
+}
+
+function renderTmplLinkedEvents(tmpl) {
+  var box = document.getElementById('tmplLinkedEvents');
+  if (!box) return;
+  if (!tmpl || !tmpl.id) { box.innerHTML = '<div style="font-size:12px;color:var(--text3);font-family:var(--mono)">Save this template to see linked events.</div>'; return; }
+  var linked = allEvents.filter(function(e) { return e.template_id === tmpl.id; })
+    .sort(function(a, b) { return String(a.date||'').localeCompare(String(b.date||'')); });
+  if (!linked.length) { box.innerHTML = '<div style="font-size:12px;color:var(--text3);font-family:var(--mono)">No events use this template yet.</div>'; return; }
+  box.innerHTML = '<div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:2px">' + linked.length + ' event' + (linked.length===1?'':'s') + '</div>' +
+    linked.map(function(e) {
+      var ov = e.template_overrides && Object.keys(e.template_overrides).length;
+      var ovBadge = ov ? '<span style="font-size:9px;font-weight:700;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px">OVERRIDE</span>' : '';
+      var d = formatTableDate(e.date, e.end_date);
+      return '<div onclick="jumpToEventFromTemplate(\'' + esc(String(e.id)) + '\')" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+        + '<span style="color:var(--text)">' + esc(e.event) + ovBadge + '</span>'
+        + '<span style="color:var(--text3);font-family:var(--mono);white-space:nowrap">' + esc(d) + (e.region ? ' &middot; ' + esc(e.region) : '') + '</span>'
+        + '</div>';
+    }).join('');
+}
+function jumpToEventFromTemplate(id) {
+  closeTemplateManager();
+  openEditById(id);
 }
 
 function autoGenTmplId() {
