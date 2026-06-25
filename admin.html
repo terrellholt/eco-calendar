@@ -1222,6 +1222,15 @@ function writebackToSheet(syncId, fields) {
   }).catch(function(err) { console.warn('Sheet writeback error (non-critical):', err.message); });
 }
 
+function writebackTemplateToSheet(id, fields) {
+  if (!id) return;
+  fetch(SHEETS_WRITEBACK_URL, {
+    method: 'POST',
+    body: JSON.stringify({ type: 'template', id: id, fields: fields }),
+    mode: 'no-cors'
+  }).catch(function(err) { console.warn('Template writeback error (non-critical):', err.message); });
+}
+
 function loadEvents() {
   document.getElementById('tableState').innerHTML = '<span class="spinner"></span>';
   document.getElementById('eventsTable').style.display = 'none';
@@ -2286,6 +2295,7 @@ function saveTemplate() {
         var newTmpl = (Array.isArray(result) ? result[0] : result) || payload;
         allTemplates.push(newTmpl); allTemplates.sort(function(a,b){ return (a.display_name||'').localeCompare(b.display_name||''); });
         currentTemplate = newTmpl; isNewTemplate = false; renderTemplateList(); populateBulkTmplSelect();
+        writebackTemplateToSheet(tmplId, payload);
         document.getElementById('tmplPanelTitle').textContent = 'Edit Template';
         document.getElementById('tmplDeleteBtn').style.display = 'inline-flex';
         document.getElementById('tf_id').readOnly = true;
@@ -2297,6 +2307,7 @@ function saveTemplate() {
     supaFetch('/rest/v1/event_templates?id=eq.' + encodeURIComponent(currentTemplate.id), { method: 'PATCH', body: JSON.stringify(payload) })
       .then(function() {
         Object.assign(currentTemplate, payload);
+        writebackTemplateToSheet(currentTemplate.id, payload);
         var idx = allTemplates.findIndex(function(t){ return t.id === currentTemplate.id; }); if (idx > -1) allTemplates[idx] = currentTemplate;
         renderTemplateList(); statusEl.className = 'ep-save-status saved'; statusEl.textContent = '\u2713 Saved'; showToast('Template saved \u2014 pushing to linked events\u2026', 'success'); btn.disabled = false;
         var linkedEvents = allEvents.filter(function(e) { return e.template_id === currentTemplate.id; });
