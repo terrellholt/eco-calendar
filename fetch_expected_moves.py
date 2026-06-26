@@ -123,11 +123,19 @@ def fetch_calendar_events() -> list[dict]:
 
 # ── Find closest expiration to event date ─────────────────────────────────
 def closest_expiry(expirations: list[str], event_date: date) -> str:
-    """Return the expiration string whose date is closest to event_date."""
-    def delta(exp_str):
-        exp = datetime.strptime(exp_str, "%Y-%m-%d").date()
-        return abs((exp - event_date).days)
-    return min(expirations, key=delta)
+    """
+    Return the first expiration ON OR AFTER the event date — the contract
+    that actually captures the event. If none exist on or after (Yahoo
+    hasn't listed expiries that far out yet), return the latest available
+    so the main loop's guard will skip it.
+    """
+    dated = sorted(
+        (datetime.strptime(e, "%Y-%m-%d").date(), e) for e in expirations
+    )
+    for d, e in dated:
+        if d >= event_date:
+            return e
+    return dated[-1][1]
 
 
 # ── Calculate expected move for a specific expiration ─────────────────────
