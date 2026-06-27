@@ -859,6 +859,12 @@
                 </select>
               </div>
               <div class="ep-field">
+                <label class="ep-label">Also Known As <span class="opt">(optional)</span></label>
+                <input type="text" class="ep-input" id="tf_aka" placeholder="e.g. Quad Witching">
+              </div>
+            </div>
+            <div class="ep-row c2">
+              <div class="ep-field">
                 <label class="ep-label">Region</label>
                 <select class="ep-input" id="tf_region">
                   <option value="Americas">Americas</option><option value="Europe">Europe</option>
@@ -866,7 +872,38 @@
                   <option value="Global">Global</option>
                 </select>
               </div>
+              <div class="ep-field">
+                <label class="ep-label">Source Timezone</label>
+                <select class="ep-input" id="tf_source_tz"><option value="America/New_York">New York (ET)</option><option value="America/Chicago">Chicago (CT)</option><option value="America/Los_Angeles">Los Angeles (PT)</option><option value="Europe/London">London (GMT/BST)</option><option value="Europe/Paris">Frankfurt / Paris (CET)</option><option value="Asia/Tokyo">Tokyo (JST)</option><option value="Asia/Shanghai">Shanghai (CST)</option><option value="Asia/Hong_Kong">Hong Kong (HKT)</option><option value="UTC">UTC</option></select>
+              </div>
             </div>
+          </div>
+          <div class="ep-section">
+            <div class="ep-row c2" style="margin-bottom:0">
+              <div class="ep-field">
+                <label class="ep-label">Event Time</label>
+                <select class="ep-input" id="tf_time_preset" onchange="setTmplTimePreset(this.value)"><option value="">&mdash; select time &mdash;</option><option value="All Day">All Day</option><option value="Before Market Open">Before Market Open</option><option value="After Market Close">After Market Close</option><option value="Undetermined">Undetermined</option><option value="custom">Choose Time&hellip;</option></select>
+              </div>
+              <div class="ep-field">
+                <label class="ep-label">Impact Level</label>
+                <select class="ep-input impact-select" id="tf_impact" onchange="selectTmplImpact(this.value)">
+                  <option value="high">&#128308; High</option><option value="medium">&#128992; Medium</option>
+                  <option value="low">&#128993; Low</option><option value="none">&#9898; None</option>
+                </select>
+              </div>
+            </div>
+            <div class="time-custom-row" id="tmplTimeCustomRow" style="display:none;margin-top:8px"><select class="ep-input" id="tf_time_hour" style="flex:0 0 70px"><option>12</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option></select><span class="time-sep">:</span><select class="ep-input" id="tf_time_min" style="flex:0 0 70px"><option>00</option><option>15</option><option>30</option><option>45</option></select><select class="ep-input" id="tf_time_ampm" style="flex:0 0 70px"><option>AM</option><option>PM</option></select><select class="ep-input" id="tf_time_tz" style="flex:1"><option value="ET">ET</option><option value="CT">CT</option><option value="PT">PT</option><option value="GMT">GMT</option><option value="CET">CET</option><option value="JST">JST</option><option value="UTC">UTC</option></select></div>
+          </div>
+          <div class="ep-section">
+            <div class="ep-field" style="margin-bottom:12px"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="tf_source_url" placeholder="https://&hellip;"></div>
+            <div class="ep-field">
+              <label class="ep-label">Impacted Assets <span class="opt">(optional)</span></label>
+              <div class="asset-wrap" id="tmplAssetWrap" onclick="document.getElementById('tmplAssetInp').focus()">
+                <input class="asset-inp" id="tmplAssetInp" placeholder="e.g. USD" onkeydown="tmplAssetKey(event)" onblur="tmplAssetBlur()">
+              </div>
+            </div>
+          </div>
+          <div class="ep-section">
             <div class="ep-row c3">
               <div class="ep-field">
                 <label class="ep-label">Frequency</label>
@@ -876,29 +913,8 @@
                   <option value="semi-annual">Semi-Annual</option><option value="annual">Annual</option>
                 </select>
               </div>
-              <div class="ep-field"><label class="ep-label">Source URL</label><input type="url" class="ep-input" id="tf_source_url" placeholder="https://&hellip;"></div>
-              <div class="ep-field"><label class="ep-label">Source Timezone</label><select class="ep-input" id="tf_source_tz"><option value="America/New_York">New York (ET)</option><option value="America/Chicago">Chicago (CT)</option><option value="America/Los_Angeles">Los Angeles (PT)</option><option value="Europe/London">London (GMT/BST)</option><option value="Europe/Paris">Frankfurt / Paris (CET)</option><option value="Asia/Tokyo">Tokyo (JST)</option><option value="Asia/Shanghai">Shanghai (CST)</option><option value="Asia/Hong_Kong">Hong Kong (HKT)</option><option value="UTC">UTC</option></select></div>
-              <div class="ep-field"><label class="ep-label">Also Known As <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="tf_aka" placeholder="e.g. Quad Witching"></div>
-            <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="tf_ticker" placeholder="e.g. AAPL"></div>
+              <div class="ep-field"><label class="ep-label">Ticker Symbol <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="tf_ticker" placeholder="e.g. AAPL"></div>
               <div class="ep-field"><label class="ep-label">Chart Ticker <span class="opt">(optional)</span></label><input type="text" class="ep-input" id="tf_chart_ticker" placeholder="e.g. NVDA" style="text-transform:uppercase"></div>
-             <div class="ep-field"><label class="ep-label">Event Time</label><select class="ep-input" id="tf_time_preset" onchange="setTmplTimePreset(this.value)"><option value="">&mdash; select time &mdash;</option><option value="All Day">All Day</option><option value="Before Market Open">Before Market Open</option><option value="After Market Close">After Market Close</option><option value="Undetermined">Undetermined</option><option value="custom">Choose Time&hellip;</option></select><div class="time-custom-row" id="tmplTimeCustomRow" style="display:none;margin-top:8px"><select class="ep-input" id="tf_time_hour" style="flex:0 0 70px"><option>12</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option></select><span class="time-sep">:</span><select class="ep-input" id="tf_time_min" style="flex:0 0 70px"><option>00</option><option>15</option><option>30</option><option>45</option></select><select class="ep-input" id="tf_time_ampm" style="flex:0 0 70px"><option>AM</option><option>PM</option></select><select class="ep-input" id="tf_time_tz" style="flex:1"><option value="ET">ET</option><option value="CT">CT</option><option value="PT">PT</option><option value="GMT">GMT</option><option value="CET">CET</option><option value="JST">JST</option><option value="UTC">UTC</option></select></div></div>
-            </div>
-          </div>
-          <div class="ep-section">
-            <div class="ep-field" style="margin-bottom:14px">
-              <label class="ep-label">Impact Level</label>
-              <div class="impact-row">
-                <div class="impact-opt" id="timp-high" onclick="selectTmplImpact('high')"><span class="impact-dot dot-high"></span>High</div>
-                <div class="impact-opt" id="timp-medium" onclick="selectTmplImpact('medium')"><span class="impact-dot dot-medium"></span>Medium</div>
-                <div class="impact-opt" id="timp-low" onclick="selectTmplImpact('low')"><span class="impact-dot dot-low"></span>Low</div>
-                <div class="impact-opt" id="timp-none" onclick="selectTmplImpact('none')"><span class="impact-dot dot-none"></span>None</div>
-              </div>
-            </div>
-            <div class="ep-field">
-              <label class="ep-label">Impacted Assets <span class="opt">(optional)</span></label>
-              <div class="asset-wrap" id="tmplAssetWrap" onclick="document.getElementById('tmplAssetInp').focus()">
-                <input class="asset-inp" id="tmplAssetInp" placeholder="e.g. USD" onkeydown="tmplAssetKey(event)" onblur="tmplAssetBlur()">
-              </div>
             </div>
           </div>
           <div class="ep-section" style="border-bottom:none">
@@ -2249,7 +2265,7 @@ function promptTmplLogoUrl() {
   if (url !== null) { var lt = document.getElementById('tmplLogoThumb'); lt.innerHTML = url.trim() ? '<img src="'+esc(url.trim())+'" alt="" onerror="this.parentElement.innerHTML=\'<div class=logo-thumb-empty>No logo</div>\'">' : '<div class="logo-thumb-empty">No logo</div>'; }
 }
 function selectTmplImpact(val) { tmplSelectedImpact = val; updateTmplImpactUI(); }
-function updateTmplImpactUI() { ['high','medium','low','none'].forEach(function(v) { document.getElementById('timp-' + v).className = 'impact-opt' + (tmplSelectedImpact === v ? ' sel-' + v : ''); }); }
+function updateTmplImpactUI() { var sel = document.getElementById('tf_impact'); if (sel) { sel.value = tmplSelectedImpact; var colors = { high: '#dc2626', medium: '#ea7000', low: '#d4a000', none: '#e5e5e0' }; sel.style.borderColor = colors[tmplSelectedImpact] || '#e5e5e0'; } }
 function makeTmplChip(val) { var s = document.createElement('span'); s.className = 'achip'; s.innerHTML = '<span>'+esc(val)+'</span><span class="achip-rm" onclick="this.parentElement.remove()">&times;</span>'; return s; }
 function addTmplChip(val) { val = val.trim().replace(/,/g,''); if (!val) return; var ex = Array.from(document.querySelectorAll('#tmplAssetWrap .achip span:first-child')).map(function(s){return s.textContent;}); if (ex.indexOf(val) > -1) return; document.getElementById('tmplAssetWrap').insertBefore(makeTmplChip(val), document.getElementById('tmplAssetInp')); }
 function tmplAssetKey(e) { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTmplChip(e.target.value); e.target.value = ''; } }
@@ -2313,39 +2329,49 @@ function saveTemplate() {
         var linkedEvents = allEvents.filter(function(e) { return e.template_id === currentTemplate.id; });
         var sharedFields = ['category','impact_level','source_url','impacted_assets','frequency','measures','why_it_matters','logo_url','hero_image_url','hero_position','chart_ticker','aka','ticker','source_tz','display_time','details','notes'];
         var fieldMap = { impact_level: 'impact', hero_image_url: 'hero_url' };
-        var pushPromises = linkedEvents.map(function(e) {
+        var pendingUpdates = linkedEvents.map(function(e) {
           var overrides = e.template_overrides || {};
           var update = {};
           sharedFields.forEach(function(tf) {
             var evField = fieldMap[tf] || tf;
             if (!overrides.hasOwnProperty(evField)) { update[evField] = payload[tf] !== undefined ? payload[tf] : null; }
           });
-          if (!Object.keys(update).length) return Promise.resolve();
-          return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + e.id, { method: 'PATCH', body: JSON.stringify(update) })
-            .then(function() { Object.assign(e, update); });
-        });
-        Promise.all(pushPromises).then(function() {
-          linkedEvents.forEach(function(e) {
-            if (!e.sync_id) return;
-            writebackToSheet(e.sync_id, {
-              event: e.event||'', short_name: e.short_name||'', date: e.date||'',
-              end_date: e.end_date||'', hero_url: e.hero_url||'', logo_url: e.logo_url||'',
-              time: e.display_time||'', ticker: e.ticker||'', aka: e.aka||'',
-              source_url: e.source_url||'', category: e.category||'', region: e.region||'',
-              source_tz: e.source_tz||'', impact: e.impact||'',
-              show_mini: e.show_in_monthly ? 'TRUE' : 'FALSE',
-              is_estimated: e.is_estimated ? 'TRUE' : 'FALSE',
-              visible: e.visible ? 'TRUE' : 'FALSE', frequency: e.frequency||'',
-              measures: e.measures||'', why_it_matters: e.why_it_matters||'',
-              details: e.details||'', notes: e.notes||'',
-              impacted_asset_1: e.impacted_assets||'',
-              price_move_val: e.price_move_val||'', price_move_type: e.price_move_type||'',
-              chart_ticker: e.chart_ticker||'', chart_range: e.chart_range||'',
-            });
-          });
-          showToast('Template saved \u2014 ' + linkedEvents.length + ' event' + (linkedEvents.length === 1 ? '' : 's') + ' updated', 'success');
-          renderTable();
-        }).catch(function(err) { showToast('Template saved but push failed: ' + err.message, 'error'); });
+          return { e: e, update: update };
+        }).filter(function(x) { return Object.keys(x.update).length > 0; });
+        var CHUNK = 5;
+        function processChunk(i) {
+          if (i >= pendingUpdates.length) {
+            showToast('Template saved \u2014 ' + linkedEvents.length + ' event' + (linkedEvents.length === 1 ? '' : 's') + ' updated', 'success');
+            renderTable();
+            return;
+          }
+          var slice = pendingUpdates.slice(i, i + CHUNK);
+          Promise.all(slice.map(function(x) {
+            return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + x.e.id, { method: 'PATCH', body: JSON.stringify(x.update) })
+              .then(function() {
+                Object.assign(x.e, x.update);
+                if (x.e.sync_id) {
+                  writebackToSheet(x.e.sync_id, {
+                    event: x.e.event||'', short_name: x.e.short_name||'', date: x.e.date||'',
+                    end_date: x.e.end_date||'', hero_url: x.e.hero_url||'', logo_url: x.e.logo_url||'',
+                    time: x.e.display_time||'', ticker: x.e.ticker||'', aka: x.e.aka||'',
+                    source_url: x.e.source_url||'', category: x.e.category||'', region: x.e.region||'',
+                    source_tz: x.e.source_tz||'', impact: x.e.impact||'',
+                    show_mini: x.e.show_in_monthly ? 'TRUE' : 'FALSE',
+                    is_estimated: x.e.is_estimated ? 'TRUE' : 'FALSE',
+                    visible: x.e.visible ? 'TRUE' : 'FALSE', frequency: x.e.frequency||'',
+                    measures: x.e.measures||'', why_it_matters: x.e.why_it_matters||'',
+                    details: x.e.details||'', notes: x.e.notes||'',
+                    impacted_asset_1: x.e.impacted_assets||'',
+                    price_move_val: x.e.price_move_val||'', price_move_type: x.e.price_move_type||'',
+                    chart_ticker: x.e.chart_ticker||'', chart_range: x.e.chart_range||'',
+                  });
+                }
+              });
+          })).then(function() { processChunk(i + CHUNK); })
+            .catch(function(err) { showToast('Template saved but push failed: ' + err.message, 'error'); });
+        }
+        processChunk(0);
       })
       .catch(function(err) { statusEl.className = 'ep-save-status error'; statusEl.textContent = '\u2717 ' + err.message; showToast('Save failed: ' + err.message, 'error'); btn.disabled = false; });
   }
@@ -2509,11 +2535,21 @@ function confirmBulkAssign() {
 }
 function doBulkAssign(tmplId) {
   var ids = Array.from(selectedRowIds);
-  Promise.all(ids.map(function(id) {
-    return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ template_id: tmplId, template_overrides: {} }) })
-      .then(function() { var ev = allEvents.find(function(e) { return e.id === id; }); if (ev) { ev.template_id = tmplId; ev.template_overrides = {}; } });
-  })).then(function() { showToast('Template assigned to ' + ids.length + ' event' + (ids.length === 1 ? '' : 's'), 'success'); clearSelection(); renderTable(); })
-    .catch(function(err) { showToast('Assign failed: ' + err.message, 'error'); });
+  var CHUNK = 5, i = 0, failed = false;
+  function processChunk() {
+    if (failed) return;
+    if (i >= ids.length) {
+      showToast('Template assigned to ' + ids.length + ' event' + (ids.length === 1 ? '' : 's'), 'success');
+      clearSelection(); renderTable();
+      return;
+    }
+    var slice = ids.slice(i, i + CHUNK); i += CHUNK;
+    Promise.all(slice.map(function(id) {
+      return supaFetch('/rest/v1/Master%20Calendar?id=eq.' + id, { method: 'PATCH', body: JSON.stringify({ template_id: tmplId, template_overrides: {} }) })
+        .then(function() { var ev = allEvents.find(function(e) { return e.id === id; }); if (ev) { ev.template_id = tmplId; ev.template_overrides = {}; } });
+    })).then(processChunk).catch(function(err) { failed = true; showToast('Assign failed: ' + err.message, 'error'); });
+  }
+  processChunk();
 }
 function populateTmplAssignDropdown(currentTmplId) {
   var sel = document.getElementById('f_template_id'); while (sel.options.length > 1) sel.remove(1);
