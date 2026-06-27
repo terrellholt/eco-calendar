@@ -1996,7 +1996,7 @@ function parseCalendarDate(val) {
   if (m) {
     var mon = MONTHS[(m[1]||'').toLowerCase()]; if (!mon) return '';
     var day = parseInt(m[2], 10);
-    var year = m[3] ? parseInt(m[3], 10) : inferYearFromEvent();
+    var year = m[3] ? parseInt(m[3], 10) : 2027;
     return year + '-' + String(mon).padStart(2,'0') + '-' + String(day).padStart(2,'0');
   }
   return '';
