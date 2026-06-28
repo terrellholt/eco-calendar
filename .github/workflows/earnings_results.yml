@@ -1,0 +1,40 @@
+# .github/workflows/earnings_results.yml
+#
+# Backfills reported EPS into Supabase for past earnings events.
+# Runs every weekday at 11:00 PM UTC (~6–7 PM ET) — late enough that the
+# day's after-close earnings prints have settled on Yahoo Finance.
+#
+# Separate, isolated sibling of the Expected Moves workflow.
+# Can also be triggered manually from the GitHub Actions tab at any time.
+name: Fetch Earnings Results
+on:
+  schedule:
+    - cron: "0 23 * * 1-5"   # Mon–Fri at 11 PM UTC (7 PM EDT / 6 PM EST)
+  # Allow manual trigger from GitHub Actions UI (useful for testing)
+  workflow_dispatch:
+jobs:
+  fetch-earnings-results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30        # Hard stop — don't let a hang eat free minutes
+    steps:
+      # ── 1. Checkout your repo ──────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # ── 2. Set up Python ───────────────────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"          # Cache dependencies between runs
+      # ── 3. Install dependencies ────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      # ── 4. Run the pipeline ────────────────────────────────────────────────
+      #    Secrets are set in: GitHub repo → Settings → Secrets and Variables
+      #    → Actions → New repository secret
+      - name: Fetch earnings results and update Supabase
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python fetch_earnings_results.py
