@@ -1172,7 +1172,8 @@ function openModal(id) {
   var displayTime = eventTimeDisplay(ev);
   if (displayTime) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Time</span>' + displayTime + '</span>'; }
   if (ev.frequency) { meta += '<span class="modal-tag" style="padding-right:10px;border-right:1px solid #e5e5e0;margin-right:10px"><span class="modal-tag-label">Frequency</span>' + ev.frequency.charAt(0).toUpperCase() + ev.frequency.slice(1) + '</span>'; }
-  var showPriceMove = ev.priceMove && (!ev.priceMoveExpiry || !ev.date || ev.priceMoveExpiry >= ev.date);
+  var todayStr = new Date().toISOString().slice(0,10);
+  var showPriceMove = ev.priceMove && (!ev.priceMoveExpiry || !ev.date || ev.priceMoveExpiry >= ev.date) && (!ev.date || ev.date >= todayStr);
   if (showPriceMove) {
     var expiryStr = '';
     if (ev.priceMoveExpiry) {
