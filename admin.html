@@ -315,13 +315,16 @@
   .board-day.board-today .board-day-name, .board-day.board-today .board-day-num { color: var(--accent); }
   .board-day-body { flex: 1; padding: 6px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; }
   .board-empty { font-size: 11px; color: var(--text3); font-family: var(--mono); text-align: center; padding: 14px 4px; }
-  .board-card { background: var(--surface2); border: 1px solid var(--border); border-right: 3px solid var(--border2); border-radius: 6px; padding: 6px 8px; cursor: pointer; transition: background .12s; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 64px; justify-content: center; position: relative; }
+  .board-card { background: var(--surface2); border: 2px solid var(--border); border-radius: 6px; padding: 6px 8px; cursor: pointer; transition: background .12s, box-shadow .15s; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 64px; justify-content: center; position: relative; }
 .board-card.bc-estimated::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); opacity: .4; border-radius: 5px; pointer-events: none; transition: opacity .15s; }
 .board-card.bc-estimated:hover::after { opacity: 0; }
   .board-card:hover { background: var(--surface3); }
-  .board-card.imp-high { border-right-color: var(--high); }
-.board-card.imp-medium { border-right-color: var(--med); }
-.board-card.imp-low { border-right-color: var(--low); }
+  .board-card.imp-high { border-color: #f04444; box-shadow: 0 4px 16px -3px rgba(220,38,38,.38); }
+.board-card.imp-medium { border-color: #f5871f; box-shadow: 0 4px 16px -3px rgba(234,112,0,.34); }
+.board-card.imp-low { border-color: #e0b400; box-shadow: 0 4px 16px -3px rgba(212,160,0,.34); }
+.board-card.imp-high:hover { box-shadow: 0 7px 24px -3px rgba(220,38,38,.55); }
+.board-card.imp-medium:hover { box-shadow: 0 7px 24px -3px rgba(234,112,0,.5); }
+.board-card.imp-low:hover { box-shadow: 0 7px 24px -3px rgba(212,160,0,.5); }
   .board-card.bc-hidden { opacity: .45; }
   .bc-top { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .bc-time { font-size: 9px; font-family: var(--mono); color: var(--text3); }
