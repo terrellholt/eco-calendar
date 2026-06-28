@@ -288,6 +288,91 @@ tv-ticker-tape{display:block;width:100%}
 .ticker-item{font-size:11px;color:#e5e5e0;padding:0 28px;cursor:pointer;transition:color .15s;flex-shrink:0}
 .ticker-item:hover{color:#f59e0b}
 .ticker-sep{color:#444;flex-shrink:0;font-size:10px}
+/* ===== THEME TOGGLE (icon rail) ===== */
+.rail-theme-toggle{margin-top:auto;display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.06);padding:3px;border-radius:9px;cursor:pointer}
+.rail-theme-opt{position:relative;display:flex;align-items:center;justify-content:center;width:30px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.4);transition:all .15s;padding:0}
+.rail-theme-opt svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rail-theme-opt.active{background:#fff;color:#1a1a1a}
+body.dark-mode .rail-theme-opt.active{background:#2563eb;color:#fff}
+.rail-theme-opt:hover:not(.active){color:rgba(255,255,255,.8)}
+.rail-theme-opt::after{content:attr(data-tip);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);background:#1a1a1a;color:#fff;font-size:11px;font-weight:500;padding:5px 9px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 2px 8px rgba(0,0,0,.25);z-index:100}
+.rail-theme-opt::before{content:'';position:absolute;left:calc(100% + 6px);top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:6px solid #1a1a1a;opacity:0;pointer-events:none;transition:opacity .12s;z-index:100}
+.rail-theme-opt:hover::after,.rail-theme-opt:hover::before{opacity:1}
+/* ===== DARK MODE ===== */
+body.dark-mode{background:#0c0c0e;color:#ebebf0}
+body.dark-mode .sidebar{background:#141417;border-right-color:#27272d}
+body.dark-mode .sidebar-btn{background:#1c1c21;border-color:#35353d;color:#ebebf0}
+body.dark-mode .sidebar-btn:hover{background:#242429}
+body.dark-mode .sidebar-arrow{background:#1c1c21;border-color:#35353d;color:#8e8e9e}
+body.dark-mode .sidebar-arrow:hover{background:#242429;color:#ebebf0}
+body.dark-mode .month-label{color:#8e8e9e}
+body.dark-mode .month-label:hover{background:#1c1c21}
+body.dark-mode .month-label.active-month{color:#ebebf0}
+body.dark-mode .month-year-tag,body.dark-mode .month-label .chevron{color:#4a4a5a}
+body.dark-mode .month-grid-wrap{border-bottom-color:#27272d}
+body.dark-mode .mgrid-head{background:#1c1c21;border-bottom-color:#27272d}
+body.dark-mode .mgrid-head span{color:#8e8e9e}
+body.dark-mode .mgrid-cell{border-right-color:#27272d;border-bottom-color:#27272d}
+body.dark-mode .mgrid-cell:hover{background:#1c1c21}
+body.dark-mode .mgrid-cell.other-month{background:#141417}
+body.dark-mode .mgrid-cell.other-month .mgrid-date{color:#35353d}
+body.dark-mode .mgrid-cell.in-current-week,body.dark-mode .mgrid-cell.today-cell{background:rgba(91,141,238,.12)}
+body.dark-mode .mgrid-cell.past-day{background:#18181b !important}
+body.dark-mode .mgrid-cell.past-day:hover{background:#1c1c21 !important}
+body.dark-mode .mgrid-date{color:#8e8e9e}
+body.dark-mode .week-nav{background:#141417;border-bottom-color:#27272d}
+body.dark-mode .week-title{color:#ebebf0}
+body.dark-mode .week-sub{color:#8e8e9e}
+body.dark-mode .search-input{background:#1c1c21;border-color:#35353d;color:#ebebf0}
+body.dark-mode .search-input:focus{background:#242429;border-color:#5b8dee}
+body.dark-mode .search-results{background:#141417;border-color:#35353d}
+body.dark-mode .sr-item:hover{background:#1c1c21}
+body.dark-mode .sr-title{color:#ebebf0}
+body.dark-mode .sr-date{color:#8e8e9e}
+body.dark-mode .nav-pills,body.dark-mode .filter-pills{background:#1c1c21;border-color:#35353d}
+body.dark-mode .nav-pill,body.dark-mode .filter-pill{color:#8e8e9e}
+body.dark-mode .nav-pill:hover,body.dark-mode .filter-pill:hover{background:#242429;color:#ebebf0}
+body.dark-mode .filter-pill.active{background:#242429;color:#ebebf0}
+body.dark-mode .filter-pill.active.pill-estimated{color:#e8c547}
+body.dark-mode .tz-wrap,body.dark-mode .filter-btn{background:#1c1c21;border-color:#35353d;color:#ebebf0}
+body.dark-mode .tz-wrap:hover,body.dark-mode .filter-btn:hover{background:#242429}
+body.dark-mode .tz-label{color:#ebebf0}
+body.dark-mode .tz-globe{stroke:#8e8e9e}
+body.dark-mode .tz-dropdown{background:#141417;border-color:#35353d}
+body.dark-mode .tz-opt{color:#ebebf0}
+body.dark-mode .tz-opt:hover{background:#1c1c21}
+body.dark-mode .day-col{border-right-color:#27272d}
+body.dark-mode .day-header{background:#141417;border-bottom-color:#27272d}
+body.dark-mode .day-name{color:#8e8e9e}
+body.dark-mode .day-num,body.dark-mode .day-month{color:#ebebf0}
+body.dark-mode .day-col.past-week-day,body.dark-mode .day-col.past-week-day .day-header{background:#18181b}
+body.dark-mode .ecard.none{background:#1c1c21;border-color:#35353d}
+body.dark-mode .ecard.high,body.dark-mode .ecard.medium,body.dark-mode .ecard.low,body.dark-mode .ecard.est-event{background:#1c1c21}
+body.dark-mode .ecard.est-event::after{background:rgba(20,20,23,.5)}
+body.dark-mode .card-title{color:#ebebf0}
+body.dark-mode .card-time{color:#8e8e9e}
+body.dark-mode .modal{background:#141417}
+body.dark-mode .modal-body{background:#141417}
+body.dark-mode .modal-title{color:#ebebf0}
+body.dark-mode .modal-name{color:#8e8e9e}
+body.dark-mode .modal-logo{background:#1c1c21;border-color:#27272d}
+body.dark-mode .modal-tag{color:#ebebf0}
+body.dark-mode .modal-section-text{color:#ebebf0}
+body.dark-mode .modal-section-label,body.dark-mode .modal-tag-label{color:#8e8e9e}
+body.dark-mode .modal-divider{border-top-color:#27272d}
+body.dark-mode .markets-page{background:#0c0c0e}
+body.dark-mode .world-clock{background:#141417;border-bottom-color:#27272d}
+body.dark-mode .clock-city{border-left-color:#27272d}
+body.dark-mode .clock-city span.city{color:#8e8e9e}
+body.dark-mode .clock-city strong{color:#ebebf0}
+body.dark-mode .markets-sidebar{background:#141417;border-left-color:#27272d}
+body.dark-mode .markets-sidebar-header{border-bottom-color:#27272d}
+body.dark-mode .markets-sidebar-title{color:#ebebf0}
+body.dark-mode .contact-page{background:#141417}
+body.dark-mode .duration-lane{background:#1c1c21;border-top-color:#35353d}
+body.dark-mode .duration-lane-title{background:#141417;color:#8e8e9e;border-bottom-color:#27272d}
+body.dark-mode .dl-bar{background:#242429;border-color:#35353d}
+body.dark-mode .dl-bar span{color:#ebebf0}
 </style>
 </head>
 <body>
@@ -340,6 +425,14 @@ tv-ticker-tape{display:block;width:100%}
     </div>
     <div class="rail-icon" id="rail-contact" title="Contact" onclick="switchPage('contact')">
       <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+    </div>
+    <div class="rail-theme-toggle" onclick="toggleTheme()">
+      <button class="rail-theme-opt" id="themeLight" data-tip="Light Mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="rail-theme-opt" id="themeDark" data-tip="Dark Mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+      </button>
     </div>
   </div>
 
@@ -1381,6 +1474,17 @@ fetchEvents().then(function() {
   console.error('Supabase fetch failed:', err);
   document.getElementById('weekGrid').innerHTML = '<div class="load-error">Could not load events. Please refresh.</div>';
 });
+function applyTheme(mode){
+  document.body.classList.toggle('dark-mode', mode === 'dark');
+  document.getElementById('themeLight').classList.toggle('active', mode !== 'dark');
+  document.getElementById('themeDark').classList.toggle('active', mode === 'dark');
+}
+function toggleTheme(){
+  var next = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
+}
+applyTheme(localStorage.getItem('theme') || 'light');
 </script>
 </body>
 </html>
