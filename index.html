@@ -64,6 +64,18 @@ tv-ticker-tape{display:block;width:100%}
 .week-title{font-size:14px;font-weight:600;line-height:1.2}
 .week-sub{font-size:10px;color:#999;margin-top:1px}
 .week-nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.search-container{position:relative;flex-shrink:0}
+.search-input{width:150px;font-size:12px;padding:6px 10px;border:1px solid #e0e0db;border-radius:8px;background:#f7f7f4;color:#1a1a1a;outline:none;transition:all .15s;font-family:inherit}
+.search-input:focus{width:210px;background:#fff;border-color:#bbb;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.search-input::placeholder{color:#999}
+.search-results{position:absolute;top:calc(100% + 6px);right:0;width:320px;max-height:360px;overflow-y:auto;background:#fff;border:1px solid #e0e0db;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.12);z-index:500;padding:4px}
+.sr-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .12s}
+.sr-item:hover{background:#f3f3ef}
+.sr-logo{width:22px;height:22px;border-radius:4px;object-fit:contain;flex-shrink:0}
+.sr-text{min-width:0;flex:1}
+.sr-title{font-size:12px;font-weight:500;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-date{font-size:11px;color:#888;margin-top:1px}
+.sr-empty{padding:14px 10px;font-size:12px;color:#999;text-align:center}
 .nav-pills{display:flex;gap:3px;background:#f0f0ec;padding:3px;border-radius:8px;border:1px solid #e0e0db}
 .nav-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:#777;transition:all .15s;white-space:nowrap}
 .nav-pill:first-child,.nav-pill:last-child{font-size:11px;line-height:1}
@@ -358,6 +370,10 @@ tv-ticker-tape{display:block;width:100%}
           </div>
         </div>
         <div class="week-nav-right">
+          <div class="search-container" id="searchContainer">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search events…" oninput="runSearch(this.value)" onfocus="runSearch(this.value)">
+            <div class="search-results" id="searchResults" style="display:none"></div>
+          </div>
           <div class="filter-pills">
             <button class="filter-pill active" id="pill-confirmed" onclick="setFilter('confirmed')">Confirmed Events</button>
 <button class="filter-pill pill-estimated" id="pill-estimated" onclick="setFilter('estimated')">Unconfirmed</button>
@@ -695,6 +711,8 @@ document.addEventListener('click', function(e) {
   if (tzCont && !tzCont.contains(e.target)) { var dd = document.getElementById('tzDropdown'); if (dd) { dd.classList.remove('open'); } }
   var fpCont = document.getElementById('filterContainer');
   if (fpCont && !fpCont.contains(e.target)) { var fp = document.getElementById('filterPanel'); if (fp) { fp.style.display = 'none'; } }
+  var sCont = document.getElementById('searchContainer');
+  if (sCont && !sCont.contains(e.target)) { var sr = document.getElementById('searchResults'); if (sr) { sr.style.display = 'none'; } }
 });
 document.getElementById('tzLabel').textContent = tzShort(selectedTz);
 
@@ -987,6 +1005,38 @@ function buildMonthGrid(y, mi, today, wStart, wEnd) {
 function handleMonthClick(el) { toggleMonth(el.getAttribute('data-key'), parseInt(el.getAttribute('data-y')), parseInt(el.getAttribute('data-mi'))); }
 function handleDateClick(el) { jumpToDate(el.getAttribute('data-date')); }
 function handleCardClick(el) { openModal(parseInt(el.getAttribute('data-id'))); }
+function runSearch(q) {
+  var box = document.getElementById('searchResults');
+  q = (q || '').trim().toLowerCase();
+  if (q.length < 2) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  var matches = events.filter(function(ev) {
+    return (ev.title && ev.title.toLowerCase().indexOf(q) !== -1) ||
+           (ev.ticker && ev.ticker.toLowerCase().indexOf(q) !== -1) ||
+           (ev.aka && ev.aka.toLowerCase().indexOf(q) !== -1) ||
+           (ev.category && ev.category.toLowerCase().indexOf(q) !== -1);
+  });
+  matches.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
+  var mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if (matches.length === 0) {
+    box.innerHTML = '<div class="sr-empty">No events found</div>';
+  } else {
+    box.innerHTML = matches.slice(0, 50).map(function(ev) {
+      var dlabel = '';
+      if (ev.date) { var dp = ev.date.split('-'); dlabel = mNames[parseInt(dp[1])-1] + ' ' + parseInt(dp[2]) + ', ' + dp[0]; }
+      var logo = ev.logo ? '<img class="sr-logo" src="' + ev.logo + '" onerror="this.style.display=\'none\'">' : '';
+      return '<div class="sr-item" onclick="goToSearchResult(' + ev.id + ')">' + logo + '<div class="sr-text"><div class="sr-title">' + ev.title + '</div><div class="sr-date">' + dlabel + '</div></div></div>';
+    }).join('');
+  }
+  box.style.display = 'block';
+}
+function goToSearchResult(id) {
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchInput').value = '';
+  var ev = null;
+  for (var i = 0; i < events.length; i++) { if (events[i].id === id) { ev = events[i]; break; } }
+  if (ev && ev.date) { jumpToDate(ev.date); }
+  setTimeout(function() { openModal(id); }, 120);
+}
 function toggleMonth(key, y, mi) {
   if (openMonths[key]) { delete openMonths[key]; } else { openMonths[key] = true; }
   allExpanded = Object.keys(openMonths).length >= 24;
