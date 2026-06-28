@@ -484,7 +484,7 @@
       <th></th>
       <th title="Visible on website">&#128065;</th>
       <th onclick="sortBy('date')">DATE</th><th onclick="sortBy('event')">EVENT</th><th>CATEGORY</th>
-      <th onclick="sortBy('impact')">IMPACT</th><th>ENRICHMENT</th><th style="width:60px"></th>
+      <th onclick="sortBy('impact')">IMPACT</th><th>ENRICHMENT</th>
     </tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
@@ -1398,7 +1398,7 @@ var EYE_CLOSED = '<svg viewBox="0 0 16 16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5
 function renderTable() {
   var tb = document.getElementById('tableBody');
   if (!filteredEvents.length) {
-    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>';
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3)">No events match</td></tr>';
     return;
   }
   var dateGroups = getDateGroups();
@@ -1412,7 +1412,7 @@ function renderTable() {
       var mKey = dt.getUTCFullYear() + '-' + dt.getUTCMonth();
       if (mKey !== lastMonthKey) {
         lastMonthKey = mKey;
-        html += '<tr style="pointer-events:none"><td colspan="9" style="background:var(--surface3);color:var(--text);font-size:13px;font-family:var(--sans);letter-spacing:0.04em;text-transform:uppercase;padding:12px;font-weight:700;text-align:center;border-top:2px solid var(--border2);border-bottom:2px solid var(--border2);">' + MO[dt.getUTCMonth()] + ' ' + dt.getUTCFullYear() + '</td></tr>';
+        html += '<tr style="pointer-events:none"><td colspan="8" style="background:var(--surface3);color:var(--text);font-size:13px;font-family:var(--sans);letter-spacing:0.04em;text-transform:uppercase;padding:12px;font-weight:700;text-align:center;border-top:2px solid var(--border2);border-bottom:2px solid var(--border2);">' + MO[dt.getUTCMonth()] + ' ' + dt.getUTCFullYear() + '</td></tr>';
       }
     }
     var hero = ev.hero_url || '';
@@ -1420,7 +1420,7 @@ function renderTable() {
     var why = ev.why_it_matters || '';
     var imp = (ev.impact||'none').toLowerCase();
     var pillCls = imp === 'high' ? 'ipill-high' : imp === 'medium' ? 'ipill-medium' : imp === 'low' ? 'ipill-low' : '';
-    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['assets',!!(ev.impacted_assets)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
+    var chips = [['hero',!!hero],['logo',!!logo],['why',!!why],['measures',!!(ev.measures)],['details',!!(ev.details)],['assets',!!(ev.impacted_assets)],['source',!!(ev.source_url)],['ticker',!!(ev.ticker)],['frequency',!!(ev.frequency)],['expected',!!(ev.price_move_val)],['aka',!!(ev.aka)],['short',!!(ev.short_name)],['chart',!!(ev.chart_ticker)]].map(function(p){ return '<span class="echip '+(p[1]?'echip-y':'echip-n')+'">'+p[0]+'</span>'; }).join('');
     var date = formatTableDate(ev.date, ev.end_date);
     var estBadge = ev.is_estimated ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#b8820a;background:rgba(184,130,10,.12);border:1px solid rgba(184,130,10,.3);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle">EST</span>' : '';
     var tmplBadge = ev.template_id ? '<span style="font-size:9px;font-weight:700;letter-spacing:.05em;color:#5b8dee;background:rgba(91,141,238,.1);border:1px solid rgba(91,141,238,.25);border-radius:3px;padding:1px 5px;margin-left:4px;vertical-align:middle">T</span>' : '';
@@ -1445,7 +1445,6 @@ function renderTable() {
       + '<td><span class="td-cat">'+esc(ev.category||'&mdash;')+'</span></td>'
       + '<td>'+(pillCls?'<span class="ipill '+pillCls+'">'+imp.toUpperCase()+'</span>':'<span style="color:var(--text3)">&mdash;</span>')+'</td>'
       + '<td><div class="enr-chips">'+chips+'</div></td>'
-      + '<td><button class="btn-edit" onclick="event.stopPropagation();openEdit('+i+')">Edit</button></td>'
       + '</tr>';
   });
   tb.innerHTML = html;
