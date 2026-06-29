@@ -1298,7 +1298,12 @@ function cardHtml(ev) {
   var displayTime = eventTimeDisplay(ev);
   var impactCls = cls.split(' ')[0];
   var topRow = '<div class="card-top-row"><span class="card-time">' + (displayTime || '') + '</span>' + (label ? '<span class="card-impact ' + impactCls + '">' + label + '</span>' : '') + '</div>';
-  return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + topRow + logoHtml + '<div class="card-title">' + ev.title + '</div></div>';
+  var resultHtml = '';
+  var todayStr = new Date().toISOString().slice(0,10);
+  if (ev.actualValue && ev.date && ev.date < todayStr) {
+    resultHtml = '<div class="card-result">' + ev.actualValue + '</div>';
+  }
+  return '<div class="ecard ' + cls + '" data-id="' + ev.id + '" onclick="handleCardClick(this)">' + topRow + logoHtml + '<div class="card-title">' + ev.title + '</div>' + resultHtml + '</div>';
 }
 function openModal(id) {
   var ev = null;
