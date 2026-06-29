@@ -225,6 +225,11 @@ tv-ticker-tape{display:block;width:100%}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
 .modal-overlay.open .modal{transform:translateY(0)}
+  .modal{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.5) transparent}
+.modal::-webkit-scrollbar{width:8px}
+.modal::-webkit-scrollbar-track{background:transparent}
+.modal::-webkit-scrollbar-thumb{background:rgba(128,128,128,.5);border-radius:4px}
+.modal::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.75)}
 .modal-hero{width:100%;height:224px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:14px 14px 0 0;position:relative;overflow:hidden}
 .modal-hero img{width:100%;height:100%;object-fit:cover;object-position:var(--hero-pos,center)}
 .modal-close{position:absolute;top:10px;right:12px;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:18px;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
