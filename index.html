@@ -257,6 +257,17 @@ tv-ticker-tape{display:block;width:100%}
 .modal-divider{border:none;border-top:1px solid #f0f0ec;margin:14px 0}
 .modal-source{font-size:11px;color:#2563eb;text-decoration:none}
 .modal-source:hover{text-decoration:underline}
+  .modal-news{margin:14px 0}
+.modal-news-label{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.news-item{display:block;padding:9px 0;border-top:1px solid #f0f0ec;text-decoration:none}
+.news-item:first-of-type{border-top:none}
+.news-item-source{font-size:9px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.news-item-headline{font-size:13px;color:#1a1a1a;line-height:1.4}
+.news-item:hover .news-item-headline{color:#2563eb}
+.news-item-pinned{font-size:8px;font-weight:800;color:#b8820a;text-transform:uppercase;letter-spacing:.06em;margin-left:6px}
+body.dark-mode .news-item-headline{color:#e8e8ea}
+body.dark-mode .news-item{border-top-color:#2a2a2e}
+body.dark-mode .modal-news-label{color:#777}
 .spinner{width:20px;height:20px;border:2px solid #e5e5e0;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-col{grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:10px;color:#bbb;font-size:13px}
@@ -663,6 +674,17 @@ body.dark-mode .dl-bar span{color:#ebebf0}
       <div class="modal-section" id="modalAssetsSection" style="display:none">
         <div class="modal-section-label">Impacted Assets</div>
         <div class="modal-section-text" id="modalAssets"></div>
+      </div>
+      <div class="modal-news" id="modalNews">
+        <div class="modal-news-label">In The News</div>
+        <a class="news-item" href="https://www.reuters.com/markets/" target="_blank" rel="noopener">
+          <div class="news-item-source">Reuters<span class="news-item-pinned">• Your Pick</span></div>
+          <div class="news-item-headline">Sample headline: this is how a hand-added article will look in the news block</div>
+        </a>
+        <a class="news-item" href="https://www.bloomberg.com/" target="_blank" rel="noopener">
+          <div class="news-item-source">Bloomberg</div>
+          <div class="news-item-headline">A second sample article, showing how multiple stories stack under one event</div>
+        </a>
       </div>
       <hr class="modal-divider" id="modalDiv2" style="display:none">
       <a class="modal-source" id="modalSource" href="#" target="_blank" rel="noopener" style="display:none">View Source &rarr;</a>
