@@ -1026,7 +1026,7 @@ function parseDate(dateStr, monthStr) {
 }
 function fetchEvents() {
   var table = activeRegion === 'eu' ? 'Master%20Calendar%20Europe' : 'Master%20Calendar';
-  var baseUrl = SUPA_URL + '/rest/v1/' + table + '?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,chart_ticker,chart_range,price_move_val,price_move_expiry,actual_value,region,display_order,visible&order=date.asc,display_order.asc.nullslast';
+  var baseUrl = SUPA_URL + '/rest/v1/' + table + '?select=id,event,short_name,date,month,end_date,category,impact,display_time,notes,logo_url,hero_url,hero_position,why_it_matters,measures,details,impacted_assets,frequency,source_url,ticker,aka,show_in_monthly,is_estimated,event_datetime_utc,source_tz,chart_ticker,chart_range,price_move_val,price_move_expiry,actual_value,region,display_order,visible,manual_news&order=date.asc,display_order.asc.nullslast';
   var PAGE_SIZE = 1000;
   function fetchPage(offset) {
     var url = baseUrl + '&limit=' + PAGE_SIZE + '&offset=' + offset;
@@ -1066,7 +1066,8 @@ function fetchEvents() {
         ticker: r.ticker || '', aka: r.aka || '', category: r.category || '', region: r.region || 'Americas',
         chartTicker: r.chart_ticker || '', chartRange: r.chart_range || '1M',
         priceMove: r.price_move_val || '', priceMoveExpiry: r.price_move_expiry || '',
-        actualValue: r.actual_value || ''
+        actualValue: r.actual_value || '',
+        manualNews: (function(){ try { if (!r.manual_news) return []; return (typeof r.manual_news === 'string') ? JSON.parse(r.manual_news) : r.manual_news; } catch(e){ return []; } })()
       });
     });
   });
