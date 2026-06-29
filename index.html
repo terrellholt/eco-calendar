@@ -225,6 +225,7 @@ tv-ticker-tape{display:block;width:100%}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);transform:translateY(12px);transition:transform .2s;position:relative}
 .modal-overlay.open .modal{transform:translateY(0)}
+  .modal{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.5) transparent}
 .modal::-webkit-scrollbar{width:8px}
 .modal::-webkit-scrollbar-track{background:transparent}
 .modal::-webkit-scrollbar-thumb{background:rgba(128,128,128,.5);border-radius:4px}
@@ -679,16 +680,9 @@ body.dark-mode .dl-bar span{color:#ebebf0}
         <div class="modal-section-label">Impacted Assets</div>
         <div class="modal-section-text" id="modalAssets"></div>
       </div>
-      <div class="modal-news" id="modalNews">
+      <div class="modal-news" id="modalNews" style="display:none">
         <div class="modal-news-label">In The News</div>
-        <a class="news-item" href="https://www.reuters.com/markets/" target="_blank" rel="noopener">
-          <div class="news-item-source">Reuters<span class="news-item-pinned">• Your Pick</span></div>
-          <div class="news-item-headline">Sample headline: this is how a hand-added article will look in the news block</div>
-        </a>
-        <a class="news-item" href="https://www.bloomberg.com/" target="_blank" rel="noopener">
-          <div class="news-item-source">Bloomberg</div>
-          <div class="news-item-headline">A second sample article, showing how multiple stories stack under one event</div>
-        </a>
+        <div id="modalNewsList"></div>
       </div>
       <hr class="modal-divider" id="modalDiv2" style="display:none">
       <a class="modal-source" id="modalSource" href="#" target="_blank" rel="noopener" style="display:none">View Source &rarr;</a>
@@ -1376,6 +1370,25 @@ function openModal(id) {
   if (ev.measures) { ms.style.display = 'block'; document.getElementById('modalMeasures').textContent = ev.measures; } else { ms.style.display = 'none'; }
   var ws = document.getElementById('modalWhySection');
   if (ev.whyMatters) { ws.style.display = 'block'; document.getElementById('modalWhy').textContent = ev.whyMatters; } else { ws.style.display = 'none'; }
+  var newsWrap = document.getElementById('modalNews');
+  var newsList = document.getElementById('modalNewsList');
+  newsList.innerHTML = '';
+  if (ev.manualNews && ev.manualNews.length) {
+    var newsHtml = '';
+    for (var n = 0; n < ev.manualNews.length; n++) {
+      var art = ev.manualNews[n];
+      if (!art || !art.url) { continue; }
+      var src = art.source || (art.url.split('/')[2] || '').replace('www.','');
+      var head = art.headline || art.url;
+      newsHtml += '<a class="news-item" href="' + art.url + '" target="_blank" rel="noopener">'
+        + '<div class="news-item-source">' + src + '<span class="news-item-pinned">\u2022 Your Pick</span></div>'
+        + '<div class="news-item-headline">' + head + '</div></a>';
+    }
+    if (newsHtml) { newsList.innerHTML = newsHtml; newsWrap.style.display = 'block'; }
+    else { newsWrap.style.display = 'none'; }
+  } else {
+    newsWrap.style.display = 'none';
+  }
   var ias = document.getElementById('modalAssetsSection');
   if (ev.impactedAssets) { ias.style.display = 'block'; document.getElementById('modalAssets').textContent = ev.impactedAssets; } else { ias.style.display = 'none'; }
   var chartEl = document.getElementById('modalChart');
