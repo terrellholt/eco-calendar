@@ -1378,10 +1378,11 @@ function openModal(id) {
       var art = ev.manualNews[n];
       if (!art || !art.url) { continue; }
       var src = art.source || (art.url.split('/')[2] || '').replace('www.','');
-      var head = art.headline || art.url;
-      newsHtml += '<a class="news-item" href="' + art.url + '" target="_blank" rel="noopener">'
-        + '<span class="news-item-headline">' + head + '</span>'
-        + '<span class="news-item-source">' + src + '</span></a>';
+      var head = art.headline || '';
+      var inner = head
+        ? '<span class="news-item-headline">' + head + '</span><span class="news-item-source">' + src + '</span>'
+        : '<span class="news-item-headline">' + src + '</span>';
+      newsHtml += '<a class="news-item" href="' + art.url + '" target="_blank" rel="noopener">' + inner + '</a>';
     }
     if (newsHtml) { newsList.innerHTML = newsHtml; newsWrap.style.display = 'block'; }
     else { newsWrap.style.display = 'none'; }
