@@ -2058,7 +2058,7 @@ function saveChanges() {
     details: document.getElementById('f_details').value.trim() || null,
     notes: document.getElementById('f_notes').value.trim() || null,
     manual_news: (function(txt){
-      var out = []; txt.split('\n').forEach(function(line){ line = line.trim(); if (!line) return; var i = line.lastIndexOf('|'); if (i === -1) return; var h = line.slice(0,i).trim(); var u = line.slice(i+1).trim(); if (u) out.push({ headline: h, url: u }); }); return out.length ? JSON.stringify(out) : null;
+      var out = []; txt.split('\n').forEach(function(line){ line = line.trim(); if (!line) return; var h, u; var i = line.lastIndexOf('|'); if (i === -1) { h = ''; u = line; } else { h = line.slice(0,i).trim(); u = line.slice(i+1).trim(); } if (u) out.push({ headline: h, url: u }); }); return out.length ? JSON.stringify(out) : null;
     })(document.getElementById('f_manual_news').value),
     impacted_assets: getAssets() || null,
     price_move_val: pmVal || null,
